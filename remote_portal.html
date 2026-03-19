@@ -1288,10 +1288,12 @@
                 const json = await res.json();
                 
                 if (json.status === 'success' && json.data && json.data.url) {
-                    let viewUrl = json.data.url;
-                    // v3.5.2: Força HTTPS e link de download direto
-                    if (viewUrl.startsWith('http://')) viewUrl = viewUrl.replace('http://', 'https://');
-                    const downloadUrl = viewUrl.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
+                    const viewUrl = json.data.url;
+                    // v3.5.2: Extrai ID e Nome do arquivo para garantir o link de download direto (/dl/)
+                    const parts = viewUrl.split('/');
+                    const fileName = parts.pop();
+                    const id = parts.pop();
+                    const downloadUrl = `https://tmpfiles.org/dl/${id}/${fileName}`;
 
                     statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando link na nuvem principal...';
                     
