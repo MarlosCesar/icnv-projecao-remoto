@@ -473,6 +473,7 @@
                         <i class="fas fa-cloud-upload-alt"></i>
                         <strong>Toque para selecionar um arquivo</strong>
                         <p>PDF, PPT, PPTX, MP3, MP4, JPG, PNG, TXT<br>Tamanho máximo: <b>100 MB</b></p>
+                        <p style="font-size:10px; color:var(--text-muted); margin-top:10px; opacity:0.8;"><i class="fas fa-history"></i> Arquivos grandes (>2MB) ficam na nuvem por 24h.</p>
                     </div>
                     <input type="file" id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.mp3,.mp4,.wav,.m4a,.jpg,.jpeg,.png,.txt" style="display:none;" onchange="handleFileSelected(this)">
 
@@ -1164,12 +1165,9 @@
                     await uploadViaCloud(selectedFile, statusEl);
 
                 } else {
-                    // PC offline + arquivo grande → erro claro
-                    const sizeMB = (fileSize / 1024 / 1024).toFixed(1);
-                    statusEl.innerHTML = `<div style="padding:12px; background:rgba(250,204,21,0.08); border:1px solid rgba(250,204,21,0.2); border-radius:8px; font-size:13px; line-height:1.6;"><i class="fas fa-exclamation-triangle" style="color:#facc15;"></i> <b>PC está offline.</b><br>Arquivo de ${sizeMB} MB não pode ser enviado pela nuvem.<br><span style="color:var(--text-muted);">Abra o app no PC e tente novamente na mesma rede Wi-Fi.</span></div>`;
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> ENVIAR';
-                    return;
+                    // PC offline + arquivo grande → v3.5.2 USA NUVEM SECUNDÁRIA
+                    statusEl.innerHTML = `<i class="fas fa-info-circle" style="color:#facc15;"></i> PC offline. Enviando arquivo grande via nuvem secundária...`;
+                    await uploadViaLargeCloud(selectedFile, statusEl);
                 }
 
                 // Localmente informamos o sucesso
@@ -1273,6 +1271,57 @@
             });
 
             statusEl.innerHTML = '<i class="fas fa-check-circle" style="color:#4ade80;"></i> Arquivo enviado via nuvem!';
+        }
+
+        // v3.5.2: Novo método para arquivos grandes via tmpfiles.org (se o PC estiver offline)
+        async function uploadViaLargeCloud(file, statusEl) {
+            statusEl.innerHTML = '<i class="fas fa-cloud-upload-alt fa-spin"></i> Preparando upload para nuvem secundária...';
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const res = await fetch('https://tmpfiles.org/api/v1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const json = await res.json();
+                
+                if (json.status === 'success' && json.data && json.data.url) {
+                    const viewUrl = json.data.url;
+                    // Ajuste para link de download direto
+                    const downloadUrl = viewUrl.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
+
+                    statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando link na nuvem principal...';
+                    
+                    const resFetch = await fetch(`https://api.npoint.io/${binId}`);
+                    const dbData = await resFetch.json();
+                    if (!dbData.pendingFiles) dbData.pendingFiles = [];
+
+                    const fileEntry = {
+                        name: file.name,
+                        ext: file.name.split('.').pop().toLowerCase(),
+                        externalUrl: downloadUrl, // O PC vai baixar deste link
+                        size: file.size,
+                        isExternal: true, // v3.5.2 flag
+                        timestamp: new Date().toISOString()
+                    };
+                    dbData.pendingFiles.push(fileEntry);
+
+                    await fetch(`https://api.npoint.io/${binId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dbData)
+                    });
+
+                    statusEl.innerHTML = '<i class="fas fa-check-circle" style="color:#4ade80;"></i> Arquivo grande enviado via nuvem secundária (Válido por 1 dia)!';
+                } else {
+                    throw new Error(json.message || 'Erro no servidor de upload temporary.');
+                }
+            } catch (e) {
+                console.error(e);
+                throw new Error('Falha no upload para nuvem secundária: ' + e.message);
+            }
         }
 
         // Carregar lista persistente ao abrir a seção
