@@ -11,21 +11,24 @@
         // Gera o manifest.json dinamicamente com o start_url correto incluindo o ?id= (v3.5.0)
         (function() {
             const params = new URLSearchParams(window.location.search);
-            const id = params.get('id') || '';
-            const startUrl = id
-                ? (window.location.pathname + '?id=' + id)
-                : window.location.pathname;
+            const id = params.get('id') || localStorage.getItem('icnv_pwa_id') || '';
+            
+            // Persiste o ID se ele vier na URL
+            if (params.get('id')) localStorage.setItem('icnv_pwa_id', params.get('id'));
+
+            const baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            
             const manifest = {
                 name: "ICNV Projeção",
                 short_name: "ICNV Projeção",
-                description: "Portal de Escolha Remota de Louvores - ICNV",
-                start_url: startUrl,
+                description: "Portal de Escolha Remota - ICNV",
+                start_url: window.location.pathname + (id ? ("?id=" + id) : ""),
                 display: "standalone",
                 background_color: "#09090b",
-                theme_color: "#0084ff",
+                theme_color: "#09090b",
                 icons: [
-                    { src: "icon-192.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
-                    { src: "icon-512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }
+                    { src: baseUrl + "icon-192.png", sizes: "192x192", type: "image/png" },
+                    { src: baseUrl + "icon-512.png", sizes: "512x512", type: "image/png" }
                 ]
             };
             const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
