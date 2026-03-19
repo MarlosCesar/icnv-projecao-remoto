@@ -445,15 +445,16 @@
                 <div id="selectedSongsList"></div>
             </div>
 
+            <button class="footer-action" id="btnConfirm" style="display:none; margin-bottom: 20px;" disabled onclick="confirmSelection()">
+                <i class="fas fa-paper-plane"></i> GERAR PLANEJAMENTO (<span id="selectedCount">0</span>)
+            </button>
+
             <!-- Cultos Planejados -->
             <div class="list-section" id="savedPlansSection" style="display: none;">
                 <div class="section-title"><i class="fas fa-cloud"></i> Cultos Planejados (Na Nuvem)</div>
                 <div id="savedPlansList"></div>
             </div>
 
-            <button class="footer-action" id="btnConfirm" style="display:none;" disabled onclick="confirmSelection()">
-                <i class="fas fa-paper-plane"></i> GERAR PLANEJAMENTO (<span id="selectedCount">0</span>)
-            </button>
         </div>
 
         <!-- ══════════════════════════════════════ -->
