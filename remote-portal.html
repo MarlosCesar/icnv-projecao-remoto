@@ -520,7 +520,7 @@
                 <div style="padding: 5px 15px 15px 15px;">
                     <div class="form-group">
                         <label>Nome da Música</label>
-                        <input type="text" id="newSongName" placeholder="Ex: GRANDES COISAS">
+                        <input type="text" id="newSongName" placeholder="EX: NOME DA MÚSICA">
                     </div>
                     <div class="form-group">
                         <label>Letra da Música</label>
@@ -528,7 +528,7 @@
                     </div>
                     <div id="newSongStatus" style="font-size: 13px; color: var(--text-muted); text-align: center; min-height: 20px; margin-bottom: 8px;"></div>
                     <button class="footer-action" id="btnSendNewSong" onclick="sendNewSongToCloud()">
-                        <i class="fas fa-cloud-upload-alt"></i> ENVIAR
+                        <i class="fas fa-cloud-upload-alt"></i> ENVIAR PARA O PC
                     </button>
                 </div>
             </div>
@@ -551,26 +551,33 @@
             </div>
 
             <div class="list-section">
-                <div class="section-title"><i class="fas fa-broadcast-tower"></i> Controle Direto do Projetor</div>
+                <div class="section-title"><i class="fas fa-broadcast-tower"></i> Controle Direto (Rede Local)</div>
                 <div style="padding: 15px; text-align: center;">
                     <div id="pcStatusBadge" style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; margin-bottom: 20px; background: rgba(255,255,255,0.05); color: var(--text-muted);">
                         <i class="fas fa-circle-notch fa-spin"></i> Verificando PC...
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
-                        <button class="footer-action" style="background: #000; border: 1px solid #333; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="sendProjecaoCommand('toggle-blackout')">
-                            <i class="fas fa-lightbulb"></i> APAGAR TELA
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- NOVO: Link direto para o Remote Control do Studio -->
+                        <button class="footer-action" style="background: var(--accent); color: #000; border: none; font-weight: 800; margin-bottom: 15px;" onclick="openFullRemote()">
+                            <i class="fas fa-external-link-alt"></i> ABRIR PAINEL COMPLETO
                         </button>
-                        <button class="footer-action" style="background: #1a1a1f; border: 1px solid #333; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="sendProjecaoCommand('toggle-hide-text')">
-                            <i class="fas fa-eye-slash"></i> ESCONDER TEXTO
-                        </button>
-                        <button class="footer-action" style="background: #1a1a1f; border: 1px solid #333; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="sendProjecaoCommand('clear-screen')">
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <button class="footer-action" style="background: #000; border: 1px solid #333; margin: 0; font-size: 11px;" onclick="sendProjecaoCommand('toggle-blackout')">
+                                <i class="fas fa-lightbulb"></i> APAGAR
+                            </button>
+                            <button class="footer-action" style="background: #1a1a1f; border: 1px solid #333; margin: 0; font-size: 11px;" onclick="sendProjecaoCommand('toggle-hide-text')">
+                                <i class="fas fa-eye-slash"></i> ESCONDER
+                            </button>
+                        </div>
+                        <button class="footer-action" style="background: #1a1a1f; border: 1px solid #333; margin: 0;" onclick="sendProjecaoCommand('clear-screen')">
                             <i class="fas fa-eraser"></i> LIMPAR TELA
                         </button>
                     </div>
                     
                     <p style="font-size: 11px; color: var(--text-muted); margin-top: 25px; line-height: 1.5;">
-                        <i class="fas fa-info-circle"></i> O controle direto funciona apenas quando você está na <b>mesma rede Wi-Fi</b> do computador da projeção.
+                        <i class="fas fa-info-circle"></i> O <b>Painel Completo</b> funciona apenas na mesma rede Wi-Fi e permite trocar as letras das músicas diretamente.
                     </p>
                 </div>
             </div>
@@ -882,7 +889,37 @@
         function uploadDirect(file, url, st) { return new Promise((res,rej) => { const x = new XMLHttpRequest(); x.open('POST', `${url}/upload-file`); x.setRequestHeader('X-File-Name', encodeURIComponent(file.name)); x.onload = () => res(); x.onerror = () => rej(new Error("Erro")); x.send(file); }); }
         function clearFile() { selectedFile = null; document.getElementById('filePreview').style.display = 'none'; document.getElementById('btnSendFile').disabled = true; }
 
-        function updateNameFromLyrics(t) { const n = document.getElementById('newSongName'); if(!n.value) n.value = t.value.split('\n')[0].substring(0,50); }
+        let lastAutoName = "";
+        function updateNameFromLyrics(textarea) {
+            const nameInput = document.getElementById('newSongName');
+            const lyrics = textarea.value.trim();
+            
+            // Se a letra for apagada, limpa o nome APENAS se ele for o que geramos automaticamente
+            if (!lyrics) {
+                if (nameInput.value === lastAutoName) {
+                    nameInput.value = "";
+                }
+                lastAutoName = "";
+                return;
+            }
+
+            // Pega a primeira linha inteira
+            const firstLine = lyrics.split('\n')[0].trim().toUpperCase();
+
+            // Só atualiza se o campo estiver vazio ou for o nome que geramos da última vez
+            if (nameInput.value === "" || nameInput.value === lastAutoName) {
+                nameInput.value = firstLine;
+                lastAutoName = firstLine;
+            }
+        }
+
+        function openFullRemote() {
+            if (!localServerUrl) {
+                alert("IP do PC não configurado. Verifique se o sistema no computador está aberto.");
+                return;
+            }
+            window.open(localServerUrl, '_blank');
+        }
         async function sendNewSongToCloud() {
             const n = document.getElementById('newSongName').value.toUpperCase(), l = document.getElementById('newSongLyrics').value.toUpperCase();
             if(!n || !l) return;
