@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICNV - Portal de Escolha Remota</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#09090b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #09090b;
+            --panel: rgba(24, 24, 27, 0.7);
+            --accent: #0084ff;
+            --text: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border: rgba(63, 63, 70, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(0, 132, 255, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 132, 255, 0.05) 0px, transparent 50%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding-bottom: 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        h1 { font-weight: 800; font-size: 24px; letter-spacing: -0.5px; }
+        h1 span { color: var(--accent); }
+        p.subtitle { color: var(--text-muted); font-size: 13px; margin-top: 5px; }
+
+        /* ── Home Cards ── */
+        .home-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .home-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+        .home-card:active { transform: scale(0.98); }
+        .home-card:hover { border-color: var(--accent); background: rgba(0, 132, 255, 0.06); }
+
+        .home-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .home-card-icon.blue   { background: rgba(0, 132, 255, 0.15); color: var(--accent); }
+        .home-card-icon.yellow { background: rgba(250, 204, 21, 0.15); color: #facc15; }
+        .home-card-icon.green  { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+
+        .home-card-text h3 { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+        .home-card-text p  { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+        /* ── Section Header (Back btn) ── */
+        .section-back {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .section-back:hover { opacity: 0.8; }
+
+        /* ── Form Elements ── */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        .form-group label { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+        .form-group select, .form-group input, .form-group textarea {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            width: 100%;
+        }
+        .form-group textarea {
+            min-height: 200px;
+            resize: vertical;
+            font-size: 13px;
+            line-height: 1.6;
+            text-transform: uppercase;
+        }
+
+        .form-group input {
+            text-transform: uppercase;
+        }
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+
+        /* ── List Section ── */
+        .list-section {
+            background: var(--panel);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            padding: 15px;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── Search ── */
+        .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box {
+            background: var(--panel);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 15px;
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            align-items: center;
+        }
+        .search-box input { background: transparent; border: none; color: white; flex: 1; font-size: 15px; outline: none; }
+        .btn-plus {
+            background: var(--accent);
+            color: white; border: none;
+            width: 45px; height: 45px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 132, 255, 0.3);
+        }
+
+        /* ── Song Item ── */
+        .song-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 15px; border-bottom: 1px solid var(--border); transition: 0.2s;
+        }
+        .song-item:last-child { border-bottom: none; }
+        .song-info { display: flex; align-items: center; gap: 12px; overflow: hidden; }
+        .song-info i { color: var(--accent); font-size: 16px; min-width: 16px; }
+        .song-info span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; font-size: 14px; }
+        .btn-remove {
+            color: #ff4d4d; background: rgba(255,77,77,0.1); border: 1px solid rgba(255,77,77,0.2);
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+
+        /* ── Action Button ── */
+        .footer-action {
+            display: block; width: 100%; background: var(--accent); color: white;
+            padding: 16px; border-radius: 12px; text-align: center;
+            font-weight: bold; font-size: 15px;
+            box-shadow: 0 6px 20px rgba(0, 132, 255, 0.35);
+            cursor: pointer; border: none; margin-top: 14px; transition: 0.2s;
+        }
+        .footer-action:active { transform: scale(0.98); }
+        .footer-action:disabled { background: #333; cursor: not-allowed; box-shadow: none; opacity: 0.7; }
+
+        /* ── File Upload Card ── */
+        .file-drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+            background: rgba(0,0,0,0.2);
+        }
+        .file-drop-zone:hover, .file-drop-zone.drag-over { border-color: #facc15; background: rgba(250,204,21,0.05); }
+        .file-drop-zone i { font-size: 32px; color: #facc15; margin-bottom: 10px; display: block; }
+        .file-drop-zone p { color: var(--text-muted); font-size: 13px; }
+        .file-drop-zone strong { color: white; font-size: 15px; display: block; margin-bottom: 5px; }
+        #filePreview {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px;
+            padding: 12px 15px; margin-bottom: 14px; display: none;
+            align-items: center; gap: 12px;
+        }
+        #filePreview i { color: #facc15; font-size: 20px; }
+        #filePreview .file-info { flex: 1; }
+        #filePreview .file-info strong { font-size: 13px; word-break: break-all; }
+        #filePreview .file-info span { font-size: 11px; color: var(--text-muted); display: block; margin-top: 2px; }
+        #filePreview .btn-clear { background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 16px; }
+        #fileUploadStatus { font-size: 13px; color: var(--text-muted); text-align: center; margin-top: 8px; min-height: 20px; }
+
+        /* ── Modal (Catalog) ── */
+        .modal {
+            position: fixed; inset: 0; background: #0a0a0c; z-index: 2000;
+            display: none; flex-direction: column; padding: 15px;
+            animation: slideUp 0.3s ease-out;
+        }
+        .modal.active { display: flex; }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+        }
+        .modal-body {
+            flex: 1; overflow-y: auto; background: rgba(0,0,0,0.1); border-radius: 12px;
+            display: flex; flex-direction: column; gap: 8px; padding: 10px;
+        }
+
+        .browser-item {
+            display: flex; align-items: center; padding: 12px 15px;
+            background: #16161a; border: 1px solid #222; border-radius: 10px;
+            cursor: pointer; gap: 12px; transition: all 0.2s ease;
+        }
+        .browser-item:hover { background: #1c1c22; border-color: #333; }
+        .browser-item.folder { border-left: 4px solid #facc15; }
+        .browser-item.file { border-left: 4px solid #444; }
+        .browser-item.selected { background: rgba(0,132,255,0.1); border-color: var(--accent); border-left: 4px solid var(--accent); }
+        .browser-item i { font-size: 16px; min-width: 20px; text-align: center; }
+        .browser-item i.fa-folder { color: #facc15; }
+        .browser-item i.fa-file-alt { color: #888; }
+        .browser-item .item-name { flex: 1; font-weight: 500; font-size: 14px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .browser-item .check-icon { color: var(--accent); font-size: 14px; }
+
+        .breadcrumb { display: flex; gap: 8px; font-size: 12px; color: var(--text-muted); margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+        .breadcrumb span { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .breadcrumb span:hover { background: rgba(255,255,255,0.1); color: var(--accent); }
+        .breadcrumb span:last-child { color: var(--accent); font-weight: bold; }
+
+        #btnConfirmSelectionModal {
+            width: 100%; padding: 15px; background: var(--accent); color: white;
+            border: none; border-radius: 12px; font-weight: bold; margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0,132,255,0.3);
+        }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal .search-box { padding: 10px 15px; margin-bottom: 12px; border-radius: 10px; box-shadow: none; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); flex: none; }
+        .modal .search-box input { font-size: 14px; width: 100%; }
+
+        /* ── Success Popup ── */
+        .success-popup {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #2e7d32; color: white; padding: 12px 25px; border-radius: 30px;
+            font-weight: bold; display: none; z-index: 4000; box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            animation: slideDown 0.3s ease-out; max-width: 90vw; text-align: center;
+        }
+        @keyframes slideDown { from { transform: translateX(-50%) translateY(-50px); } to { transform: translateX(-50%) translateY(0); } }
+
+        /* ── Loading ── */
+        .loading-overlay {
+            position: fixed; inset: 0; background: var(--bg); display: flex;
+            flex-direction: column; align-items: center; justify-content: center; z-index: 3000;
+        }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s infinite linear; margin-bottom: 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Saved Plans Groups ── */
+        @media (min-width: 768px) {
+            body { padding: 40px; }
+            .container { max-width: 540px; }
+            .modal { inset: auto; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 80vh; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+            .modal.active { display: flex; animation: fadeInScale 0.3s ease-out; }
+        }
+        @keyframes fadeInScale { from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+
+        .group-header:hover { background: rgba(255,255,255,0.05) !important; }
+        .group-arrow { color: var(--text-muted); }
+        .group-container:last-child { border-bottom: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <p id="loadingText">Conectando ao sistema...</p>
+        <div id="manualIdContainer" style="display: none; margin-top: 20px; text-align: center; width: 80%;">
+            <input type="text" id="manualIdInput" placeholder="ID EX: XXXXXX"
+                style="width: 100%; padding: 12px; background: #111; border: 1px solid var(--border); border-radius: 8px; color: white; text-align: center; margin-bottom: 15px;">
+            <button onclick="applyManualId()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">CONECTAR</button>
+        </div>
+    </div>
+
+    <div id="successPopup" class="success-popup"><i class="fas fa-check-circle"></i> Seleção enviada!</div>
+
+    <div class="container">
+        <header>
+            <img src="logo ICNV Projeção.png" alt="ICNV PROJEÇÃO" style="height: 50px; width: auto; margin-bottom: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+            <p class="subtitle" id="lastUpdateText">Sincronizando biblioteca...</p>
+        </header>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- HOME: 3 Cards                          -->
+        <!-- ══════════════════════════════════════ -->
+        <div id="homeView" class="home-cards">
+            <div class="home-card" onclick="showSection('louvor')">
+                <div class="home-card-icon blue"><i class="fas fa-music"></i></div>
+                <div class="home-card-text">
+                    <h3>LOUVOR</h3>
+                    <p>Planeje e envie a programação do culto para a nuvem</p>
+                </div>
+                <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
+            </div>
+
+            <div class="home-card" onclick="showSection('arquivo')">
+                <div class="home-card-icon yellow"><i class="fas fa-file-upload"></i></div>
+                <div class="home-card-text">
+                    <h3>ARQUIVO</h3>
+                    <p>Envie um arquivo para ser sincronizado no PC</p>
+                </div>
+                <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
+            </div>
+
+            <div class="home-card" onclick="showSection('novo')">
+                <div class="home-card-icon green"><i class="fas fa-pen-alt"></i></div>
+                <div class="home-card-text">
+                    <h3>NOVO</h3>
+                    <p>Cole a letra de uma música nova para sincronizar na biblioteca</p>
+                </div>
+                <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- SEÇÃO: LOUVOR                          -->
+        <!-- ══════════════════════════════════════ -->
+        <div id="sectionLouvor" style="display:none;">
+            <div class="section-back" onclick="showHome()">
+                <i class="fas fa-arrow-left"></i> Voltar ao Menu
+            </div>
+
+            <!-- Programação do Culto -->
+            <div class="list-section">
+                <div class="section-title"><i class="fas fa-calendar-alt"></i> Programação do Culto</div>
+                <div style="padding: 0 15px 15px 15px;">
+                    <div class="form-group">
+                        <label>Tipo de Culto</label>
+                        <select id="selectCulto">
+                            <option value="Domingo-Manhã">Domingo-Manhã</option>
+                            <option value="Domingo-Noite">Domingo-Noite</option>
+                            <option value="Quarta">Quarta</option>
+                            <option value="Sábado">Sábado</option>
+                            <option value="Santa Ceia">Santa Ceia</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="inputData">
+                    </div>
+                    <div class="form-group">
+                        <label>Dirigente / Pregador</label>
+                        <input type="text" id="inputDirigente" placeholder="Nome do responsável">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barra de busca -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search" style="color: var(--text-muted);"></i>
+                    <input type="text" id="searchInput" placeholder="Clique aqui para escolher..." readonly onclick="openSelectionModal()">
+                </div>
+                <button class="btn-plus" onclick="openSelectionModal()" title="Adicionar músicas">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+
+            <!-- Escolha Atual -->
+            <div class="list-section" id="selectionSection" style="display: none;">
+                <div class="section-title"><i class="fas fa-check-double"></i> Minha Escolha Atual</div>
+                <div id="selectedSongsList"></div>
+            </div>
+
+            <!-- Cultos Planejados -->
+            <div class="list-section" id="savedPlansSection" style="display: none;">
+                <div class="section-title"><i class="fas fa-cloud"></i> Cultos Planejados (Na Nuvem)</div>
+                <div id="savedPlansList"></div>
+            </div>
+
+            <button class="footer-action" id="btnConfirm" style="display:none;" disabled onclick="confirmSelection()">
+                <i class="fas fa-paper-plane"></i> GERAR PLANEJAMENTO (<span id="selectedCount">0</span>)
+            </button>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- SEÇÃO: ARQUIVO                         -->
+        <!-- ══════════════════════════════════════ -->
+        <div id="sectionArquivo" style="display:none;">
+            <div class="section-back" onclick="showHome()">
+                <i class="fas fa-arrow-left"></i> Voltar ao Menu
+            </div>
+
+            <div class="list-section">
+                <div class="section-title"><i class="fas fa-file-upload"></i> Enviar Arquivo para o PC</div>
+                <div style="padding: 5px 15px 15px 15px;">
+                    <div class="file-drop-zone" id="fileDropZone" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <strong>Toque para selecionar um arquivo</strong>
+                        <p>PDF, PPT, PPTX, MP3, MP4, JPG, PNG, TXT<br>Tamanho máximo: <b>100 MB</b></p>
+                    </div>
+                    <input type="file" id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.mp3,.mp4,.wav,.m4a,.jpg,.jpeg,.png,.txt" style="display:none;" onchange="handleFileSelected(this)">
+
+                    <div id="filePreview">
+                        <i class="fas fa-file" id="filePreviewIcon"></i>
+                        <div class="file-info">
+                            <strong id="filePreviewName">—</strong>
+                            <span id="filePreviewSize">—</span>
+                        </div>
+                        <button class="btn-clear" onclick="clearFile()" title="Remover"><i class="fas fa-times"></i></button>
+                    </div>
+
+                    <div id="fileUploadStatus"></div>
+
+                    <button class="footer-action" id="btnSendFile" onclick="sendFileToCloud()" disabled>
+                        <i class="fas fa-cloud-upload-alt"></i> ENVIAR
+                    </button>
+                </div>
+            </div>
+
+            <!-- Arquivos enviados (persistente) -->
+            <div class="list-section" id="sentFilesSection" style="display:none;">
+                <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span><i class="fas fa-clock"></i> Aguardando Sincronização</span>
+                    <span onclick="clearSentFiles()" style="font-size:11px; color:#ff4d4d; cursor:pointer; padding: 4px 8px;">Limpar</span>
+                </div>
+                <div id="sentFilesList"></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- SEÇÃO: NOVO (Nova Música)              -->
+        <!-- ══════════════════════════════════════ -->
+        <div id="sectionNovo" style="display:none;">
+            <div class="section-back" onclick="showHome()">
+                <i class="fas fa-arrow-left"></i> Voltar ao Menu
+            </div>
+
+            <div class="list-section">
+                <div class="section-title"><i class="fas fa-pen-alt"></i> Adicionar Nova Música</div>
+                <div style="padding: 5px 15px 15px 15px;">
+                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px; line-height:1.6;">
+                        <i class="fas fa-info-circle" style="color:var(--accent);"></i>
+                        Informe o <b>Nome da Música</b> e cole a <b>Letra</b> completa abaixo.<br>
+                        Mantenha uma linha em branco entre as estrofes para que o sistema as divida corretamente em slides no PC.
+                    </p>
+                    <div class="form-group">
+                        <label>Nome da Música</label>
+                        <input type="text" id="newSongName" placeholder="Ex: GRANDES COISAS">
+                    </div>
+                    <div class="form-group">
+                        <label>Letra da Música</label>
+                        <textarea id="newSongLyrics" placeholder="PRIMEIRA ESTROFE&#10;LINHA 1&#10;LINHA 2&#10;&#10;SEGUNDA ESTROFE&#10;LINHA 1&#10;LINHA 2" oninput="updateNameFromLyrics(this)"></textarea>
+                    </div>
+
+                    <div id="newSongStatus" style="font-size: 13px; color: var(--text-muted); text-align: center; min-height: 20px; margin-bottom: 8px;"></div>
+
+                    <button class="footer-action" id="btnSendNewSong" onclick="sendNewSongToCloud()">
+                        <i class="fas fa-cloud-upload-alt"></i> ENVIAR
+                    </button>
+                </div>
+            </div>
+
+            <!-- Músicas enviadas (persistente) -->
+            <div class="list-section" id="sentSongsSection" style="display:none;">
+                <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span><i class="fas fa-clock"></i> Aguardando Sincronização</span>
+                    <span onclick="clearSentFiles()" style="font-size:11px; color:#ff4d4d; cursor:pointer; padding: 4px 8px;">Limpar</span>
+                </div>
+                <div id="sentSongsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE SELEÇÃO V3.3.5 -->
+    <div id="selectionModal" class="modal">
+        <div class="modal-header">
+            <h3 style="font-size: 18px; color: var(--accent);"><i class="fas fa-list-ul"></i> Catálogo</h3>
+            <button onclick="closeSelectionModal()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
+        </div>
+
+        <div class="search-box">
+            <i class="fas fa-search" style="color: var(--text-muted);"></i>
+            <input type="text" id="modalSearchInput" placeholder="Digite o nome da música...">
+        </div>
+
+        <div id="modalBreadcrumb" class="breadcrumb">
+            <span onclick="goHome()">🏠 Início</span>
+        </div>
+
+        <div class="modal-body" id="catalogBrowser">
+            <!-- Navegador de pastas -->
+        </div>
+
+        <button id="btnConfirmSelectionModal" onclick="closeSelectionModal()">CONCLUÍDO</button>
+
+        <div style="margin-top: 15px; text-align: center; font-size: 12px; color: var(--text-muted);">
+            Selecione as músicas clicando nelas.
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const binId = urlParams.get('id');
+        let fullCatalog = [];
+        let selections = [];
+        let currentFolder = [];
+        let pathStack = [];
+        let savedSelections = [];
+        let editGroupContext = null;
+        let selectedFile = null; // Para a seção ARQUIVO
+        let localServerUrl = null; // URL do servidor local do PC (preenchida pelo npoint)
+
+        // ─────────────────────────────────────────
+        // NAVEGAÇÃO POR SEÇÕES
+        // ─────────────────────────────────────────
+        function showSection(name) {
+            document.getElementById('homeView').style.display = 'none';
+            document.getElementById('sectionLouvor').style.display = 'none';
+            document.getElementById('sectionArquivo').style.display = 'none';
+            document.getElementById('sectionNovo').style.display = 'none';
+            document.getElementById('section' + name.charAt(0).toUpperCase() + name.slice(1)).style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showHome() {
+            document.getElementById('homeView').style.display = 'flex';
+            document.getElementById('sectionLouvor').style.display = 'none';
+            document.getElementById('sectionArquivo').style.display = 'none';
+            document.getElementById('sectionNovo').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ─────────────────────────────────────────
+        // INICIALIZAÇÃO
+        // ─────────────────────────────────────────
+        async function init() {
+            document.getElementById('inputData').valueAsDate = new Date();
+
+            if (!binId) {
+                document.getElementById('loadingText').innerHTML = 'ID NÃO ENCONTRADO';
+                document.getElementById('manualIdContainer').style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch(`https://api.npoint.io/${binId}`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+
+                fullCatalog = data.catalog || [];
+                savedSelections = data.selections || [];
+                localServerUrl = data.localServerUrl || null; // IP do servidor local
+                sentFilesList = data.sentHistory || []; // v3.3.7: Histórico de envios global (nuvem)
+
+                if (data.lastUpdate) {
+                    const date = new Date(data.lastUpdate);
+                    document.getElementById('lastUpdateText').textContent = `Atualizado: ${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                }
+
+                currentFolder = fullCatalog;
+                renderBrowser();
+                updateSavedPlansUI();
+                renderSentFiles();
+
+                document.getElementById('loading').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
+            } catch (e) {
+                alert('Erro na conexão. Verifique o ID.');
+            }
+        }
+
+        function applyManualId() {
+            const id = document.getElementById('manualIdInput').value.trim();
+            if (id) window.location.href = `?id=${id}`;
+        }
+
+        // ─────────────────────────────────────────
+        // CULTOS PLANEJADOS - UI
+        // ─────────────────────────────────────────
+        function normalizeCultoDisplay(culto) {
+            return (culto || '')
+                .replace('Domingo Manhã', 'Domingo-Manhã')
+                .replace('Domingo Noite', 'Domingo-Noite');
+        }
+
+        function updateSavedPlansUI() {
+            const list = document.getElementById('savedPlansList');
+            const section = document.getElementById('savedPlansSection');
+            list.innerHTML = '';
+
+            if (savedSelections && savedSelections.length > 0) {
+                section.style.display = 'block';
+                const groups = {};
+                savedSelections.forEach((s, idx) => {
+                    const key = `${s.culto}_${s.data}`;
+                    if (!groups[key]) groups[key] = { info: s, items: [] };
+                    groups[key].items.push({ ...s, originalIdx: idx });
+                });
+
+                let gIdx = 0;
+                for (const key in groups) {
+                    const group = groups[key];
+                    const groupId = `group_${gIdx++}`;
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'group-container';
+                    groupDiv.style.borderBottom = '1px solid var(--border)';
+                    groupDiv.style.padding = '0';
+
+                    const displayCulto = normalizeCultoDisplay(group.info.culto);
+
+                    groupDiv.innerHTML = `
+                        <div class="group-header" onclick="toggleGroup('${groupId}', this.querySelector('.group-arrow'))"
+                             style="display:flex; justify-content:space-between; align-items:center; padding:12px 15px; cursor:pointer; background:rgba(255,255,255,0.02);">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <i class="fas fa-chevron-right group-arrow" style="font-size:10px; transition:0.3s; transform:rotate(0deg);"></i>
+                                <div style="display:flex; flex-direction:column;">
+                                    <span style="font-size:13px; font-weight:bold; color:var(--accent);">${displayCulto}</span>
+                                    <span style="font-size:11px; color:var(--text-muted);">${formatDate(group.info.data)} • ${group.info.dirigente}</span>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:5px;">
+                                <i class="fas fa-pencil-alt" onclick="event.stopPropagation(); editGroup('${group.info.culto}', '${group.info.data}', '${(group.info.dirigente || '').replace(/'/g,'\\x27')}')"
+                                   title="Adicionar músicas ao planejamento" style="color:#facc15; padding:8px; cursor:pointer; opacity:0.85;"></i>
+                                <i class="fas fa-trash-alt" onclick="event.stopPropagation(); removeSavedGroup('${group.info.culto}', '${group.info.data}')"
+                                   style="color:#ff4d4d; padding:8px; cursor:pointer; opacity:0.7;"></i>
+                            </div>
+                        </div>
+                        <div id="${groupId}" class="group-content" style="padding:10px 15px 15px 35px; font-size:13px; color:#ccc; display:none;">
+                            ${group.items.map(item => `
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                    <span><i class="fas fa-music" style="font-size:10px; margin-right:8px; color:var(--accent);"></i> ${item.title.toUpperCase()}</span>
+                                    <i class="fas fa-times" onclick="removeSavedPlan(${item.originalIdx})" style="color:#ff4d4d; cursor:pointer; font-size:12px; padding:5px;"></i>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    list.appendChild(groupDiv);
+                }
+            } else {
+                section.style.display = 'none';
+            }
+        }
+
+        async function removeSavedPlan(idx) {
+            if (!confirm("Remover esta música do planejamento na nuvem?")) return;
+            savedSelections.splice(idx, 1);
+            updateSavedPlansUI();
+            try {
+                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
+                const data = await resFetch.json();
+                data.selections = savedSelections;
+                await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            } catch (e) { alert("Erro ao remover da nuvem."); }
+        }
+
+        async function removeSavedGroup(culto, data) {
+            if (!confirm(`Remover todo o planejamento do culto: ${normalizeCultoDisplay(culto)}?`)) return;
+            savedSelections = savedSelections.filter(s => !(s.culto === culto && s.data === data));
+            updateSavedPlansUI();
+            try {
+                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
+                const dbData = await resFetch.json();
+                dbData.selections = savedSelections;
+                await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbData) });
+            } catch (e) { alert("Erro ao sincronizar remoção."); }
+        }
+
+        // ─────────────────────────────────────────
+        // EDITAR GRUPO (Lápis)
+        // ─────────────────────────────────────────
+        function editGroup(culto, data, dirigente) {
+            editGroupContext = { culto, data, dirigente };
+            selections = [];
+            updateSelectedList();
+
+            const modal = document.getElementById('selectionModal');
+            const header = modal.querySelector('.modal-header h3');
+            header.innerHTML = `<i class="fas fa-pencil-alt" style="color:#facc15;"></i> Adicionar a: <span style="color:var(--accent);font-size:14px;">${normalizeCultoDisplay(culto)}</span>`;
+
+            pathStack = []; currentFolder = fullCatalog;
+            document.getElementById('modalSearchInput').value = '';
+            updateBreadcrumb(); renderBrowser();
+
+            const btnConfirm = document.getElementById('btnConfirmSelectionModal');
+            btnConfirm.textContent = 'ADICIONAR AO PLANEJAMENTO';
+            btnConfirm.onclick = saveEditGroup;
+            modal.classList.add('active');
+        }
+
+        async function saveEditGroup() {
+            if (selections.length === 0) { closeSelectionModal(); return; }
+            const { culto, data, dirigente } = editGroupContext;
+            const btnConfirm = document.getElementById('btnConfirmSelectionModal');
+            btnConfirm.textContent = 'SALVANDO...';
+            btnConfirm.disabled = true;
+            try {
+                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
+                const dbData = await resFetch.json();
+                if (!dbData.selections) dbData.selections = [];
+
+                const now = new Date().toISOString();
+                const existingTitles = dbData.selections.filter(s => s.culto === culto && s.data === data).map(s => s.title);
+                let added = 0;
+                selections.forEach(s => {
+                    if (!existingTitles.includes(s.name)) {
+                        dbData.selections.push({ title: s.name, data, culto, dirigente, timestamp: now });
+                        added++;
+                    }
+                });
+
+                await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbData) });
+
+                savedSelections = dbData.selections;
+                selections = [];
+                editGroupContext = null;
+                closeSelectionModal();
+                updateSelectedList();
+                updateSavedPlansUI();
+
+                btnConfirm.textContent = 'CONCLUÍDO';
+                btnConfirm.onclick = closeSelectionModal;
+                document.querySelector('#selectionModal .modal-header h3').innerHTML = '<i class="fas fa-list-ul"></i> Catálogo';
+
+                const popup = document.getElementById('successPopup');
+                popup.innerHTML = `<i class="fas fa-check-circle"></i> ${added} música(s) adicionada(s)!`;
+                popup.style.display = 'block';
+                setTimeout(() => { popup.style.display = 'none'; popup.innerHTML = '<i class="fas fa-check-circle"></i> Seleção enviada!'; }, 3000);
+            } catch (e) {
+                alert('Erro de conexão: ' + e.message);
+            } finally {
+                btnConfirm.disabled = false;
+            }
+        }
+
+        // ─────────────────────────────────────────
+        // HELPERS
+        // ─────────────────────────────────────────
+        function removeAcentos(str) { return str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+        function formatDate(str) {
+            if (!str) return 'S/D';
+            const parts = str.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return str;
+        }
+        function showSuccess(msg) {
+            const popup = document.getElementById('successPopup');
+            if (msg) popup.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+            popup.style.display = 'block';
+            setTimeout(() => { popup.style.display = 'none'; popup.innerHTML = '<i class="fas fa-check-circle"></i> Seleção enviada!'; }, 3000);
+        }
+        function toggleGroup(id, arrow) {
+            const el = document.getElementById(id);
+            const isHidden = el.style.display === 'none';
+            el.style.display = isHidden ? 'block' : 'none';
+            arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
+        }
+        function getTitle(item) { if (typeof item === 'string') return item; return item.name || 'Sem nome'; }
+
+        // ─────────────────────────────────────────
+        // CATÁLOGO (Modal)
+        // ─────────────────────────────────────────
+        function renderBrowser() {
+            const container = document.getElementById('catalogBrowser');
+            container.innerHTML = '';
+            container.scrollTop = 0;
+            const searchTerm = removeAcentos(document.getElementById('modalSearchInput').value.toLowerCase());
+
+            if (searchTerm) {
+                const results = searchDeep(fullCatalog, searchTerm);
+                if (results.length === 0) { container.innerHTML = '<div style="padding: 40px; text-align: center; color: #888;">Nenhuma música encontrada</div>'; return; }
+                results.sort((a, b) => getTitle(a).localeCompare(getTitle(b)));
+                results.forEach(item => createFileItem(container, item));
+            } else {
+                if (pathStack.length > 0) {
+                    const back = document.createElement('div');
+                    back.className = 'browser-item';
+                    back.innerHTML = '<i class="fas fa-arrow-left"></i> <span class="item-name">.. Voltar</span>';
+                    back.onclick = goBack;
+                    container.appendChild(back);
+                }
+                if (!Array.isArray(currentFolder)) return;
+                const sorted = [...currentFolder].sort((a, b) => {
+                    const isFolderA = (typeof a === 'object' && (a.type === 'folder' || a.children));
+                    const isFolderB = (typeof b === 'object' && (b.type === 'folder' || b.children));
+                    if (isFolderA && !isFolderB) return -1;
+                    if (!isFolderA && isFolderB) return 1;
+                    return getTitle(a).localeCompare(getTitle(b), undefined, { sensitivity: 'base' });
+                });
+                sorted.forEach(item => {
+                    const isFolder = (typeof item === 'object' && (item.type === 'folder' || item.children));
+                    if (isFolder) {
+                        const div = document.createElement('div');
+                        div.className = 'browser-item folder';
+                        div.innerHTML = `<i class="fas fa-folder"></i> <span class="item-name">${getTitle(item)}</span> <i class="fas fa-chevron-right" style="font-size:10px; color:#444;"></i>`;
+                        div.onclick = () => openFolder(item);
+                        container.appendChild(div);
+                    } else {
+                        createFileItem(container, item);
+                    }
+                });
+            }
+        }
+
+        function createFileItem(container, item) {
+            const title = getTitle(item);
+            const isSelected = selections.some(s => s.name === title);
+            const div = document.createElement('div');
+            div.className = `browser-item file ${isSelected ? 'selected' : ''}`;
+            div.innerHTML = `<i class="fas fa-file-alt"></i> <span class="item-name">${title}</span> ${isSelected ? '<i class="fas fa-check-circle check-icon"></i>' : ''}`;
+            div.onclick = () => toggleSong(item);
+            container.appendChild(div);
+        }
+
+        function searchDeep(items, term) {
+            let found = [];
+            if (!Array.isArray(items)) return found;
+            items.forEach(item => {
+                const title = getTitle(item);
+                if (typeof item === 'object' && item.type === 'folder' && item.children) { found = found.concat(searchDeep(item.children, term)); }
+                else if (removeAcentos(title.toLowerCase()).includes(term)) { found.push(item); }
+            });
+            return found;
+        }
+
+        function openFolder(folder) {
+            if (!folder.children) return;
+            pathStack.push({ name: folder.name, data: currentFolder });
+            currentFolder = folder.children;
+            updateBreadcrumb(); renderBrowser();
+        }
+        function goBack() {
+            if (pathStack.length === 0) return;
+            const last = pathStack.pop();
+            currentFolder = last.data;
+            updateBreadcrumb(); renderBrowser();
+        }
+        function goHome() {
+            pathStack = []; currentFolder = fullCatalog;
+            updateBreadcrumb(); renderBrowser();
+        }
+        function updateBreadcrumb() {
+            const bc = document.getElementById('modalBreadcrumb');
+            let html = '<span onclick="goHome()"><i class="fas fa-home"></i> Início</span>';
+            pathStack.forEach((p, idx) => { html += `<span onclick="jumpTo(${idx})">${p.name}</span>`; });
+            bc.innerHTML = html;
+        }
+        function jumpTo(idx) {
+            const target = pathStack[idx];
+            currentFolder = target.data;
+            pathStack = pathStack.slice(0, idx);
+            updateBreadcrumb(); renderBrowser();
+        }
+
+        function toggleSong(item) {
+            const title = getTitle(item);
+            const path = typeof item === 'object' ? item.path : null;
+            const idx = selections.findIndex(s => s.name === title);
+            if (idx === -1) { selections.push({ name: title, path }); }
+            else { selections.splice(idx, 1); }
+            renderBrowser(); updateSelectedList();
+        }
+
+        function updateSelectedList() {
+            const list = document.getElementById('selectedSongsList');
+            const section = document.getElementById('selectionSection');
+            const count = document.getElementById('selectedCount');
+            const btnConfirm = document.getElementById('btnConfirm');
+            list.innerHTML = '';
+            count.textContent = selections.length;
+            btnConfirm.disabled = selections.length === 0;
+            btnConfirm.style.display = selections.length > 0 ? 'block' : 'none';
+            if (selections.length > 0) {
+                section.style.display = 'block';
+                selections.forEach((s, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'song-item';
+                    div.innerHTML = `<div class="song-info"><i class="fas fa-music"></i> <span>${s.name}</span></div><div class="btn-remove" onclick="removeSelected(${idx})"><i class="fas fa-times"></i></div>`;
+                    list.appendChild(div);
+                });
+            } else { section.style.display = 'none'; }
+        }
+
+        function removeSelected(idx) { selections.splice(idx, 1); updateSelectedList(); }
+
+        function openSelectionModal() {
+            document.getElementById('selectionModal').classList.add('active');
+            renderBrowser();
+        }
+        function closeSelectionModal() {
+            document.getElementById('selectionModal').classList.remove('active');
+            if (editGroupContext) {
+                editGroupContext = null;
+                document.querySelector('#selectionModal .modal-header h3').innerHTML = '<i class="fas fa-list-ul"></i> Catálogo';
+                const btnConfirm = document.getElementById('btnConfirmSelectionModal');
+                btnConfirm.textContent = 'CONCLUÍDO';
+                btnConfirm.onclick = closeSelectionModal;
+            }
+        }
+
+        // ─────────────────────────────────────────
+        // ENVIAR PLANEJAMENTO
+        // ─────────────────────────────────────────
+        async function confirmSelection() {
+            if (selections.length === 0) return;
+            const btn = document.getElementById('btnConfirm');
+            const original = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ENVIANDO...`;
+            btn.disabled = true;
+            const culto = document.getElementById('selectCulto').value;
+            const dataStr = document.getElementById('inputData').value;
+            const dirigente = document.getElementById('inputDirigente').value || 'Não Informado';
+            try {
+                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
+                if (!resFetch.ok) throw new Error(`Falha ao buscar dados.`);
+                const data = await resFetch.json();
+                if (!data.selections) data.selections = [];
+                const now = new Date().toISOString();
+                selections.forEach(s => {
+                    data.selections.push({ title: s.name, data: dataStr, culto, dirigente, timestamp: now });
+                });
+                await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+
+                showSuccess();
+                selections = [];
+                savedSelections = data.selections;
+                btn.innerHTML = original;
+                btn.disabled = true;
+                updateSelectedList();
+                updateSavedPlansUI();
+            } catch (e) {
+                alert('Erro ao enviar: ' + e.message);
+                btn.innerHTML = original;
+                btn.disabled = false;
+            }
+        }
+
+        // ─────────────────────────────────────────
+        // SEÇÃO ARQUIVO – Upload
+        // ─────────────────────────────────────────
+        const FILE_ICONS = { pdf:'fa-file-pdf', ppt:'fa-file-powerpoint', pptx:'fa-file-powerpoint', doc:'fa-file-word', docx:'fa-file-word', mp3:'fa-file-audio', mp4:'fa-file-video', wav:'fa-file-audio', m4a:'fa-file-audio', jpg:'fa-file-image', jpeg:'fa-file-image', png:'fa-file-image', txt:'fa-file-alt' };
+        let sentFilesList = [];
+
+        function formatBytes(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+            return (bytes/(1024*1024)).toFixed(1) + ' MB';
+        }
+
+        function handleFileSelected(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const MAX_BYTES = 100 * 1024 * 1024; // 100 MB
+            if (file.size > MAX_BYTES) {
+                document.getElementById('fileUploadStatus').innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#facc15;"></i> Arquivo muito grande: ${formatBytes(file.size)}. Máximo: 100 MB.`;
+                input.value = '';
+                return;
+            }
+            selectedFile = file;
+            const ext = file.name.split('.').pop().toLowerCase();
+            const icon = FILE_ICONS[ext] || 'fa-file';
+            document.getElementById('filePreviewIcon').className = `fas ${icon}`;
+            document.getElementById('filePreviewName').textContent = file.name;
+            document.getElementById('filePreviewSize').textContent = formatBytes(file.size);
+            document.getElementById('filePreview').style.display = 'flex';
+            document.getElementById('fileUploadStatus').textContent = '';
+            document.getElementById('btnSendFile').disabled = false;
+        }
+
+        function clearFile() {
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('filePreview').style.display = 'none';
+            document.getElementById('btnSendFile').disabled = true;
+            document.getElementById('fileUploadStatus').textContent = '';
+        }
+
+        function renderSentFiles() {
+            const listFile = document.getElementById('sentFilesList');
+            const listSong = document.getElementById('sentSongsList');
+            const sectionFile = document.getElementById('sentFilesSection');
+            const sectionSong = document.getElementById('sentSongsSection');
+
+            // Filtrar históricos
+            const files = sentFilesList.filter(f => f.type === 'file' || (!f.type && !f.name.includes('(Nova Música)')));
+            const songs = sentFilesList.filter(f => f.type === 'song' || (!f.type && f.name.includes('(Nova Música)')));
+
+            // Atualizar visibilidade das seções
+            if (sectionFile) sectionFile.style.display = files.length ? 'block' : 'none';
+            if (sectionSong) sectionSong.style.display = songs.length ? 'block' : 'none';
+
+            // Renderizar Lista de Arquivos
+            if (listFile) {
+                listFile.innerHTML = '';
+                files.forEach(f => {
+                    const ext = f.name.split('.').pop().toLowerCase();
+                    const icon = FILE_ICONS[ext] || 'fa-file';
+                    const div = document.createElement('div');
+                    div.className = 'song-item';
+                    div.innerHTML = `
+                        <div class="song-info"><i class="fas ${icon}" style="color:#facc15;"></i> <span>${f.name}</span></div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:11px; color:var(--text-muted);">${formatBytes(f.size)}</span>
+                            <i class="fas fa-clock" style="color:#888; font-size:12px;"></i>
+                        </div>`;
+                    listFile.appendChild(div);
+                });
+            }
+
+            // Renderizar Lista de Músicas
+            if (listSong) {
+                listSong.innerHTML = '';
+                songs.forEach(f => {
+                    const div = document.createElement('div');
+                    div.className = 'song-item';
+                    div.innerHTML = `
+                        <div class="song-info"><i class="fas fa-pen-alt" style="color:#facc15;"></i> <span>${f.name.replace(' (Nova Música)', '')}</span></div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <i class="fas fa-clock" style="color:#888; font-size:12px;"></i>
+                        </div>`;
+                    listSong.appendChild(div);
+                });
+            }
+        }
+
+        async function clearSentFiles() {
+            if (!confirm('Deseja limpar a lista de envios para todos os dispositivos?')) return;
+            try {
+                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
+                const dbData = await resFetch.json();
+                dbData.sentHistory = [];
+                await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbData) });
+                sentFilesList = [];
+                renderSentFiles();
+            } catch(e) { alert('Erro ao limpar: ' + e.message); }
+        }
+
+        // Testa se o servidor local está acessível (timeout de 3s)
+        async function isLocalServerOnline(url) {
+            if (!url) return false;
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 3000);
+                await fetch(`${url}/`, { signal: controller.signal, method: 'HEAD' });
+                clearTimeout(timer);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        async function sendFileToCloud() {
+            if (!selectedFile) return;
+            const btn = document.getElementById('btnSendFile');
+            const statusEl = document.getElementById('fileUploadStatus');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFICANDO...';
+
+            const MAX_NPOINT = 2 * 1024 * 1024; // 2 MB — limite prático para base64 no npoint
+            const fileSize = selectedFile.size;
+
+            try {
+                // Verificar se o servidor local está online
+                let pcOnline = false;
+                if (localServerUrl) {
+                    statusEl.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verificando conexão com o PC...';
+                    pcOnline = await isLocalServerOnline(localServerUrl);
+                }
+
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
+
+                if (pcOnline) {
+                    // PC online → upload direto (até 100MB)
+                    await uploadDirect(selectedFile, localServerUrl, statusEl);
+
+                } else if (fileSize <= MAX_NPOINT) {
+                    // PC offline, arquivo pequeno → npoint (será sincronizado quando o PC ligar)
+                    statusEl.innerHTML = '<i class="fas fa-info-circle" style="color:#facc15;"></i> PC offline. Enviando para a nuvem...';
+                    await new Promise(r => setTimeout(r, 600));
+                    await uploadViaCloud(selectedFile, statusEl);
+
+                } else {
+                    // PC offline + arquivo grande → erro claro
+                    const sizeMB = (fileSize / 1024 / 1024).toFixed(1);
+                    statusEl.innerHTML = `<div style="padding:12px; background:rgba(250,204,21,0.08); border:1px solid rgba(250,204,21,0.2); border-radius:8px; font-size:13px; line-height:1.6;"><i class="fas fa-exclamation-triangle" style="color:#facc15;"></i> <b>PC está offline.</b><br>Arquivo de ${sizeMB} MB não pode ser enviado pela nuvem.<br><span style="color:var(--text-muted);">Abra o app no PC e tente novamente na mesma rede Wi-Fi.</span></div>`;
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> ENVIAR';
+                    return;
+                }
+
+                // Localmente informamos o sucesso
+                if (pcOnline) {
+                    // Se foi direto pro PC, não precisa ficar na nuvem "aguardando"
+                    // mas podemos registrar se quiser histórico. Por enquanto, limpo.
+                } else {
+                    // Se foi via Cloud, sincronizamos os metadados no npoint
+                    const resFetch = await fetch(`https://api.npoint.io/${binId}`);
+                    const dbData = await resFetch.json();
+                    if (!dbData.sentHistory) dbData.sentHistory = [];
+                    dbData.sentHistory.unshift({ 
+                        name: selectedFile.name, 
+                        size: fileSize, 
+                        type: 'file', 
+                        timestamp: new Date().toISOString() 
+                    });
+                    if (dbData.sentHistory.length > 20) dbData.sentHistory = dbData.sentHistory.slice(0, 20);
+                    
+                    await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbData) });
+                    sentFilesList = dbData.sentHistory;
+                }
+
+                renderSentFiles();
+                clearFile();
+
+            } catch (e) {
+                statusEl.innerHTML = `<i class="fas fa-times-circle" style="color:#ff4d4d;"></i> Erro: ${e.message}`;
+                btn.disabled = false;
+            } finally {
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> ENVIAR';
+            }
+        }
+
+        // Upload direto ao servidor local com barra de progresso
+        function uploadDirect(file, serverUrl, statusEl) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', `${serverUrl}/upload-file`, true);
+                xhr.setRequestHeader('X-File-Name', encodeURIComponent(file.name));
+                xhr.setRequestHeader('X-File-Size', file.size);
+                xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const pct = Math.round((e.loaded / e.total) * 100);
+                        statusEl.innerHTML = `
+                            <div style="margin-bottom:6px;"><i class="fas fa-upload" style="color:#facc15;"></i> Enviando para o PC... ${pct}%</div>
+                            <div style="background:#222; border-radius:6px; height:8px; overflow:hidden;">
+                                <div style="background:var(--accent); height:100%; width:${pct}%; transition:width 0.3s;"></div>
+                            </div>
+                        `;
+                    }
+                };
+
+                xhr.onload = () => {
+                    try {
+                        const resp = JSON.parse(xhr.responseText);
+                        if (resp.success) {
+                            statusEl.innerHTML = `<i class="fas fa-check-circle" style="color:#4ade80;"></i> Arquivo enviado e aberto no PC!`;
+                            resolve(resp);
+                        } else {
+                            reject(new Error(resp.error || 'Erro no servidor'));
+                        }
+                    } catch(e) {
+                        reject(new Error('Resposta inválida do servidor'));
+                    }
+                };
+
+                xhr.onerror = () => reject(new Error('Falha na conexão com o PC. Verifique se está na mesma rede Wi-Fi.'));
+                xhr.ontimeout = () => reject(new Error('Timeout. Arquivo pode ser grande demais para a rede.'));
+                xhr.timeout = 5 * 60 * 1000; // 5 minutos
+
+                xhr.send(file);
+            });
+        }
+
+        // Fallback: upload via npoint (base64, até 2MB)
+        async function uploadViaCloud(file, statusEl) {
+            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Lendo arquivo...';
+            const base64 = await readFileAsBase64(file);
+            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Conectando à nuvem...';
+
+            const resFetch = await fetch(`https://api.npoint.io/${binId}`);
+            const dbData = await resFetch.json();
+            if (!dbData.pendingFiles) dbData.pendingFiles = [];
+
+            const fileEntry = {
+                name: file.name,
+                ext: file.name.split('.').pop().toLowerCase(),
+                base64,
+                size: file.size,
+                timestamp: new Date().toISOString()
+            };
+            dbData.pendingFiles.push(fileEntry);
+
+            await fetch(`https://api.npoint.io/${binId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dbData)
+            });
+
+            statusEl.innerHTML = '<i class="fas fa-check-circle" style="color:#4ade80;"></i> Arquivo enviado via nuvem!';
+        }
+
+        // Carregar lista persistente ao abrir a seção
+        renderSentFiles();
+
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Drag & drop
+        const dropZone = document.getElementById('fileDropZone');
+        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault(); dropZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                const input = document.getElementById('fileInput');
+                const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
+                handleFileSelected(input);
+            }
+        });
+
+        // ─────────────────────────────────────────
+        // SEÇÃO NOVO – Nova Música
+        // ─────────────────────────────────────────
+        function updateNameFromLyrics(textarea) {
+            const nameInput = document.getElementById('newSongName');
+            if (nameInput && !nameInput.value.trim()) {
+                const firstLine = textarea.value.trim().split('\n')[0];
+                if (firstLine && firstLine.length < 50) {
+                    nameInput.value = firstLine;
+                }
+            }
+        }
+
+        async function sendNewSongToCloud() {
+            const songNameInput = document.getElementById('newSongName');
+            const songLyricsInput = document.getElementById('newSongLyrics');
+            const statusEl = document.getElementById('newSongStatus');
+            const btn = document.getElementById('btnSendNewSong');
+
+            const songNameRaw = songNameInput.value.trim();
+            const lyricsRaw = songLyricsInput.value.trim();
+
+            if (!songNameRaw) { statusEl.innerHTML = '<span style="color:#facc15;">⚠️ Informe o nome da música.</span>'; return; }
+            if (!lyricsRaw) { statusEl.innerHTML = '<span style="color:#facc15;">⚠️ Cole a letra da música.</span>'; return; }
+
+            const lyrics = lyricsRaw.toUpperCase();
+            const songName = songNameRaw.toUpperCase();
+
+            // Determinar pasta (primeira letra da primeira frase do CORPO)
+            const firstBodyLine = lyrics.split('\n').find(l => l.trim().length > 0) || songName;
+            const firstChar = firstBodyLine.trim().charAt(0).toUpperCase();
+            const letter = /[A-Z]/.test(firstChar) ? firstChar : '#';
+
+            // Sanitizar nome para uso como filename
+            const safeTitle = songName.replace(/[<>:"/\\|?*]/g, '').trim().substring(0, 80);
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
+            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Conectando à nuvem...';
+
+            try {
+                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
+                const dbData = await resFetch.json();
+                if (!dbData.selections) dbData.selections = [];
+                if (!dbData.sentHistory) dbData.sentHistory = [];
+
+                dbData.selections.push({
+                    title: safeTitle,
+                    culto: 'Outros',
+                    data: new Date().toISOString().split('T')[0],
+                    dirigente: 'Portal Web',
+                    isNew: true,
+                    lyrics: lyrics, 
+                    letter,
+                    timestamp: new Date().toISOString()
+                });
+
+                // Registrar metadado do envio
+                dbData.sentHistory.unshift({ 
+                    name: safeTitle + " (Nova Música)", 
+                    size: lyrics.length, 
+                    type: 'song',
+                    timestamp: new Date().toISOString()
+                });
+                if (dbData.sentHistory.length > 20) dbData.sentHistory = dbData.sentHistory.slice(0, 20);
+
+                await fetch(`https://api.npoint.io/${binId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dbData)
+                });
+
+                sentFilesList = dbData.sentHistory;
+                renderSentFiles();
+
+                statusEl.innerHTML = `<span style="color:#4ade80;"><i class="fas fa-check-circle"></i> Música <b>${safeTitle}</b> enviada!</span>`;
+                
+                // Limpar campos
+                songNameInput.value = '';
+                songLyricsInput.value = '';
+                
+            } catch (e) {
+                console.error(e);
+                statusEl.innerHTML = `<span style="color:#ff4d4d;"><i class="fas fa-exclamation-circle"></i> Erro: ${e.message}</span>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> ENVIAR';
+            }
+        }
+
+        // ─────────────────────────────────────────
+        // MODAL search listener
+        // ─────────────────────────────────────────
+        document.getElementById('modalSearchInput').addEventListener('input', renderBrowser);
+
+        init();
+    </script>
+</body>
+</html>
