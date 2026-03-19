@@ -22,7 +22,8 @@
                 name: "ICNV Projeção",
                 short_name: "ICNV Projeção",
                 description: "Portal de Escolha Remota - ICNV",
-                start_url: "./index.html" + (id ? ("?id=" + id) : ""),
+                // v3.5.2: Usa location.href para garantir URL absoluta válida no blob manifest
+                start_url: window.location.href,
                 display: "standalone",
                 background_color: "#09090b",
                 theme_color: "#09090b",
@@ -41,7 +42,6 @@
     </script>
     <meta name="theme-color" content="#09090b">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1114,17 +1114,17 @@
         async function isLocalServerOnline(url) {
             if (!url) return false;
             
-            // v3.5.2: Se o portal estiver em HTTPS (ex: GitHub Pages), ele não pode disparar requests para HTTP local (Mixed Content)
+            // v3.5.2: Se o portal estiver em HTTPS (ex: GitHub Pages), ele NÃO pode disparar requests para HTTP local (Mixed Content)
+            // O navegador bloqueia isso imediatamente, gerando erros ruidosos no console.
             if (window.location.protocol === 'https:' && url.startsWith('http://')) {
-                // Não tentamos o fetch para evitar erro Mixed Content e CORS ruidoso no console.
-                // O sistema usará automaticamente o Cloud Bridge (npoint) que funciona sobre HTTPS.
                 return false; 
             }
 
             try {
                 const controller = new AbortController();
                 const timer = setTimeout(() => controller.abort(), 2000);
-                // Usamos mode: 'no-cors' para evitar erros de CORS na verificação simples de HEAD
+                // Usamos mode: 'no-cors' para evitar erros de CORS na verificação simples de HEAD.
+                // nota: mesmo com no-cors, o Mixed Content (HTTPS -> HTTP) ainda seria bloqueado, por isso a trava acima.
                 await fetch(`${url}/`, { signal: controller.signal, method: 'HEAD', mode: 'no-cors' });
                 clearTimeout(timer);
                 return true;
