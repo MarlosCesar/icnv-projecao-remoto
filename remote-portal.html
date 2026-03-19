@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICNV - Portal de Escolha Remota</title>
+    <title>ICNV Projeção - Portal Remoto</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <script>
         // Gera o manifest.json dinamicamente com o start_url correto incluindo o ?id= (v3.5.0)
         (function() {
@@ -14,7 +15,7 @@
                 : window.location.pathname;
             const manifest = {
                 name: "ICNV Projeção",
-                short_name: "ICNV Portal",
+                short_name: "ICNV Projeção",
                 description: "Portal de Escolha Remota de Louvores - ICNV",
                 start_url: startUrl,
                 display: "standalone",
@@ -33,7 +34,7 @@
             document.head.appendChild(link);
         })();
     </script>
-    <meta name="theme-color" content="#09090b">
+    <meta name="theme-color" content="#0084ff">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon-192.png">

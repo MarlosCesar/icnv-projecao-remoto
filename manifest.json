@@ -1,8 +1,8 @@
 {
-  "name": "ICNV Portal",
-  "short_name": "ICNV Portal",
+  "name": "ICNV Projeção",
+  "short_name": "ICNV Projeção",
   "description": "Portal de Escolha Remota de Louvores - ICNV",
-  "start_url": "remote_portal.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#09090b",
   "theme_color": "#0084ff",
