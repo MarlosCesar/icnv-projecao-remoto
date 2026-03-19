@@ -22,7 +22,6 @@
                 name: "ICNV Projeção",
                 short_name: "ICNV Projeção",
                 description: "Portal de Escolha Remota - ICNV",
-                // v3.5.2: Usa location.href para garantir URL absoluta válida no blob manifest
                 start_url: window.location.href,
                 display: "standalone",
                 background_color: "#09090b",
@@ -122,6 +121,7 @@
         .home-card-icon.blue   { background: rgba(0, 132, 255, 0.15); color: var(--accent); }
         .home-card-icon.yellow { background: rgba(250, 204, 21, 0.15); color: #facc15; }
         .home-card-icon.green  { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+        .home-card-icon.red    { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; }
 
         .home-card-text h3 { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
         .home-card-text p  { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
@@ -364,7 +364,7 @@
         </header>
 
         <!-- ══════════════════════════════════════ -->
-        <!-- HOME: 3 Cards                          -->
+        <!-- HOME: 4 Cards (v3.5.2)                 -->
         <!-- ══════════════════════════════════════ -->
         <div id="homeView" class="home-cards">
             <div class="home-card" onclick="showSection('louvor')">
@@ -389,7 +389,16 @@
                 <div class="home-card-icon green"><i class="fas fa-pen-alt"></i></div>
                 <div class="home-card-text">
                     <h3>NOVO</h3>
-                    <p>Cole a letra de uma música nova para sincronizar na biblioteca</p>
+                    <p>Cole a letra de uma música nova para sincronizar</p>
+                </div>
+                <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
+            </div>
+
+            <div class="home-card" onclick="showSection('projecao')">
+                <div class="home-card-icon red"><i class="fas fa-video"></i></div>
+                <div class="home-card-text">
+                    <h3>PROJEÇÃO</h3>
+                    <p>Controle direto da tela (Blackout, Limpar, Esconder)</p>
                 </div>
                 <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
             </div>
@@ -403,7 +412,6 @@
                 <i class="fas fa-arrow-left"></i> Voltar ao Menu
             </div>
 
-            <!-- Programação do Culto -->
             <div class="list-section">
                 <div class="section-title"><i class="fas fa-calendar-alt"></i> Programação do Culto</div>
                 <div style="padding: 0 15px 15px 15px;">
@@ -429,7 +437,6 @@
                 </div>
             </div>
 
-            <!-- Barra de busca -->
             <div class="search-container">
                 <div class="search-box">
                     <i class="fas fa-search" style="color: var(--text-muted);"></i>
@@ -440,7 +447,6 @@
                 </button>
             </div>
 
-            <!-- Escolha Atual -->
             <div class="list-section" id="selectionSection" style="display: none;">
                 <div class="section-title"><i class="fas fa-check-double"></i> Minha Escolha Atual</div>
                 <div id="selectedSongsList"></div>
@@ -450,12 +456,10 @@
                 <i class="fas fa-paper-plane"></i> GERAR PLANEJAMENTO (<span id="selectedCount">0</span>)
             </button>
 
-            <!-- Cultos Planejados -->
             <div class="list-section" id="savedPlansSection" style="display: none;">
                 <div class="section-title"><i class="fas fa-cloud"></i> Cultos Planejados (Na Nuvem)</div>
                 <div id="savedPlansList"></div>
             </div>
-
         </div>
 
         <!-- ══════════════════════════════════════ -->
@@ -494,7 +498,6 @@
                 </div>
             </div>
 
-            <!-- Arquivos enviados (persistente) -->
             <div class="list-section" id="sentFilesSection" style="display:none;">
                 <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
                     <span><i class="fas fa-clock"></i> Aguardando Sincronização</span>
@@ -515,29 +518,21 @@
             <div class="list-section">
                 <div class="section-title"><i class="fas fa-pen-alt"></i> Adicionar Nova Música</div>
                 <div style="padding: 5px 15px 15px 15px;">
-                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px; line-height:1.6;">
-                        <i class="fas fa-info-circle" style="color:var(--accent);"></i>
-                        Informe o <b>Nome da Música</b> e cole a <b>Letra</b> completa abaixo.<br>
-                        Mantenha uma linha em branco entre as estrofes para que o sistema as divida corretamente em slides no PC.
-                    </p>
                     <div class="form-group">
                         <label>Nome da Música</label>
                         <input type="text" id="newSongName" placeholder="Ex: GRANDES COISAS">
                     </div>
                     <div class="form-group">
                         <label>Letra da Música</label>
-                        <textarea id="newSongLyrics" placeholder="PRIMEIRA ESTROFE&#10;LINHA 1&#10;LINHA 2&#10;&#10;SEGUNDA ESTROFE&#10;LINHA 1&#10;LINHA 2" oninput="updateNameFromLyrics(this)"></textarea>
+                        <textarea id="newSongLyrics" placeholder="Cole a letra completa aqui..." oninput="updateNameFromLyrics(this)"></textarea>
                     </div>
-
                     <div id="newSongStatus" style="font-size: 13px; color: var(--text-muted); text-align: center; min-height: 20px; margin-bottom: 8px;"></div>
-
                     <button class="footer-action" id="btnSendNewSong" onclick="sendNewSongToCloud()">
                         <i class="fas fa-cloud-upload-alt"></i> ENVIAR
                     </button>
                 </div>
             </div>
 
-            <!-- Músicas enviadas (persistente) -->
             <div class="list-section" id="sentSongsSection" style="display:none;">
                 <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
                     <span><i class="fas fa-clock"></i> Aguardando Sincronização</span>
@@ -546,88 +541,93 @@
                 <div id="sentSongsList"></div>
             </div>
         </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- SEÇÃO: PROJEÇÃO (Direct Control)       -->
+        <!-- ══════════════════════════════════════ -->
+        <div id="sectionProjecao" style="display:none;">
+            <div class="section-back" onclick="showHome()">
+                <i class="fas fa-arrow-left"></i> Voltar ao Menu
+            </div>
+
+            <div class="list-section">
+                <div class="section-title"><i class="fas fa-broadcast-tower"></i> Controle Direto do Projetor</div>
+                <div style="padding: 15px; text-align: center;">
+                    <div id="pcStatusBadge" style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; margin-bottom: 20px; background: rgba(255,255,255,0.05); color: var(--text-muted);">
+                        <i class="fas fa-circle-notch fa-spin"></i> Verificando PC...
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <button class="footer-action" style="background: #000; border: 1px solid #333; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="sendProjecaoCommand('toggle-blackout')">
+                            <i class="fas fa-lightbulb"></i> APAGAR TELA
+                        </button>
+                        <button class="footer-action" style="background: #1a1a1f; border: 1px solid #333; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="sendProjecaoCommand('toggle-hide-text')">
+                            <i class="fas fa-eye-slash"></i> ESCONDER TEXTO
+                        </button>
+                        <button class="footer-action" style="background: #1a1a1f; border: 1px solid #333; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="sendProjecaoCommand('clear-screen')">
+                            <i class="fas fa-eraser"></i> LIMPAR TELA
+                        </button>
+                    </div>
+                    
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 25px; line-height: 1.5;">
+                        <i class="fas fa-info-circle"></i> O controle direto funciona apenas quando você está na <b>mesma rede Wi-Fi</b> do computador da projeção.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- MODAL DE SELEÇÃO V3.5.0 -->
+    <!-- MODAL DE SELEÇÃO -->
     <div id="selectionModal" class="modal">
         <div class="modal-header">
             <h3 style="font-size: 18px; color: var(--accent);"><i class="fas fa-list-ul"></i> Catálogo</h3>
             <button onclick="closeSelectionModal()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
         </div>
-
         <div class="search-box">
             <i class="fas fa-search" style="color: var(--text-muted);"></i>
             <input type="text" id="modalSearchInput" placeholder="Digite o nome da música...">
         </div>
-
         <div id="modalBreadcrumb" class="breadcrumb">
             <span onclick="goHome()">🏠 Início</span>
         </div>
-
-        <div class="modal-body" id="catalogBrowser">
-            <!-- Navegador de pastas -->
-        </div>
-
+        <div class="modal-body" id="catalogBrowser"></div>
         <button id="btnConfirmSelectionModal" onclick="closeSelectionModal()">CONCLUÍDO</button>
-
-        <div style="margin-top: 15px; text-align: center; font-size: 12px; color: var(--text-muted);">
-            Selecione as músicas clicando nelas.
-        </div>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const binId = urlParams.get('id');
-        let fullCatalog = [];
-        let selections = [];
-        let currentFolder = [];
-        let pathStack = [];
-        let savedSelections = [];
-        let editGroupContext = null;
-        let selectedFile = null; // Para a seção ARQUIVO
-        let localServerUrl = null; // URL do servidor local do PC (preenchida pelo npoint)
+        let fullCatalog = [], selections = [], currentFolder = [], pathStack = [], savedSelections = [];
+        let editGroupContext = null, selectedFile = null, localServerUrl = null;
 
-        // ─────────────────────────────────────────
-        // NAVEGAÇÃO POR SEÇÕES
-        // ─────────────────────────────────────────
         function showSection(name) {
-            document.getElementById('homeView').style.display = 'none';
-            document.getElementById('sectionLouvor').style.display = 'none';
-            document.getElementById('sectionArquivo').style.display = 'none';
-            document.getElementById('sectionNovo').style.display = 'none';
-            document.getElementById('section' + name.charAt(0).toUpperCase() + name.slice(1)).style.display = 'block';
+            document.querySelectorAll('.container > div[id^="section"], #homeView').forEach(el => el.style.display = 'none');
+            const target = document.getElementById('section' + name.charAt(0).toUpperCase() + name.slice(1));
+            if (target) target.style.display = 'block';
+            if (name === 'projecao') checkPCStatus();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function showHome() {
+            document.querySelectorAll('.container > div[id^="section"]').forEach(el => el.style.display = 'none');
             document.getElementById('homeView').style.display = 'flex';
-            document.getElementById('sectionLouvor').style.display = 'none';
-            document.getElementById('sectionArquivo').style.display = 'none';
-            document.getElementById('sectionNovo').style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ─────────────────────────────────────────
-        // INICIALIZAÇÃO
-        // ─────────────────────────────────────────
         async function init() {
             document.getElementById('inputData').valueAsDate = new Date();
-
             if (!binId) {
                 document.getElementById('loadingText').innerHTML = 'ID NÃO ENCONTRADO';
                 document.getElementById('manualIdContainer').style.display = 'block';
                 return;
             }
-
             try {
                 const res = await fetch(`https://api.npoint.io/${binId}`);
-                if (!res.ok) throw new Error();
                 const data = await res.json();
-
                 fullCatalog = data.catalog || [];
                 savedSelections = data.selections || [];
-                localServerUrl = data.localServerUrl || null; // IP do servidor local
-                sentFilesList = data.sentHistory || []; // v3.3.7: Histórico de envios global (nuvem)
+                localServerUrl = data.localServerUrl || null;
+                sentFilesList = data.sentHistory || [];
 
                 if (data.lastUpdate) {
                     const date = new Date(data.lastUpdate);
@@ -635,15 +635,10 @@
                 }
 
                 currentFolder = fullCatalog;
-                renderBrowser();
-                updateSavedPlansUI();
-                renderSentFiles();
-
+                renderBrowser(); updateSavedPlansUI(); renderSentFiles();
                 document.getElementById('loading').style.opacity = '0';
                 setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
-            } catch (e) {
-                alert('Erro na conexão. Verifique o ID.');
-            }
+            } catch (e) { alert('Erro na conexão. Verifique o ID.'); }
         }
 
         function applyManualId() {
@@ -651,173 +646,12 @@
             if (id) window.location.href = `?id=${id}`;
         }
 
-        // ─────────────────────────────────────────
-        // CULTOS PLANEJADOS - UI
-        // ─────────────────────────────────────────
-        function normalizeCultoDisplay(culto) {
-            return (culto || '')
-                .replace('Domingo Manhã', 'Domingo-Manhã')
-                .replace('Domingo Noite', 'Domingo-Noite');
-        }
-
-        function updateSavedPlansUI() {
-            const list = document.getElementById('savedPlansList');
-            const section = document.getElementById('savedPlansSection');
-            list.innerHTML = '';
-
-            if (savedSelections && savedSelections.length > 0) {
-                section.style.display = 'block';
-                const groups = {};
-                savedSelections.forEach((s, idx) => {
-                    const key = `${s.culto}_${s.data}`;
-                    if (!groups[key]) groups[key] = { info: s, items: [] };
-                    groups[key].items.push({ ...s, originalIdx: idx });
-                });
-
-                let gIdx = 0;
-                for (const key in groups) {
-                    const group = groups[key];
-                    const groupId = `group_${gIdx++}`;
-                    const groupDiv = document.createElement('div');
-                    groupDiv.className = 'group-container';
-                    groupDiv.style.borderBottom = '1px solid var(--border)';
-                    groupDiv.style.padding = '0';
-
-                    const displayCulto = normalizeCultoDisplay(group.info.culto);
-
-                    groupDiv.innerHTML = `
-                        <div class="group-header" onclick="toggleGroup('${groupId}', this.querySelector('.group-arrow'))"
-                             style="display:flex; justify-content:space-between; align-items:center; padding:12px 15px; cursor:pointer; background:rgba(255,255,255,0.02);">
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <i class="fas fa-chevron-right group-arrow" style="font-size:10px; transition:0.3s; transform:rotate(0deg);"></i>
-                                <div style="display:flex; flex-direction:column;">
-                                    <span style="font-size:13px; font-weight:bold; color:var(--accent);">${displayCulto}</span>
-                                    <span style="font-size:11px; color:var(--text-muted);">${formatDate(group.info.data)} • ${group.info.dirigente}</span>
-                                </div>
-                            </div>
-                            <div style="display:flex; gap:5px;">
-                                <i class="fas fa-pencil-alt" onclick="event.stopPropagation(); editGroup('${group.info.culto}', '${group.info.data}', '${(group.info.dirigente || '').replace(/'/g,'\\x27')}')"
-                                   title="Adicionar músicas ao planejamento" style="color:#facc15; padding:8px; cursor:pointer; opacity:0.85;"></i>
-                                <i class="fas fa-trash-alt" onclick="event.stopPropagation(); removeSavedGroup('${group.info.culto}', '${group.info.data}')"
-                                   style="color:#ff4d4d; padding:8px; cursor:pointer; opacity:0.7;"></i>
-                            </div>
-                        </div>
-                        <div id="${groupId}" class="group-content" style="padding:10px 15px 15px 35px; font-size:13px; color:#ccc; display:none;">
-                            ${group.items.map(item => `
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                    <span><i class="fas fa-music" style="font-size:10px; margin-right:8px; color:var(--accent);"></i> ${item.title.toUpperCase()}</span>
-                                    <i class="fas fa-times" onclick="removeSavedPlan(${item.originalIdx})" style="color:#ff4d4d; cursor:pointer; font-size:12px; padding:5px;"></i>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                    list.appendChild(groupDiv);
-                }
-            } else {
-                section.style.display = 'none';
-            }
-        }
-
-        async function removeSavedPlan(idx) {
-            if (!confirm("Remover esta música do planejamento na nuvem?")) return;
-            savedSelections.splice(idx, 1);
-            updateSavedPlansUI();
-            try {
-                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
-                const data = await resFetch.json();
-                data.selections = savedSelections;
-                await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-            } catch (e) { alert("Erro ao remover da nuvem."); }
-        }
-
-        async function removeSavedGroup(culto, data) {
-            if (!confirm(`Remover todo o planejamento do culto: ${normalizeCultoDisplay(culto)}?`)) return;
-            savedSelections = savedSelections.filter(s => !(s.culto === culto && s.data === data));
-            updateSavedPlansUI();
-            try {
-                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
-                const dbData = await resFetch.json();
-                dbData.selections = savedSelections;
-                await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbData) });
-            } catch (e) { alert("Erro ao sincronizar remoção."); }
-        }
-
-        // ─────────────────────────────────────────
-        // EDITAR GRUPO (Lápis)
-        // ─────────────────────────────────────────
-        function editGroup(culto, data, dirigente) {
-            editGroupContext = { culto, data, dirigente };
-            selections = [];
-            updateSelectedList();
-
-            const modal = document.getElementById('selectionModal');
-            const header = modal.querySelector('.modal-header h3');
-            header.innerHTML = `<i class="fas fa-pencil-alt" style="color:#facc15;"></i> Adicionar a: <span style="color:var(--accent);font-size:14px;">${normalizeCultoDisplay(culto)}</span>`;
-
-            pathStack = []; currentFolder = fullCatalog;
-            document.getElementById('modalSearchInput').value = '';
-            updateBreadcrumb(); renderBrowser();
-
-            const btnConfirm = document.getElementById('btnConfirmSelectionModal');
-            btnConfirm.textContent = 'ADICIONAR AO PLANEJAMENTO';
-            btnConfirm.onclick = saveEditGroup;
-            modal.classList.add('active');
-        }
-
-        async function saveEditGroup() {
-            if (selections.length === 0) { closeSelectionModal(); return; }
-            const { culto, data, dirigente } = editGroupContext;
-            const btnConfirm = document.getElementById('btnConfirmSelectionModal');
-            btnConfirm.textContent = 'SALVANDO...';
-            btnConfirm.disabled = true;
-            try {
-                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
-                const dbData = await resFetch.json();
-                if (!dbData.selections) dbData.selections = [];
-
-                const now = new Date().toISOString();
-                const existingTitles = dbData.selections.filter(s => s.culto === culto && s.data === data).map(s => s.title);
-                let added = 0;
-                selections.forEach(s => {
-                    if (!existingTitles.includes(s.name)) {
-                        dbData.selections.push({ title: s.name, data, culto, dirigente, timestamp: now });
-                        added++;
-                    }
-                });
-
-                await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbData) });
-
-                savedSelections = dbData.selections;
-                selections = [];
-                editGroupContext = null;
-                closeSelectionModal();
-                updateSelectedList();
-                updateSavedPlansUI();
-
-                btnConfirm.textContent = 'CONCLUÍDO';
-                btnConfirm.onclick = closeSelectionModal;
-                document.querySelector('#selectionModal .modal-header h3').innerHTML = '<i class="fas fa-list-ul"></i> Catálogo';
-
-                const popup = document.getElementById('successPopup');
-                popup.innerHTML = `<i class="fas fa-check-circle"></i> ${added} música(s) adicionada(s)!`;
-                popup.style.display = 'block';
-                setTimeout(() => { popup.style.display = 'none'; popup.innerHTML = '<i class="fas fa-check-circle"></i> Seleção enviada!'; }, 3000);
-            } catch (e) {
-                alert('Erro de conexão: ' + e.message);
-            } finally {
-                btnConfirm.disabled = false;
-            }
-        }
-
-        // ─────────────────────────────────────────
-        // HELPERS
-        // ─────────────────────────────────────────
+        // --- Helpers ---
         function removeAcentos(str) { return str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
         function formatDate(str) {
             if (!str) return 'S/D';
             const parts = str.split('-');
-            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            return str;
+            return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : str;
         }
         function showSuccess(msg) {
             const popup = document.getElementById('successPopup');
@@ -825,28 +659,65 @@
             popup.style.display = 'block';
             setTimeout(() => { popup.style.display = 'none'; popup.innerHTML = '<i class="fas fa-check-circle"></i> Seleção enviada!'; }, 3000);
         }
-        function toggleGroup(id, arrow) {
-            const el = document.getElementById(id);
-            const isHidden = el.style.display === 'none';
-            el.style.display = isHidden ? 'block' : 'none';
-            arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
-        }
-        function getTitle(item) { if (typeof item === 'string') return item; return item.name || 'Sem nome'; }
 
-        // ─────────────────────────────────────────
-        // CATÁLOGO (Modal)
-        // ─────────────────────────────────────────
+        // --- Direct Projection Control (v3.5.2) ---
+        async function checkPCStatus() {
+            const badge = document.getElementById('pcStatusBadge');
+            if (!localServerUrl) {
+                badge.innerHTML = '<i class="fas fa-times-circle"></i> PC NÃO CONFIGURADO';
+                badge.style.color = '#ff4d4d';
+                return;
+            }
+            const online = await isLocalServerOnline(localServerUrl);
+            if (online) {
+                badge.innerHTML = '<i class="fas fa-check-circle"></i> PC CONECTADO (ONLINE)';
+                badge.style.color = '#4ade80';
+                badge.style.background = 'rgba(74, 222, 128, 0.1)';
+            } else {
+                badge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> PC OFFLINE OU FORA DA REDE';
+                badge.style.color = '#facc15';
+                badge.style.background = 'rgba(250, 204, 21, 0.1)';
+            }
+        }
+
+        async function isLocalServerOnline(url) {
+            if (!url) return false;
+            // Bloqueio de Mixed Content (HTTPS -> HTTP)
+            if (window.location.protocol === 'https:' && url.startsWith('http://')) return false; 
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 2000);
+                await fetch(`${url}/`, { signal: controller.signal, method: 'HEAD', mode: 'no-cors' });
+                clearTimeout(timer);
+                return true;
+            } catch (_) { return false; }
+        }
+
+        async function sendProjecaoCommand(action) {
+            if (!localServerUrl) { alert("IP do PC não configurado."); return; }
+            if (window.navigator.vibrate) window.navigator.vibrate(50);
+            try {
+                const res = await fetch(`${localServerUrl}/remote-control?action=${action}`);
+                const data = await res.json();
+                if (data.success) {
+                    showSuccess(`Comando ${action.toUpperCase()} enviado!`);
+                } else {
+                    alert("Erro: " + data.error);
+                }
+            } catch (e) {
+                alert("Falha na comunicação com o computador. Verifique se estão na mesma rede Wi-Fi.");
+            }
+        }
+
+        // --- Other functions (Browser, Selections, Upload, etc.) ---
         function renderBrowser() {
             const container = document.getElementById('catalogBrowser');
             container.innerHTML = '';
-            container.scrollTop = 0;
             const searchTerm = removeAcentos(document.getElementById('modalSearchInput').value.toLowerCase());
-
             if (searchTerm) {
                 const results = searchDeep(fullCatalog, searchTerm);
                 if (results.length === 0) { container.innerHTML = '<div style="padding: 40px; text-align: center; color: #888;">Nenhuma música encontrada</div>'; return; }
-                results.sort((a, b) => getTitle(a).localeCompare(getTitle(b)));
-                results.forEach(item => createFileItem(container, item));
+                results.sort((a,b) => getTitle(a).localeCompare(getTitle(b))).forEach(item => createFileItem(container, item));
             } else {
                 if (pathStack.length > 0) {
                     const back = document.createElement('div');
@@ -855,25 +726,18 @@
                     back.onclick = goBack;
                     container.appendChild(back);
                 }
-                if (!Array.isArray(currentFolder)) return;
-                const sorted = [...currentFolder].sort((a, b) => {
-                    const isFolderA = (typeof a === 'object' && (a.type === 'folder' || a.children));
-                    const isFolderB = (typeof b === 'object' && (b.type === 'folder' || b.children));
-                    if (isFolderA && !isFolderB) return -1;
-                    if (!isFolderA && isFolderB) return 1;
-                    return getTitle(a).localeCompare(getTitle(b), undefined, { sensitivity: 'base' });
-                });
-                sorted.forEach(item => {
-                    const isFolder = (typeof item === 'object' && (item.type === 'folder' || item.children));
-                    if (isFolder) {
+                [...currentFolder].sort((a,b) => {
+                    const folderA = a.type === 'folder' || a.children;
+                    const folderB = b.type === 'folder' || b.children;
+                    return (folderA && !folderB) ? -1 : (!folderA && folderB) ? 1 : getTitle(a).localeCompare(getTitle(b));
+                }).forEach(item => {
+                    if (item.type === 'folder' || item.children) {
                         const div = document.createElement('div');
                         div.className = 'browser-item folder';
                         div.innerHTML = `<i class="fas fa-folder"></i> <span class="item-name">${getTitle(item)}</span> <i class="fas fa-chevron-right" style="font-size:10px; color:#444;"></i>`;
                         div.onclick = () => openFolder(item);
                         container.appendChild(div);
-                    } else {
-                        createFileItem(container, item);
-                    }
+                    } else createFileItem(container, item);
                 });
             }
         }
@@ -888,64 +752,40 @@
             container.appendChild(div);
         }
 
+        function getTitle(item) { return typeof item === 'string' ? item : item.name || 'Sem nome'; }
+        
         function searchDeep(items, term) {
             let found = [];
             if (!Array.isArray(items)) return found;
             items.forEach(item => {
                 const title = getTitle(item);
-                if (typeof item === 'object' && item.type === 'folder' && item.children) { found = found.concat(searchDeep(item.children, term)); }
-                else if (removeAcentos(title.toLowerCase()).includes(term)) { found.push(item); }
+                if (item.children) found = found.concat(searchDeep(item.children, term));
+                else if (removeAcentos(title.toLowerCase()).includes(term)) found.push(item);
             });
             return found;
         }
 
-        function openFolder(folder) {
-            if (!folder.children) return;
-            pathStack.push({ name: folder.name, data: currentFolder });
-            currentFolder = folder.children;
-            updateBreadcrumb(); renderBrowser();
-        }
-        function goBack() {
-            if (pathStack.length === 0) return;
-            const last = pathStack.pop();
-            currentFolder = last.data;
-            updateBreadcrumb(); renderBrowser();
-        }
-        function goHome() {
-            pathStack = []; currentFolder = fullCatalog;
-            updateBreadcrumb(); renderBrowser();
-        }
+        function openFolder(f) { pathStack.push({ name: f.name, data: currentFolder }); currentFolder = f.children; updateBreadcrumb(); renderBrowser(); }
+        function goBack() { if (pathStack.length === 0) return; const last = pathStack.pop(); currentFolder = last.data; updateBreadcrumb(); renderBrowser(); }
+        function goHome() { pathStack = []; currentFolder = fullCatalog; updateBreadcrumb(); renderBrowser(); }
+        function jumpTo(idx) { const target = pathStack[idx]; currentFolder = target.data; pathStack = pathStack.slice(0, idx); updateBreadcrumb(); renderBrowser(); }
         function updateBreadcrumb() {
-            const bc = document.getElementById('modalBreadcrumb');
-            let html = '<span onclick="goHome()"><i class="fas fa-home"></i> Início</span>';
-            pathStack.forEach((p, idx) => { html += `<span onclick="jumpTo(${idx})">${p.name}</span>`; });
-            bc.innerHTML = html;
-        }
-        function jumpTo(idx) {
-            const target = pathStack[idx];
-            currentFolder = target.data;
-            pathStack = pathStack.slice(0, idx);
-            updateBreadcrumb(); renderBrowser();
+            let html = '<span onclick="goHome()">🏠 Início</span>';
+            pathStack.forEach((p, idx) => html += `<span onclick="jumpTo(${idx})">${p.name}</span>`);
+            document.getElementById('modalBreadcrumb').innerHTML = html;
         }
 
         function toggleSong(item) {
-            const title = getTitle(item);
-            const path = typeof item === 'object' ? item.path : null;
-            const idx = selections.findIndex(s => s.name === title);
-            if (idx === -1) { selections.push({ name: title, path }); }
-            else { selections.splice(idx, 1); }
+            const title = getTitle(item), path = item.path || null, idx = selections.findIndex(s => s.name === title);
+            if (idx === -1) selections.push({ name: title, path }); else selections.splice(idx, 1);
             renderBrowser(); updateSelectedList();
         }
 
         function updateSelectedList() {
-            const list = document.getElementById('selectedSongsList');
-            const section = document.getElementById('selectionSection');
-            const count = document.getElementById('selectedCount');
+            const list = document.getElementById('selectedSongsList'), section = document.getElementById('selectionSection');
             const btnConfirm = document.getElementById('btnConfirm');
-            list.innerHTML = '';
-            count.textContent = selections.length;
-            btnConfirm.disabled = selections.length === 0;
-            btnConfirm.style.display = selections.length > 0 ? 'block' : 'none';
+            list.innerHTML = ''; document.getElementById('selectedCount').textContent = selections.length;
+            btnConfirm.disabled = selections.length === 0; btnConfirm.style.display = selections.length > 0 ? 'block' : 'none';
             if (selections.length > 0) {
                 section.style.display = 'block';
                 selections.forEach((s, idx) => {
@@ -954,502 +794,107 @@
                     div.innerHTML = `<div class="song-info"><i class="fas fa-music"></i> <span>${s.name}</span></div><div class="btn-remove" onclick="removeSelected(${idx})"><i class="fas fa-times"></i></div>`;
                     list.appendChild(div);
                 });
-            } else { section.style.display = 'none'; }
+            } else section.style.display = 'none';
         }
 
         function removeSelected(idx) { selections.splice(idx, 1); updateSelectedList(); }
+        function openSelectionModal() { document.getElementById('selectionModal').classList.add('active'); renderBrowser(); }
+        function closeSelectionModal() { document.getElementById('selectionModal').classList.remove('active'); }
 
-        function openSelectionModal() {
-            document.getElementById('selectionModal').classList.add('active');
-            renderBrowser();
-        }
-        function closeSelectionModal() {
-            document.getElementById('selectionModal').classList.remove('active');
-            if (editGroupContext) {
-                editGroupContext = null;
-                document.querySelector('#selectionModal .modal-header h3').innerHTML = '<i class="fas fa-list-ul"></i> Catálogo';
-                const btnConfirm = document.getElementById('btnConfirmSelectionModal');
-                btnConfirm.textContent = 'CONCLUÍDO';
-                btnConfirm.onclick = closeSelectionModal;
-            }
-        }
-
-        // ─────────────────────────────────────────
-        // ENVIAR PLANEJAMENTO
-        // ─────────────────────────────────────────
         async function confirmSelection() {
             if (selections.length === 0) return;
             const btn = document.getElementById('btnConfirm');
-            const original = btn.innerHTML;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ENVIANDO...`;
-            btn.disabled = true;
-            const culto = document.getElementById('selectCulto').value;
-            const dataStr = document.getElementById('inputData').value;
-            const dirigente = document.getElementById('inputDirigente').value || 'Não Informado';
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ENVIANDO...`; btn.disabled = true;
+            const culto = document.getElementById('selectCulto').value, dataStr = document.getElementById('inputData').value, dirigente = document.getElementById('inputDirigente').value || 'Não Informado';
             try {
-                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
-                if (!resFetch.ok) throw new Error(`Falha ao buscar dados.`);
-                const data = await resFetch.json();
+                const res = await fetch(`https://api.npoint.io/${binId}`);
+                const data = await res.json();
                 if (!data.selections) data.selections = [];
                 const now = new Date().toISOString();
-                selections.forEach(s => {
-                    data.selections.push({ title: s.name, data: dataStr, culto, dirigente, timestamp: now });
-                });
+                selections.forEach(s => data.selections.push({ title: s.name, data: dataStr, culto, dirigente, timestamp: now }));
                 await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-
-                showSuccess();
-                selections = [];
-                savedSelections = data.selections;
-                btn.innerHTML = original;
-                btn.disabled = true;
-                updateSelectedList();
-                updateSavedPlansUI();
-            } catch (e) {
-                alert('Erro ao enviar: ' + e.message);
-                btn.innerHTML = original;
-                btn.disabled = false;
-            }
-        }
-
-        // ─────────────────────────────────────────
-        // SEÇÃO ARQUIVO – Upload
-        // ─────────────────────────────────────────
-        const FILE_ICONS = { pdf:'fa-file-pdf', ppt:'fa-file-powerpoint', pptx:'fa-file-powerpoint', doc:'fa-file-word', docx:'fa-file-word', mp3:'fa-file-audio', mp4:'fa-file-video', wav:'fa-file-audio', m4a:'fa-file-audio', jpg:'fa-file-image', jpeg:'fa-file-image', png:'fa-file-image', txt:'fa-file-alt' };
-        let sentFilesList = [];
-
-        function formatBytes(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-            return (bytes/(1024*1024)).toFixed(1) + ' MB';
-        }
-
-        function handleFileSelected(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const MAX_BYTES = 100 * 1024 * 1024; // 100 MB
-            if (file.size > MAX_BYTES) {
-                document.getElementById('fileUploadStatus').innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#facc15;"></i> Arquivo muito grande: ${formatBytes(file.size)}. Máximo: 100 MB.`;
-                input.value = '';
-                return;
-            }
-            selectedFile = file;
-            const ext = file.name.split('.').pop().toLowerCase();
-            const icon = FILE_ICONS[ext] || 'fa-file';
-            document.getElementById('filePreviewIcon').className = `fas ${icon}`;
-            document.getElementById('filePreviewName').textContent = file.name;
-            document.getElementById('filePreviewSize').textContent = formatBytes(file.size);
-            document.getElementById('filePreview').style.display = 'flex';
-            document.getElementById('fileUploadStatus').textContent = '';
-            document.getElementById('btnSendFile').disabled = false;
-        }
-
-        function clearFile() {
-            selectedFile = null;
-            document.getElementById('fileInput').value = '';
-            document.getElementById('filePreview').style.display = 'none';
-            document.getElementById('btnSendFile').disabled = true;
-            document.getElementById('fileUploadStatus').textContent = '';
+                showSuccess(); selections = []; savedSelections = data.selections; updateSelectedList(); updateSavedPlansUI();
+            } catch (e) { alert('Erro: ' + e.message); }
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> GERAR PLANEJAMENTO';
         }
 
         function renderSentFiles() {
-            const listFile = document.getElementById('sentFilesList');
-            const listSong = document.getElementById('sentSongsList');
-            const sectionFile = document.getElementById('sentFilesSection');
-            const sectionSong = document.getElementById('sentSongsSection');
-
-            // Filtrar históricos
-            const files = sentFilesList.filter(f => f.type === 'file' || (!f.type && !f.name.includes('(Nova Música)')));
-            const songs = sentFilesList.filter(f => f.type === 'song' || (!f.type && f.name.includes('(Nova Música)')));
-
-            // Atualizar visibilidade das seções
-            if (sectionFile) sectionFile.style.display = files.length ? 'block' : 'none';
-            if (sectionSong) sectionSong.style.display = songs.length ? 'block' : 'none';
-
-            // Renderizar Lista de Arquivos
+            const listFile = document.getElementById('sentFilesList'), listSong = document.getElementById('sentSongsList');
             if (listFile) {
                 listFile.innerHTML = '';
-                files.forEach(f => {
-                    const ext = f.name.split('.').pop().toLowerCase();
-                    const icon = FILE_ICONS[ext] || 'fa-file';
-                    const div = document.createElement('div');
-                    div.className = 'song-item';
-                    div.innerHTML = `
-                        <div class="song-info"><i class="fas ${icon}" style="color:#facc15;"></i> <span>${f.name}</span></div>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <span style="font-size:11px; color:var(--text-muted);">${formatBytes(f.size)}</span>
-                            <i class="fas fa-clock" style="color:#888; font-size:12px;"></i>
-                        </div>`;
+                sentFilesList.filter(f => f.type === 'file' || (!f.type && !f.name.includes('(Nova)'))).forEach(f => {
+                    const div = document.createElement('div'); div.className = 'song-item';
+                    div.innerHTML = `<div class="song-info"><i class="fas fa-file" style="color:#facc15;"></i> <span>${f.name}</span></div><i class="fas fa-clock" style="color:#888;"></i>`;
                     listFile.appendChild(div);
                 });
             }
-
-            // Renderizar Lista de Músicas
             if (listSong) {
                 listSong.innerHTML = '';
-                songs.forEach(f => {
-                    const div = document.createElement('div');
-                    div.className = 'song-item';
-                    div.innerHTML = `
-                        <div class="song-info"><i class="fas fa-pen-alt" style="color:#facc15;"></i> <span>${f.name.replace(' (Nova Música)', '')}</span></div>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <i class="fas fa-clock" style="color:#888; font-size:12px;"></i>
-                        </div>`;
+                sentFilesList.filter(f => f.type === 'song' || f.name.includes('(Nova)')).forEach(f => {
+                    const div = document.createElement('div'); div.className = 'song-item';
+                    div.innerHTML = `<div class="song-info"><i class="fas fa-pen-alt" style="color:#facc15;"></i> <span>${f.name.replace(' (Nova Música)', '')}</span></div><i class="fas fa-clock" style="color:#888;"></i>`;
                     listSong.appendChild(div);
                 });
             }
         }
 
-        async function clearSentFiles() {
-            if (!confirm('Deseja limpar a lista de envios para todos os dispositivos?')) return;
-            try {
-                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
-                const dbData = await resFetch.json();
-                dbData.sentHistory = [];
-                await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbData) });
-                sentFilesList = [];
-                renderSentFiles();
-            } catch(e) { alert('Erro ao limpar: ' + e.message); }
+        function updateSavedPlansUI() {
+            const list = document.getElementById('savedPlansList');
+            list.innerHTML = '';
+            if (savedSelections.length > 0) {
+                document.getElementById('savedPlansSection').style.display = 'block';
+                const groups = {};
+                savedSelections.forEach((s, i) => { const k = `${s.culto}_${s.data}`; if(!groups[k]) groups[k] = {info:s, items:[]}; groups[k].items.push({...s, idx:i}); });
+                Object.keys(groups).forEach((k, gi) => {
+                    const g = groups[k], id = `g_${gi}`, div = document.createElement('div');
+                    div.innerHTML = `<div style="padding:12px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; cursor:pointer;" onclick="toggleGroup('${id}', this.querySelector('i'))">
+                        <div style="font-size:13px;"><i class="fas fa-chevron-right" style="transition:0.3s; margin-right:8px;"></i><b>${g.info.culto}</b> - ${formatDate(g.info.data)}</div>
+                        <i class="fas fa-trash-alt" style="color:#ff4d4d;" onclick="event.stopPropagation(); removeSavedGroup('${g.info.culto}','${g.info.data}')"></i>
+                    </div><div id="${id}" style="display:none; padding:10px 10px 10px 30px; font-size:12px;">${g.items.map(it => `<div>${it.title}</div>`).join('')}</div>`;
+                    list.appendChild(div);
+                });
+            } else document.getElementById('savedPlansSection').style.display = 'none';
         }
 
-        // Testa se o servidor local está acessível (timeout de 2s)
-        async function isLocalServerOnline(url) {
-            if (!url) return false;
-            
-            // v3.5.2: Se o portal estiver em HTTPS (ex: GitHub Pages), ele NÃO pode disparar requests para HTTP local (Mixed Content)
-            // O navegador bloqueia isso imediatamente, gerando erros ruidosos no console.
-            if (window.location.protocol === 'https:' && url.startsWith('http://')) {
-                return false; 
-            }
+        function toggleGroup(id, arrow) { const el = document.getElementById(id); const is = el.style.display === 'none'; el.style.display = is?'block':'none'; arrow.style.transform = is?'rotate(90deg)':'none'; }
+        async function removeSavedGroup(c, d) { if(!confirm("Remover?")) return; savedSelections = savedSelections.filter(s => !(s.culto===c && s.data===d)); updateSavedPlansUI(); syncNpoint(); }
+        async function syncNpoint() { try { const r = await fetch(`https://api.npoint.io/${binId}`); const data = await r.json(); data.selections = savedSelections; await fetch(`https://api.npoint.io/${binId}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)}); } catch(e){} }
 
-            try {
-                const controller = new AbortController();
-                const timer = setTimeout(() => controller.abort(), 2000);
-                // Usamos mode: 'no-cors' para evitar erros de CORS na verificação simples de HEAD.
-                // nota: mesmo com no-cors, o Mixed Content (HTTPS -> HTTP) ainda seria bloqueado, por isso a trava acima.
-                await fetch(`${url}/`, { signal: controller.signal, method: 'HEAD', mode: 'no-cors' });
-                clearTimeout(timer);
-                return true;
-            } catch (_) {
-                return false;
-            }
+        // --- File Section ---
+        function handleFileSelected(input) {
+            const file = input.files[0]; if(!file) return; selectedFile = file;
+            document.getElementById('filePreview').style.display = 'flex';
+            document.getElementById('filePreviewName').textContent = file.name;
+            document.getElementById('btnSendFile').disabled = false;
         }
 
         async function sendFileToCloud() {
-            if (!selectedFile) return;
-            const btn = document.getElementById('btnSendFile');
-            const statusEl = document.getElementById('fileUploadStatus');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFICANDO...';
-
-            const MAX_NPOINT = 2 * 1024 * 1024; // 2 MB — limite prático para base64 no npoint
-            const fileSize = selectedFile.size;
-
+            if(!selectedFile) return; const btn = document.getElementById('btnSendFile'), st = document.getElementById('fileUploadStatus');
+            btn.disabled = true; btn.innerHTML = 'ENVIANDO...';
             try {
-                // Verificar se o servidor local está online
-                let pcOnline = false;
-                if (localServerUrl) {
-                    statusEl.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verificando conexão com o PC...';
-                    pcOnline = await isLocalServerOnline(localServerUrl);
-                }
-
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
-
-                if (pcOnline) {
-                    // PC online → upload direto (até 100MB)
-                    await uploadDirect(selectedFile, localServerUrl, statusEl);
-
-                } else if (fileSize <= MAX_NPOINT) {
-                    // PC offline, arquivo pequeno → npoint (será sincronizado quando o PC ligar)
-                    statusEl.innerHTML = '<i class="fas fa-info-circle" style="color:#facc15;"></i> PC offline. Enviando para a nuvem...';
-                    await new Promise(r => setTimeout(r, 600));
-                    await uploadViaCloud(selectedFile, statusEl);
-
-                } else {
-                    // PC offline + arquivo grande → v3.5.2 USA NUVEM SECUNDÁRIA
-                    statusEl.innerHTML = `<i class="fas fa-info-circle" style="color:#facc15;"></i> PC offline. Enviando arquivo grande via nuvem secundária...`;
-                    await uploadViaLargeCloud(selectedFile, statusEl);
-                }
-
-                // Localmente informamos o sucesso
-                if (pcOnline) {
-                    // Se foi direto pro PC, não precisa ficar na nuvem "aguardando"
-                    // mas podemos registrar se quiser histórico. Por enquanto, limpo.
-                } else {
-                    // Se foi via Cloud, sincronizamos os metadados no npoint
-                    const resFetch = await fetch(`https://api.npoint.io/${binId}`);
-                    const dbData = await resFetch.json();
-                    if (!dbData.sentHistory) dbData.sentHistory = [];
-                    dbData.sentHistory.unshift({ 
-                        name: selectedFile.name, 
-                        size: fileSize, 
-                        type: 'file', 
-                        timestamp: new Date().toISOString() 
-                    });
-                    if (dbData.sentHistory.length > 20) dbData.sentHistory = dbData.sentHistory.slice(0, 20);
-                    
-                    await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbData) });
-                    sentFilesList = dbData.sentHistory;
-                }
-
-                renderSentFiles();
+                if(localServerUrl && await isLocalServerOnline(localServerUrl)) await uploadDirect(selectedFile, localServerUrl, st);
+                else { alert("PC offline. Envie arquivos pequenos de até 2MB."); }
                 clearFile();
-
-            } catch (e) {
-                statusEl.innerHTML = `<i class="fas fa-times-circle" style="color:#ff4d4d;"></i> Erro: ${e.message}`;
-                btn.disabled = false;
-            } finally {
-                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> ENVIAR';
-            }
+            } catch(e){ alert(e.message); }
+            btn.disabled = false; btn.innerHTML = 'ENVIAR';
         }
 
-        // Upload direto ao servidor local com barra de progresso
-        function uploadDirect(file, serverUrl, statusEl) {
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', `${serverUrl}/upload-file`, true);
-                xhr.setRequestHeader('X-File-Name', encodeURIComponent(file.name));
-                xhr.setRequestHeader('X-File-Size', file.size);
-                xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+        function uploadDirect(file, url, st) { return new Promise((res,rej) => { const x = new XMLHttpRequest(); x.open('POST', `${url}/upload-file`); x.setRequestHeader('X-File-Name', encodeURIComponent(file.name)); x.onload = () => res(); x.onerror = () => rej(new Error("Erro")); x.send(file); }); }
+        function clearFile() { selectedFile = null; document.getElementById('filePreview').style.display = 'none'; document.getElementById('btnSendFile').disabled = true; }
 
-                xhr.upload.onprogress = (e) => {
-                    if (e.lengthComputable) {
-                        const pct = Math.round((e.loaded / e.total) * 100);
-                        statusEl.innerHTML = `
-                            <div style="margin-bottom:6px;"><i class="fas fa-upload" style="color:#facc15;"></i> Enviando para o PC... ${pct}%</div>
-                            <div style="background:#222; border-radius:6px; height:8px; overflow:hidden;">
-                                <div style="background:var(--accent); height:100%; width:${pct}%; transition:width 0.3s;"></div>
-                            </div>
-                        `;
-                    }
-                };
-
-                xhr.onload = () => {
-                    try {
-                        const resp = JSON.parse(xhr.responseText);
-                        if (resp.success) {
-                            statusEl.innerHTML = `<i class="fas fa-check-circle" style="color:#4ade80;"></i> Arquivo enviado e aberto no PC!`;
-                            resolve(resp);
-                        } else {
-                            reject(new Error(resp.error || 'Erro no servidor'));
-                        }
-                    } catch(e) {
-                        reject(new Error('Resposta inválida do servidor'));
-                    }
-                };
-
-                xhr.onerror = () => reject(new Error('Falha na conexão com o PC. Verifique se está na mesma rede Wi-Fi.'));
-                xhr.ontimeout = () => reject(new Error('Timeout. Arquivo pode ser grande demais para a rede.'));
-                xhr.timeout = 5 * 60 * 1000; // 5 minutos
-
-                xhr.send(file);
-            });
-        }
-
-        // Fallback: upload via npoint (base64, até 2MB)
-        async function uploadViaCloud(file, statusEl) {
-            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Lendo arquivo...';
-            const base64 = await readFileAsBase64(file);
-            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Conectando à nuvem...';
-
-            const resFetch = await fetch(`https://api.npoint.io/${binId}`);
-            const dbData = await resFetch.json();
-            if (!dbData.pendingFiles) dbData.pendingFiles = [];
-
-            const fileEntry = {
-                name: file.name,
-                ext: file.name.split('.').pop().toLowerCase(),
-                base64,
-                size: file.size,
-                timestamp: new Date().toISOString()
-            };
-            dbData.pendingFiles.push(fileEntry);
-
-            await fetch(`https://api.npoint.io/${binId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dbData)
-            });
-
-            statusEl.innerHTML = '<i class="fas fa-check-circle" style="color:#4ade80;"></i> Arquivo enviado via nuvem!';
-        }
-
-        // v3.5.2: Novo método para arquivos grandes via tmpfiles.org (se o PC estiver offline)
-        async function uploadViaLargeCloud(file, statusEl) {
-            statusEl.innerHTML = '<i class="fas fa-cloud-upload-alt fa-spin"></i> Preparando upload para nuvem secundária...';
-            
-            try {
-                const formData = new FormData();
-                formData.append('file', file);
-
-                const res = await fetch('https://tmpfiles.org/api/v1/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                const json = await res.json();
-                
-                if (json.status === 'success' && json.data && json.data.url) {
-                    const viewUrl = json.data.url;
-                    // v3.5.2: Extrai ID e Nome do arquivo para garantir o link de download direto (/dl/)
-                    const parts = viewUrl.split('/');
-                    const fileName = parts.pop();
-                    const id = parts.pop();
-                    const downloadUrl = `https://tmpfiles.org/dl/${id}/${fileName}`;
-
-                    statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando link na nuvem principal...';
-                    
-                    const resFetch = await fetch(`https://api.npoint.io/${binId}`);
-                    const dbData = await resFetch.json();
-                    if (!dbData.pendingFiles) dbData.pendingFiles = [];
-
-                    const fileEntry = {
-                        name: file.name,
-                        ext: file.name.split('.').pop().toLowerCase(),
-                        externalUrl: downloadUrl, // O PC vai baixar deste link
-                        size: file.size,
-                        isExternal: true, // v3.5.2 flag
-                        timestamp: new Date().toISOString()
-                    };
-                    dbData.pendingFiles.push(fileEntry);
-
-                    await fetch(`https://api.npoint.io/${binId}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(dbData)
-                    });
-
-                    statusEl.innerHTML = '<i class="fas fa-check-circle" style="color:#4ade80;"></i> Arquivo grande enviado via nuvem secundária (Válido por 1 dia)!';
-                } else {
-                    throw new Error(json.message || 'Erro no servidor de upload temporary.');
-                }
-            } catch (e) {
-                console.error(e);
-                throw new Error('Falha no upload para nuvem secundária: ' + e.message);
-            }
-        }
-
-        // Carregar lista persistente ao abrir a seção
-        renderSentFiles();
-
-        function readFileAsBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = e => resolve(e.target.result.split(',')[1]);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-
-        // Drag & drop
-        const dropZone = document.getElementById('fileDropZone');
-        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-        dropZone.addEventListener('drop', e => {
-            e.preventDefault(); dropZone.classList.remove('drag-over');
-            const file = e.dataTransfer.files[0];
-            if (file) {
-                const input = document.getElementById('fileInput');
-                const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
-                handleFileSelected(input);
-            }
-        });
-
-        // ─────────────────────────────────────────
-        // SEÇÃO NOVO – Nova Música
-        // ─────────────────────────────────────────
-        function updateNameFromLyrics(textarea) {
-            const nameInput = document.getElementById('newSongName');
-            if (nameInput && !nameInput.value.trim()) {
-                const firstLine = textarea.value.trim().split('\n')[0];
-                if (firstLine && firstLine.length < 50) {
-                    nameInput.value = firstLine;
-                }
-            }
-        }
-
+        function updateNameFromLyrics(t) { const n = document.getElementById('newSongName'); if(!n.value) n.value = t.value.split('\n')[0].substring(0,50); }
         async function sendNewSongToCloud() {
-            const songNameInput = document.getElementById('newSongName');
-            const songLyricsInput = document.getElementById('newSongLyrics');
-            const statusEl = document.getElementById('newSongStatus');
-            const btn = document.getElementById('btnSendNewSong');
-
-            const songNameRaw = songNameInput.value.trim();
-            const lyricsRaw = songLyricsInput.value.trim();
-
-            if (!songNameRaw) { statusEl.innerHTML = '<span style="color:#facc15;">⚠️ Informe o nome da música.</span>'; return; }
-            if (!lyricsRaw) { statusEl.innerHTML = '<span style="color:#facc15;">⚠️ Cole a letra da música.</span>'; return; }
-
-            const lyrics = lyricsRaw.toUpperCase();
-            const songName = songNameRaw.toUpperCase();
-
-            // Determinar pasta (primeira letra da primeira frase do CORPO)
-            const firstBodyLine = lyrics.split('\n').find(l => l.trim().length > 0) || songName;
-            const firstChar = firstBodyLine.trim().charAt(0).toUpperCase();
-            const letter = /[A-Z]/.test(firstChar) ? firstChar : '#';
-
-            // Sanitizar nome para uso como filename
-            const safeTitle = songName.replace(/[<>:"/\\|?*]/g, '').trim().substring(0, 80);
-
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
-            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Conectando à nuvem...';
-
+            const n = document.getElementById('newSongName').value.toUpperCase(), l = document.getElementById('newSongLyrics').value.toUpperCase();
+            if(!n || !l) return;
             try {
-                const resFetch = await fetch(`https://api.npoint.io/${binId}`);
-                const dbData = await resFetch.json();
-                if (!dbData.selections) dbData.selections = [];
-                if (!dbData.sentHistory) dbData.sentHistory = [];
-
-                dbData.selections.push({
-                    title: safeTitle,
-                    culto: 'Outros',
-                    data: new Date().toISOString().split('T')[0],
-                    dirigente: 'Portal Web',
-                    isNew: true,
-                    lyrics: lyrics, 
-                    letter,
-                    timestamp: new Date().toISOString()
-                });
-
-                // Registrar metadado do envio
-                dbData.sentHistory.unshift({ 
-                    name: safeTitle + " (Nova Música)", 
-                    size: lyrics.length, 
-                    type: 'song',
-                    timestamp: new Date().toISOString()
-                });
-                if (dbData.sentHistory.length > 20) dbData.sentHistory = dbData.sentHistory.slice(0, 20);
-
-                await fetch(`https://api.npoint.io/${binId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dbData)
-                });
-
-                sentFilesList = dbData.sentHistory;
-                renderSentFiles();
-
-                statusEl.innerHTML = `<span style="color:#4ade80;"><i class="fas fa-check-circle"></i> Música <b>${safeTitle}</b> enviada!</span>`;
-                
-                // Limpar campos
-                songNameInput.value = '';
-                songLyricsInput.value = '';
-                
-            } catch (e) {
-                console.error(e);
-                statusEl.innerHTML = `<span style="color:#ff4d4d;"><i class="fas fa-exclamation-circle"></i> Erro: ${e.message}</span>`;
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> ENVIAR';
-            }
+                const r = await fetch(`https://api.npoint.io/${binId}`); const d = await r.json(); if(!d.selections) d.selections = [];
+                d.selections.push({title:n, lyrics:l, data:new Date().toISOString().split('T')[0], culto:'Outros'});
+                await fetch(`https://api.npoint.io/${binId}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)});
+                showSuccess("Música enviada!"); document.getElementById('newSongName').value = ''; document.getElementById('newSongLyrics').value = '';
+            } catch(e){ alert(e.message); }
         }
-
-        // ─────────────────────────────────────────
-        // MODAL search listener
-        // ─────────────────────────────────────────
-        document.getElementById('modalSearchInput').addEventListener('input', renderBrowser);
 
         init();
     </script>
 </body>
 </html>
- 
