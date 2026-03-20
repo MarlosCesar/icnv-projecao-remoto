@@ -826,16 +826,15 @@
                 let data = await res.json();
                 if (!data.selections) data.selections = [];
                 
-                // --- PROTEÇÃO CONTRA DUPLICATAS (v3.5.3) ---
-                // Sempre remove qualquer item que já exista para o MESMO CULTO e MESMA DATA antes de adicionar os novos.
-                // Isso garante que "Gerar Planejamento" atue como "Substituir" se o culto já existir.
-                data.selections = data.selections.filter(s => {
-                    const isSameCulto = s.culto.trim() === culto.trim();
-                    const isSameData = s.data.trim() === dataStr.trim();
-                    return !(isSameCulto && isSameData);
-                });
-                
-                editContext = null; // Limpa contexto se houver
+                // Se o usuário clicou no LÁPIS (Modo Edição), limpamos o antigo para substituir
+                if (editContext) {
+                    data.selections = data.selections.filter(s => {
+                        const isSameCulto = s.culto.trim() === editContext.culto.trim();
+                        const isSameData = s.data.trim() === editContext.data.trim();
+                        return !(isSameCulto && isSameData);
+                    });
+                    editContext = null; // Limpa o modo de edição
+                }
 
                 const now = new Date().toISOString();
                 selections.forEach(s => data.selections.push({ title: s.name, data: dataStr, culto, dirigente, timestamp: now }));
