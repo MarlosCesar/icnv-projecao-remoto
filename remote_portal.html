@@ -1005,14 +1005,18 @@
             try {
                 const online = await isLocalServerOnline(localServerUrl);
                 if(localServerUrl && online) {
+                    // Upload Direto (Rápido - Rede Wi-Fi)
                     await uploadDirect(selectedFile, localServerUrl, st);
-                    showSuccess("Arquivo enviado com sucesso!");
+                    showSuccess("Arquivo enviado via Wi-Fi!");
                     clearFile();
                 } else {
-                    if (selectedFile.size > 2 * 1024 * 1024) {
-                        alert("⚠️ ARQUIVO GRANDE DETECTADO\n\nDevido à segurança do navegador, para enviar arquivos maiores que 2MB você deve clicar no card PROJEÇÃO > ABRIR PAINEL COMPLETO e fazer o upload por lá.");
-                    } else {
-                        alert("Computador não alcançado na rede Wi-Fi. Verifique se o sistema está aberto no PC.");
+                    // Upload Nuvem (Fallback Azul - tmpfiles.org)
+                    st.innerHTML = "Subindo para nuvem azul...";
+                    const cloudUrl = await uploadToCloud(selectedFile);
+                    if (cloudUrl) {
+                        await registerCloudFile(selectedFile.name, cloudUrl);
+                        showSuccess("Arquivo enviado via Nuvem!");
+                        clearFile();
                     }
                 }
             } catch(e){ 
@@ -1020,6 +1024,35 @@
             }
             btn.disabled = false; 
             btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> ENVIAR';
+            st.innerHTML = "";
+        }
+
+        async function uploadToCloud(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await fetch('https://tmpfiles.org/api/v1/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                // Converte a URL de visualização para URL de download direto
+                return data.data.url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
+            }
+            throw new Error("Falha no servidor de nuvem.");
+        }
+
+        async function registerCloudFile(name, url) {
+            const res = await fetch(`https://api.npoint.io/${binId}`);
+            const data = await res.json();
+            if (!data.sentHistory) data.sentHistory = [];
+            data.sentHistory.push({ name: name, cloudUrl: url, timestamp: new Date().toISOString(), type: 'cloud-file' });
+            await fetch(`https://api.npoint.io/${binId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            renderSentFiles();
         }
 
         function uploadDirect(file, url, st) { return new Promise((res,rej) => { const x = new XMLHttpRequest(); x.open('POST', `${url}/upload-file`); x.setRequestHeader('X-File-Name', encodeURIComponent(file.name)); x.onload = () => res(); x.onerror = () => rej(new Error("Erro")); x.send(file); }); }
