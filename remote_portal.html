@@ -845,22 +845,84 @@
             }
         }
 
+        // --- UI para Planejamentos Salvos (Nuvem) ---
         function updateSavedPlansUI() {
             const list = document.getElementById('savedPlansList');
+            const section = document.getElementById('savedPlansSection');
             list.innerHTML = '';
-            if (savedSelections.length > 0) {
-                document.getElementById('savedPlansSection').style.display = 'block';
-                const groups = {};
-                savedSelections.forEach((s, i) => { const k = `${s.culto}_${s.data}`; if(!groups[k]) groups[k] = {info:s, items:[]}; groups[k].items.push({...s, idx:i}); });
-                Object.keys(groups).forEach((k, gi) => {
-                    const g = groups[k], id = `g_${gi}`, div = document.createElement('div');
-                    div.innerHTML = `<div style="padding:12px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; cursor:pointer;" onclick="toggleGroup('${id}', this.querySelector('i'))">
-                        <div style="font-size:13px;"><i class="fas fa-chevron-right" style="transition:0.3s; margin-right:8px;"></i><b>${g.info.culto}</b> - ${formatDate(g.info.data)}</div>
-                        <i class="fas fa-trash-alt" style="color:#ff4d4d;" onclick="event.stopPropagation(); removeSavedGroup('${g.info.culto}','${g.info.data}')"></i>
-                    </div><div id="${id}" style="display:none; padding:10px 10px 10px 30px; font-size:12px;">${g.items.map(it => `<div>${it.title}</div>`).join('')}</div>`;
-                    list.appendChild(div);
-                });
-            } else document.getElementById('savedPlansSection').style.display = 'none';
+            
+            if (savedSelections.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            
+            // Agrupar por Culto + Data
+            const groups = {};
+            savedSelections.forEach((s, idx) => {
+                const k = `${s.culto}_${s.data}`;
+                if (!groups[k]) groups[k] = { info: s, items: [] };
+                groups[k].items.push({ ...s, originalIndex: idx });
+            });
+
+            Object.keys(groups).forEach((key, gIdx) => {
+                const group = groups[key];
+                const groupId = `saved_g_${gIdx}`;
+                const div = document.createElement('div');
+                div.className = 'saved-group-card'; // Garantir estilo de card
+                div.style.background = 'rgba(255,255,255,0.03)';
+                div.style.borderRadius = '8px';
+                div.style.marginBottom = '10px';
+                div.style.border = '1px solid rgba(255,255,255,0.05)';
+
+                // Template do Cabeçalho (Título Azul, Data/Dirigente Cinza)
+                div.innerHTML = `
+                    <div class="saved-group-header" style="padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleGroup('${groupId}', this.querySelector('.chevron-icon'))">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="fas fa-chevron-right chevron-icon" style="transition: 0.3s; font-size: 11px; color: #666;"></i>
+                            <div>
+                                <div style="color: #0084ff; font-weight: bold; font-size: 14px;">${group.info.culto}</div>
+                                <div style="color: #888; font-size: 11px; margin-top: 2px;">${formatDate(group.info.data)} • ${group.info.dirigente || 'Não Informado'}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <i class="fas fa-pen" style="color: #facc15; font-size: 13px; cursor: pointer;" onclick="event.stopPropagation(); editSavedGroup('${group.info.culto}', '${group.info.data}')"></i>
+                            <i class="fas fa-trash-alt" style="color: #ff4d4d; font-size: 13px; cursor: pointer;" onclick="event.stopPropagation(); removeSavedGroup('${group.info.culto}', '${group.info.data}')"></i>
+                        </div>
+                    </div>
+                    <div id="${groupId}" style="display: none; padding: 0 15px 15px 40px;">
+                        ${group.items.map(item => `
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.05);">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-music" style="color: #0084ff; font-size: 11px;"></i>
+                                    <span style="font-size: 13px; color: #eee; text-transform: uppercase;">${item.title}</span>
+                                </div>
+                                <i class="fas fa-times" style="color: #ff4d4d; font-size: 12px; cursor: pointer; padding: 5px;" onclick="removeSingleSavedItem(${item.originalIndex})"></i>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        async function removeSingleSavedItem(idx) {
+            if (!confirm("Remover esta música do planejamento?")) return;
+            savedSelections.splice(idx, 1);
+            updateSavedPlansUI();
+            await syncNpoint();
+        }
+
+        function editSavedGroup(culto, data) {
+            // Repopular a lista atual para edição
+            const toEdit = savedSelections.filter(s => s.culto === culto && s.data === data);
+            selections = toEdit.map(s => ({ name: s.title, path: null }));
+            document.getElementById('selectCulto').value = culto;
+            document.getElementById('inputData').value = data;
+            document.getElementById('inputDirigente').value = toEdit[0].dirigente || '';
+            showSection('arquivo');
+            updateSelectedList();
         }
 
         function toggleGroup(id, arrow) { const el = document.getElementById(id); const is = el.style.display === 'none'; el.style.display = is?'block':'none'; arrow.style.transform = is?'rotate(90deg)':'none'; }
