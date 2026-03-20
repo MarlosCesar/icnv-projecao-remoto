@@ -995,14 +995,31 @@
         }
 
         async function sendFileToCloud() {
-            if(!selectedFile) return; const btn = document.getElementById('btnSendFile'), st = document.getElementById('fileUploadStatus');
-            btn.disabled = true; btn.innerHTML = 'ENVIANDO...';
+            if(!selectedFile) return; 
+            const btn = document.getElementById('btnSendFile');
+            const st = document.getElementById('fileUploadStatus');
+            
+            btn.disabled = true; 
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
+            
             try {
-                if(localServerUrl && await isLocalServerOnline(localServerUrl)) await uploadDirect(selectedFile, localServerUrl, st);
-                else { alert("PC offline. Envie arquivos pequenos de até 2MB."); }
-                clearFile();
-            } catch(e){ alert(e.message); }
-            btn.disabled = false; btn.innerHTML = 'ENVIAR';
+                const online = await isLocalServerOnline(localServerUrl);
+                if(localServerUrl && online) {
+                    await uploadDirect(selectedFile, localServerUrl, st);
+                    showSuccess("Arquivo enviado com sucesso!");
+                    clearFile();
+                } else {
+                    if (selectedFile.size > 2 * 1024 * 1024) {
+                        alert("⚠️ ARQUIVO GRANDE DETECTADO\n\nDevido à segurança do navegador, para enviar arquivos maiores que 2MB você deve clicar no card PROJEÇÃO > ABRIR PAINEL COMPLETO e fazer o upload por lá.");
+                    } else {
+                        alert("Computador não alcançado na rede Wi-Fi. Verifique se o sistema está aberto no PC.");
+                    }
+                }
+            } catch(e){ 
+                alert("Erro no envio: " + e.message); 
+            }
+            btn.disabled = false; 
+            btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> ENVIAR';
         }
 
         function uploadDirect(file, url, st) { return new Promise((res,rej) => { const x = new XMLHttpRequest(); x.open('POST', `${url}/upload-file`); x.setRequestHeader('X-File-Name', encodeURIComponent(file.name)); x.onload = () => res(); x.onerror = () => rej(new Error("Erro")); x.send(file); }); }
