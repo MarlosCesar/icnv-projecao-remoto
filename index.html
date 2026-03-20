@@ -826,20 +826,19 @@
                 let data = await res.json();
                 if (!data.selections) data.selections = [];
                 
-                // Se o usuário clicou no LÁPIS (Modo Edição), limpamos o antigo para substituir
-                if (editContext) {
-                    data.selections = data.selections.filter(s => {
-                        const isSameCulto = s.culto.trim() === editContext.culto.trim();
-                        const isSameData = s.data.trim() === editContext.data.trim();
-                        return !(isSameCulto && isSameData);
-                    });
-                    editContext = null; // Limpa o modo de edição
-                }
+                // --- LÓGICA DE SUBSTITUIÇÃO TOTAL (v3.5.3) ---
+                // O botão "Gerar Planejamento" agora sempre confirma as alterações (feitas via lápis ou do zero).
+                // Ele remove a versão antiga da nuvem para o mesmo CULTO e DATA e grava a nova lista atual.
+                data.selections = data.selections.filter(s => {
+                    return !(s.culto.trim() === culto.trim() && s.data.trim() === dataStr.trim());
+                });
+                
+                editContext = null; 
 
                 const now = new Date().toISOString();
                 selections.forEach(s => data.selections.push({ title: s.name, data: dataStr, culto, dirigente, timestamp: now }));
                 await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-                showSuccess(); selections = []; savedSelections = data.selections; updateSelectedList(); updateSavedPlansUI();
+                showSuccess("Planejamento atualizado!"); selections = []; savedSelections = data.selections; updateSelectedList(); updateSavedPlansUI();
             } catch (e) { alert('Erro: ' + e.message); }
             btn.innerHTML = '<i class="fas fa-paper-plane"></i> GERAR PLANEJAMENTO';
         }
