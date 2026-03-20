@@ -608,6 +608,7 @@
         const binId = urlParams.get('id');
         let fullCatalog = [], selections = [], currentFolder = [], pathStack = [], savedSelections = [];
         let editGroupContext = null, selectedFile = null, localServerUrl = null;
+        let editContext = null; // NOVO: Controle de edição (v3.5.3)
 
         function showSection(name) {
             document.querySelectorAll('.container > div[id^="section"], #homeView').forEach(el => el.style.display = 'none');
@@ -822,8 +823,15 @@
             const culto = document.getElementById('selectCulto').value, dataStr = document.getElementById('inputData').value, dirigente = document.getElementById('inputDirigente').value || 'Não Informado';
             try {
                 const res = await fetch(`https://api.npoint.io/${binId}`);
-                const data = await res.json();
+                let data = await res.json();
                 if (!data.selections) data.selections = [];
+                
+                // Se estivermos editando, removemos as versões antigas antes de salvar a nova
+                if (editContext) {
+                    data.selections = data.selections.filter(s => !(s.culto === editContext.culto && s.data === editContext.data));
+                    editContext = null; // Limpa o contexto de edição
+                }
+
                 const now = new Date().toISOString();
                 selections.forEach(s => data.selections.push({ title: s.name, data: dataStr, culto, dirigente, timestamp: now }));
                 await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
@@ -937,15 +945,22 @@
         }
 
         function editSavedGroup(culto, data) {
-            // Repopular a lista atual para edição
+            // Ativa o contexto de edição para evitar duplicatas ao salvar
+            editContext = { culto, data };
+            
+            // Filtra as músicas deste grupo e repopula a lista atual
             const toEdit = savedSelections.filter(s => s.culto === culto && s.data === data);
             selections = toEdit.map(s => ({ name: s.title, path: null }));
+            
             document.getElementById('selectCulto').value = culto;
             document.getElementById('inputData').value = data;
             document.getElementById('inputDirigente').value = toEdit[0].dirigente || '';
             
-            showSection('louvor'); // CORRIGIDO: Agora volta para Louvor, não Arquivo
+            showSection('louvor');
             updateSelectedList();
+            
+            // Abre o modal de escolha automaticamente após um pequeno delay
+            setTimeout(openSelectionModal, 400);
         }
 
         function toggleGroup(id, arrow) { const el = document.getElementById(id); const is = el.style.display === 'none'; el.style.display = is?'block':'none'; arrow.style.transform = is?'rotate(90deg)':'none'; }
