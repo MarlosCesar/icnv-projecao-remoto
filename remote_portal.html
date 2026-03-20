@@ -846,6 +846,8 @@
         }
 
         // --- UI para Planejamentos Salvos (Nuvem) ---
+        let expandedGroups = new Set(); // Guarda os IDs dos grupos que estão abertos
+
         function updateSavedPlansUI() {
             const list = document.getElementById('savedPlansList');
             const section = document.getElementById('savedPlansSection');
@@ -869,18 +871,19 @@
             Object.keys(groups).forEach((key, gIdx) => {
                 const group = groups[key];
                 const groupId = `saved_g_${gIdx}`;
+                const isExpanded = expandedGroups.has(groupId); // Verifica se deve estar aberto
+
                 const div = document.createElement('div');
-                div.className = 'saved-group-card'; // Garantir estilo de card
+                div.className = 'saved-group-card';
                 div.style.background = 'rgba(255,255,255,0.03)';
                 div.style.borderRadius = '8px';
                 div.style.marginBottom = '10px';
                 div.style.border = '1px solid rgba(255,255,255,0.05)';
 
-                // Template do Cabeçalho (Título Azul, Data/Dirigente Cinza)
                 div.innerHTML = `
-                    <div class="saved-group-header" style="padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleGroup('${groupId}', this.querySelector('.chevron-icon'))">
+                    <div class="saved-group-header" style="padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleGroupPersistence('${groupId}', this.querySelector('.chevron-icon'))">
                         <div style="display: flex; align-items: center; gap: 12px;">
-                            <i class="fas fa-chevron-right chevron-icon" style="transition: 0.3s; font-size: 11px; color: #666;"></i>
+                            <i class="fas fa-chevron-right chevron-icon" style="transition: 0.3s; font-size: 11px; color: #666; ${(isExpanded ? 'transform: rotate(90deg);' : '')}"></i>
                             <div>
                                 <div style="color: #0084ff; font-weight: bold; font-size: 14px;">${group.info.culto}</div>
                                 <div style="color: #888; font-size: 11px; margin-top: 2px;">${formatDate(group.info.data)} • ${group.info.dirigente || 'Não Informado'}</div>
@@ -891,7 +894,7 @@
                             <i class="fas fa-trash-alt" style="color: #ff4d4d; font-size: 13px; cursor: pointer;" onclick="event.stopPropagation(); removeSavedGroup('${group.info.culto}', '${group.info.data}')"></i>
                         </div>
                     </div>
-                    <div id="${groupId}" style="display: none; padding: 0 15px 15px 40px;">
+                    <div id="${groupId}" style="display: ${(isExpanded ? 'block' : 'none')}; padding: 0 15px 15px 40px;">
                         ${group.items.map(item => `
                             <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.05);">
                                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -907,8 +910,20 @@
             });
         }
 
+        function toggleGroupPersistence(id, arrow) {
+            const el = document.getElementById(id);
+            const isOpening = el.style.display === 'none';
+            el.style.display = isOpening ? 'block' : 'none';
+            arrow.style.transform = isOpening ? 'rotate(90deg)' : 'none';
+            
+            // Salva na memória se o grupo está aberto ou fechado
+            if (isOpening) expandedGroups.add(id);
+            else expandedGroups.delete(id);
+        }
+
         async function removeSingleSavedItem(idx) {
-            if (!confirm("Remover esta música do planejamento?")) return;
+            // Removida a confirmação (conforme pedido v3.5.3)
+            if (window.navigator.vibrate) window.navigator.vibrate(20); // Clique tátil
             savedSelections.splice(idx, 1);
             updateSavedPlansUI();
             await syncNpoint();
