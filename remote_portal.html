@@ -936,7 +936,8 @@
             document.getElementById('selectCulto').value = culto;
             document.getElementById('inputData').value = data;
             document.getElementById('inputDirigente').value = toEdit[0].dirigente || '';
-            showSection('arquivo');
+            
+            showSection('louvor'); // CORRIGIDO: Agora volta para Louvor, não Arquivo
             updateSelectedList();
         }
 
