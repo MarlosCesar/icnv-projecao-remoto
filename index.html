@@ -972,10 +972,26 @@
 
         // --- File Section ---
         function handleFileSelected(input) {
-            const file = input.files[0]; if(!file) return; selectedFile = file;
-            document.getElementById('filePreview').style.display = 'flex';
-            document.getElementById('filePreviewName').textContent = file.name;
-            document.getElementById('btnSendFile').disabled = false;
+            const file = input.files[0]; 
+            if(!file) return; 
+            selectedFile = file;
+
+            const previewEl = document.getElementById('filePreview');
+            const nameEl = document.getElementById('filePreviewName');
+            const sizeEl = document.getElementById('filePreviewSize');
+            const btnEl = document.getElementById('btnSendFile');
+
+            if (previewEl) previewEl.style.display = 'flex';
+            if (nameEl) nameEl.textContent = file.name;
+            
+            if (sizeEl) {
+                const size = file.size > 1024 * 1024 
+                    ? (file.size / (1024 * 1024)).toFixed(1) + ' MB' 
+                    : (file.size / 1024).toFixed(0) + ' KB';
+                sizeEl.textContent = size;
+            }
+
+            if (btnEl) btnEl.disabled = false;
         }
 
         async function sendFileToCloud() {
