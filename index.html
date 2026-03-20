@@ -448,12 +448,14 @@
             </div>
 
             <div class="list-section" id="selectionSection" style="display: none;">
-                <div class="section-title"><i class="fas fa-check-double"></i> Minha Escolha Atual</div>
+                <div class="section-title">
+                    <i class="fas fa-check-double"></i> Minha Escolha Atual (<span id="selectedCount">0</span>)
+                </div>
                 <div id="selectedSongsList"></div>
             </div>
 
             <button class="footer-action" id="btnConfirm" style="display:none; margin-bottom: 20px;" disabled onclick="confirmSelection()">
-                <i class="fas fa-paper-plane"></i> GERAR PLANEJAMENTO (<span id="selectedCount">0</span>)
+                <i class="fas fa-paper-plane"></i> GERAR PLANEJAMENTO
             </button>
 
             <div class="list-section" id="savedPlansSection" style="display: none;">
@@ -791,8 +793,13 @@
         function updateSelectedList() {
             const list = document.getElementById('selectedSongsList'), section = document.getElementById('selectionSection');
             const btnConfirm = document.getElementById('btnConfirm');
-            list.innerHTML = ''; document.getElementById('selectedCount').textContent = selections.length;
-            btnConfirm.disabled = selections.length === 0; btnConfirm.style.display = selections.length > 0 ? 'block' : 'none';
+            const countEl = document.getElementById('selectedCount');
+            
+            list.innerHTML = ''; 
+            if (countEl) countEl.textContent = selections.length;
+            
+            btnConfirm.disabled = selections.length === 0; 
+            btnConfirm.style.display = selections.length > 0 ? 'block' : 'none';
             if (selections.length > 0) {
                 section.style.display = 'block';
                 selections.forEach((s, idx) => {
