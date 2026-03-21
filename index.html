@@ -647,8 +647,7 @@
                 return;
             }
             try {
-                const res = await cloudFetch(binId);
-                const data = await res.json();
+                const data = await cloudFetch(binId);
                 fullCatalog = data.catalog || [];
                 savedSelections = data.selections || [];
                 localServerUrl = data.localServerUrl || null;
