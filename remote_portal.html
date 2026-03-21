@@ -386,7 +386,7 @@
         </header>
 
         <!-- ══════════════════════════════════════ -->
-        <!-- HOME: 4 Cards (v3.5.3)                 -->
+        <!-- HOME: 4 Cards (v3.5.4)                 -->
         <!-- ══════════════════════════════════════ -->
         <div id="homeView" class="home-cards">
             <div class="home-card" onclick="showSection('louvor')">
@@ -398,13 +398,13 @@
                 <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
             </div>
 
-            <div class="home-card disabled-card">
+            <div class="home-card" onclick="showSection('arquivo')">
                 <div class="home-card-icon yellow"><i class="fas fa-file-upload"></i></div>
                 <div class="home-card-text">
                     <h3>ARQUIVO</h3>
                     <p>Envie um arquivo para ser sincronizado no PC</p>
                 </div>
-                <div class="badge-soon">Em Breve</div>
+                <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
             </div>
 
             <div class="home-card" onclick="showSection('novo')">
@@ -628,7 +628,7 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         
-        // AUX: Suporte a múltiplos provedores (v3.5.3)
+        // AUX: Suporte a múltiplos provedores (v3.5.4)
         async function cloudFetch(id) {
             let url = `https://api.npoint.io/${id}`;
             if (id && id.startsWith('js-')) url = `https://api.jsonstorage.net/v1/json/${id.replace('js-', '')}?apiKey=8969a471-87b7-4758-9f34-b090d396d9bb`;
@@ -645,7 +645,7 @@
         const binId = urlParams.get('id');
         let fullCatalog = [], selections = [], currentFolder = [], pathStack = [], savedSelections = [];
         let editGroupContext = null, selectedFile = null, localServerUrl = null;
-        let editContext = null; // NOVO: Controle de edição (v3.5.3)
+        let editContext = null; // NOVO: Controle de edição (v3.5.4)
 
         function showSection(name) {
             document.querySelectorAll('.container > div[id^="section"], #homeView').forEach(el => el.style.display = 'none');
@@ -706,7 +706,7 @@
             setTimeout(() => { popup.style.display = 'none'; popup.innerHTML = '<i class="fas fa-check-circle"></i> Seleção enviada!'; }, 3000);
         }
 
-        // --- Direct Projection Control (v3.5.3) ---
+        // --- Direct Projection Control (v3.5.4) ---
         async function checkPCStatus() {
             const badge = document.getElementById('pcStatusBadge');
             if (!localServerUrl) {
@@ -861,7 +861,7 @@
                 let data = await cloudFetch(binId);
                 if (!data.selections) data.selections = [];
                 
-                // --- LÓGICA DE SUBSTITUIÇÃO TOTAL (v3.5.3) ---
+                // --- LÓGICA DE SUBSTITUIÇÃO TOTAL (v3.5.4) ---
                 // O botão "Gerar Planejamento" agora sempre confirma as alterações (feitas via lápis ou do zero).
                 // Ele remove a versão antiga da nuvem para o mesmo CULTO e DATA e grava a nova lista atual.
                 data.selections = data.selections.filter(s => {
@@ -975,7 +975,7 @@
         }
 
         async function removeSingleSavedItem(idx) {
-            // Removida a confirmação (conforme pedido v3.5.3)
+            // Removida a confirmação (conforme pedido v3.5.4)
             if (window.navigator.vibrate) window.navigator.vibrate(20); // Clique tátil
             savedSelections.splice(idx, 1);
             updateSavedPlansUI();
