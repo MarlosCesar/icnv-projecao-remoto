@@ -605,6 +605,21 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
+        
+        // AUX: Suporte a múltiplos provedores (v3.5.3)
+        async function cloudFetch(id) {
+            let url = `https://api.npoint.io/${id}`;
+            if (id && id.startsWith('js-')) url = `https://api.jsonstorage.net/v1/json/${id.replace('js-', '')}?apiKey=8969a471-87b7-4758-9f34-b090d396d9bb`;
+            const r = await fetch(url); if (!r.ok) throw new Error('Erro ao ler da nuvem');
+            return await r.json();
+        }
+        async function cloudSave(id, data) {
+            let url = `https://api.npoint.io/${id}`, method = 'POST';
+            if (id && id.startsWith('js-')) { url = `https://api.jsonstorage.net/v1/json/${id.replace('js-', '')}?apiKey=8969a471-87b7-4758-9f34-b090d396d9bb`; method = 'PUT'; }
+            const r = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+            if (!r.ok) throw new Error('Erro ao salvar na nuvem');
+            return r;
+        }
         const binId = urlParams.get('id');
         let fullCatalog = [], selections = [], currentFolder = [], pathStack = [], savedSelections = [];
         let editGroupContext = null, selectedFile = null, localServerUrl = null;
@@ -632,7 +647,7 @@
                 return;
             }
             try {
-                const res = await fetch(`https://api.npoint.io/${binId}`);
+                const res = await cloudFetch(binId);
                 const data = await res.json();
                 fullCatalog = data.catalog || [];
                 savedSelections = data.selections || [];
@@ -822,7 +837,7 @@
             btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ENVIANDO...`; btn.disabled = true;
             const culto = document.getElementById('selectCulto').value, dataStr = document.getElementById('inputData').value, dirigente = document.getElementById('inputDirigente').value || 'Não Informado';
             try {
-                const res = await fetch(`https://api.npoint.io/${binId}`);
+                const res = await cloudFetch(binId);
                 let data = await res.json();
                 if (!data.selections) data.selections = [];
                 
@@ -968,7 +983,7 @@
 
         function toggleGroup(id, arrow) { const el = document.getElementById(id); const is = el.style.display === 'none'; el.style.display = is?'block':'none'; arrow.style.transform = is?'rotate(90deg)':'none'; }
         async function removeSavedGroup(c, d) { if(!confirm("Remover?")) return; savedSelections = savedSelections.filter(s => !(s.culto===c && s.data===d)); updateSavedPlansUI(); syncNpoint(); }
-        async function syncNpoint() { try { const r = await fetch(`https://api.npoint.io/${binId}`); const data = await r.json(); data.selections = savedSelections; await fetch(`https://api.npoint.io/${binId}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)}); } catch(e){} }
+        async function syncNpoint() { try { const r = await cloudFetch(binId); const data = await r.json(); data.selections = savedSelections; await cloudSave(binId, data); } catch(e){} }
 
         // --- File Section ---
         function handleFileSelected(input) {
@@ -1043,7 +1058,7 @@
         }
 
         async function registerCloudFile(name, url) {
-            const res = await fetch(`https://api.npoint.io/${binId}`);
+            const res = await cloudFetch(binId);
             const data = await res.json();
             if (!data.sentHistory) data.sentHistory = [];
             data.sentHistory.push({ name: name, cloudUrl: url, timestamp: new Date().toISOString(), type: 'cloud-file' });
@@ -1093,9 +1108,9 @@
             const n = document.getElementById('newSongName').value.toUpperCase(), l = document.getElementById('newSongLyrics').value.toUpperCase();
             if(!n || !l) return;
             try {
-                const r = await fetch(`https://api.npoint.io/${binId}`); const d = await r.json(); if(!d.selections) d.selections = [];
+                const r = await cloudFetch(binId); const d = await r.json(); if(!d.selections) d.selections = [];
                 d.selections.push({title:n, lyrics:l, data:new Date().toISOString().split('T')[0], culto:'Outros'});
-                await fetch(`https://api.npoint.io/${binId}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)});
+                await cloudSave(binId, d);
                 showSuccess("Música enviada!"); document.getElementById('newSongName').value = ''; document.getElementById('newSongLyrics').value = '';
             } catch(e){ alert(e.message); }
         }
