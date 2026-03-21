@@ -836,8 +836,7 @@
             btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ENVIANDO...`; btn.disabled = true;
             const culto = document.getElementById('selectCulto').value, dataStr = document.getElementById('inputData').value, dirigente = document.getElementById('inputDirigente').value || 'Não Informado';
             try {
-                const res = await cloudFetch(binId);
-                let data = await res.json();
+                let data = await cloudFetch(binId);
                 if (!data.selections) data.selections = [];
                 
                 // --- LÓGICA DE SUBSTITUIÇÃO TOTAL (v3.5.3) ---
@@ -851,7 +850,7 @@
 
                 const now = new Date().toISOString();
                 selections.forEach(s => data.selections.push({ title: s.name, data: dataStr, culto, dirigente, timestamp: now }));
-                await fetch(`https://api.npoint.io/${binId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                await cloudSave(binId, data);
                 showSuccess("Planejamento atualizado!"); selections = []; savedSelections = data.selections; updateSelectedList(); updateSavedPlansUI();
             } catch (e) { alert('Erro: ' + e.message); }
             btn.innerHTML = '<i class="fas fa-paper-plane"></i> GERAR PLANEJAMENTO';
@@ -982,7 +981,7 @@
 
         function toggleGroup(id, arrow) { const el = document.getElementById(id); const is = el.style.display === 'none'; el.style.display = is?'block':'none'; arrow.style.transform = is?'rotate(90deg)':'none'; }
         async function removeSavedGroup(c, d) { if(!confirm("Remover?")) return; savedSelections = savedSelections.filter(s => !(s.culto===c && s.data===d)); updateSavedPlansUI(); syncNpoint(); }
-        async function syncNpoint() { try { const r = await cloudFetch(binId); const data = await r.json(); data.selections = savedSelections; await cloudSave(binId, data); } catch(e){} }
+        async function syncNpoint() { try { const data = await cloudFetch(binId); data.selections = savedSelections; await cloudSave(binId, data); } catch(e){} }
 
         // --- File Section ---
         function handleFileSelected(input) {
@@ -1057,15 +1056,10 @@
         }
 
         async function registerCloudFile(name, url) {
-            const res = await cloudFetch(binId);
-            const data = await res.json();
+            const data = await cloudFetch(binId);
             if (!data.sentHistory) data.sentHistory = [];
             data.sentHistory.push({ name: name, cloudUrl: url, timestamp: new Date().toISOString(), type: 'cloud-file' });
-            await fetch(`https://api.npoint.io/${binId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
+            await cloudSave(binId, data);
             renderSentFiles();
         }
 
@@ -1107,7 +1101,7 @@
             const n = document.getElementById('newSongName').value.toUpperCase(), l = document.getElementById('newSongLyrics').value.toUpperCase();
             if(!n || !l) return;
             try {
-                const r = await cloudFetch(binId); const d = await r.json(); if(!d.selections) d.selections = [];
+                const d = await cloudFetch(binId); if(!d.selections) d.selections = [];
                 d.selections.push({title:n, lyrics:l, data:new Date().toISOString().split('T')[0], culto:'Outros'});
                 await cloudSave(binId, d);
                 showSuccess("Música enviada!"); document.getElementById('newSongName').value = ''; document.getElementById('newSongLyrics').value = '';
