@@ -878,6 +878,30 @@
             btn.innerHTML = '<i class="fas fa-paper-plane"></i> GERAR PLANEJAMENTO';
         }
 
+        async function removeHistoryItem(idx, type) {
+            if (!confirm("Remover este item da nuvem? Ele não aparecerá mais para sincronização no PC.")) return;
+            try {
+                const data = await cloudFetch(binId);
+                if (type === 'file') {
+                    if (data.sentHistory) {
+                        data.sentHistory.splice(idx, 1);
+                        sentFilesList = data.sentHistory;
+                    }
+                } else {
+                    if (data.selections) {
+                        const songToDelete = savedSelections.filter(s => s.lyrics)[idx];
+                        const realIdx = data.selections.findIndex(s => s.title === songToDelete.title && s.lyrics === songToDelete.lyrics);
+                        if (realIdx !== -1) data.selections.splice(realIdx, 1);
+                        savedSelections = data.selections;
+                    }
+                }
+                await cloudSave(binId, data);
+                if (type === 'file') updateSavedPlansUI(); // v3.5.4: Atualiza ambas se precisar
+                renderSentFiles();
+                showSuccess("Item removido!");
+            } catch (e) { alert("Erro ao remover: " + e.message); }
+        }
+
         function renderSentFiles() {
             const listFile = document.getElementById('sentFilesList'), listSong = document.getElementById('sentSongsList');
             const secFile = document.getElementById('sentFilesSection'), secSong = document.getElementById('sentSongsSection');
@@ -885,9 +909,18 @@
             if (listFile) {
                 const files = sentFilesList.filter(f => f.type === 'file' || (f.cloudUrl && f.type === 'cloud-file'));
                 listFile.innerHTML = '';
-                files.forEach(f => {
+                files.forEach((f, idx) => {
                     const div = document.createElement('div'); div.className = 'song-item';
-                    div.innerHTML = `<div class="song-info"><i class="fas fa-file" style="color:#facc15;"></i> <span>${f.name}</span></div><i class="fas fa-clock" style="color:#888;"></i>`;
+                    div.innerHTML = `
+                        <div class="song-info">
+                            <i class="fas fa-file" style="color:#facc15;"></i> 
+                            <span style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${f.name}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <i class="fas fa-clock" style="color:#888; font-size: 11px;"></i>
+                            <i class="fas fa-times" style="color:#ff4d4d; padding: 5px; cursor:pointer;" onclick="removeHistoryItem(${idx}, 'file')"></i>
+                        </div>
+                    `;
                     listFile.appendChild(div);
                 });
                 if (secFile) secFile.style.display = files.length > 0 ? 'block' : 'none';
@@ -895,9 +928,18 @@
             if (listSong) {
                 const songs = savedSelections.filter(s => s.lyrics);
                 listSong.innerHTML = '';
-                songs.forEach(s => {
+                songs.forEach((s, idx) => {
                     const div = document.createElement('div'); div.className = 'song-item';
-                    div.innerHTML = `<div class="song-info"><i class="fas fa-pen-alt" style="color:#4ade80;"></i> <span>${s.title}</span></div><i class="fas fa-clock" style="color:#888;"></i>`;
+                    div.innerHTML = `
+                        <div class="song-info">
+                            <i class="fas fa-pen-alt" style="color:#4ade80;"></i> 
+                            <span style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${s.title}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <i class="fas fa-clock" style="color:#888; font-size: 11px;"></i>
+                            <i class="fas fa-times" style="color:#ff4d4d; padding: 5px; cursor:pointer;" onclick="removeHistoryItem(${idx}, 'song')"></i>
+                        </div>
+                    `;
                     listSong.appendChild(div);
                 });
                 if (secSong) secSong.style.display = songs.length > 0 ? 'block' : 'none';
@@ -1084,11 +1126,14 @@
         }
 
         async function registerCloudFile(name, url) {
-            const data = await cloudFetch(binId);
-            if (!data.sentHistory) data.sentHistory = [];
-            data.sentHistory.push({ name: name, cloudUrl: url, timestamp: new Date().toISOString(), type: 'cloud-file' });
-            await cloudSave(binId, data);
-            renderSentFiles();
+            try {
+                const data = await cloudFetch(binId);
+                if (!data.sentHistory) data.sentHistory = [];
+                data.sentHistory.push({ name: name, cloudUrl: url, timestamp: new Date().toISOString(), type: 'cloud-file' });
+                await cloudSave(binId, data);
+                sentFilesList = data.sentHistory;
+                renderSentFiles();
+            } catch (e) { console.error(e); }
         }
 
         function uploadDirect(file, url, st) { return new Promise((res,rej) => { const x = new XMLHttpRequest(); x.open('POST', `${url}/upload-file`); x.setRequestHeader('X-File-Name', encodeURIComponent(file.name)); x.onload = () => res(); x.onerror = () => rej(new Error("Erro")); x.send(file); }); }
@@ -1132,6 +1177,8 @@
                 const d = await cloudFetch(binId); if(!d.selections) d.selections = [];
                 d.selections.push({title:n, lyrics:l, data:new Date().toISOString().split('T')[0], culto:'NOVO', isNew:true});
                 await cloudSave(binId, d);
+                savedSelections = d.selections;
+                renderSentFiles();
                 showSuccess("Música enviada!"); document.getElementById('newSongName').value = ''; document.getElementById('newSongLyrics').value = '';
             } catch(e){ alert(e.message); }
         }
