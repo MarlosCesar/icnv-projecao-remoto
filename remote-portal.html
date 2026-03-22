@@ -1130,7 +1130,7 @@
             if(!n || !l) return;
             try {
                 const d = await cloudFetch(binId); if(!d.selections) d.selections = [];
-                d.selections.push({title:n, lyrics:l, data:new Date().toISOString().split('T')[0], culto:'Outros'});
+                d.selections.push({title:n, lyrics:l, data:new Date().toISOString().split('T')[0], culto:'NOVO', isNew:true});
                 await cloudSave(binId, d);
                 showSuccess("Música enviada!"); document.getElementById('newSongName').value = ''; document.getElementById('newSongLyrics').value = '';
             } catch(e){ alert(e.message); }
