@@ -290,7 +290,11 @@
 
         /* ── Modal (Catalog) ── */
         .modal {
-            position: fixed; inset: 0; background: #0a0a0c; z-index: 2000;
+            position: fixed; inset: 0; 
+            background: rgba(9, 9, 11, 0.85); /* v3.6.3: Semi-transparente para o blur */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 2000;
             display: none; flex-direction: column; padding: 15px;
             animation: slideUp 0.3s ease-out;
         }
