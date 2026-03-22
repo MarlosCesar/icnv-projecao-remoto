@@ -954,7 +954,10 @@
             const section = document.getElementById('savedPlansSection');
             list.innerHTML = '';
             
-            if (savedSelections.length === 0) {
+            // v3.5.5: Considerar apenas planos (sem lyrics). Letras novas ficam no outro módulo.
+            const plans = savedSelections.filter(s => !s.lyrics);
+
+            if (plans.length === 0) {
                 section.style.display = 'none';
                 return;
             }
@@ -963,7 +966,7 @@
             
             // Agrupar por Culto + Data
             const groups = {};
-            savedSelections.forEach((s, idx) => {
+            plans.forEach((s, idx) => {
                 const k = `${s.culto}_${s.data}`;
                 if (!groups[k]) groups[k] = { info: s, items: [] };
                 groups[k].items.push({ ...s, originalIndex: idx });
