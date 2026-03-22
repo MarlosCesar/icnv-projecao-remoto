@@ -367,9 +367,39 @@
         .group-header:hover { background: rgba(255,255,255,0.05) !important; }
         .group-arrow { color: var(--text-muted); }
         .group-container:last-child { border-bottom: none !important; }
+
+        /* Floating Share Button (v3.6.1) */
+        #btnSharePortal {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(24, 24, 27, 0.7);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #btnSharePortal:hover { border-color: var(--accent); transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+        #btnSharePortal:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
+
+    <!-- Floating Share Button (v3.6.1) -->
+    <button id="btnSharePortal" title="Compartilhar Portal" onclick="sharePortal()">
+        <i class="fas fa-share-alt"></i>
+    </button>
 
     <div id="loading" class="loading-overlay">
         <div class="spinner"></div>
@@ -1191,6 +1221,27 @@
                 renderSentFiles();
                 showSuccess("Música enviada!"); document.getElementById('newSongName').value = ''; document.getElementById('newSongLyrics').value = '';
             } catch(e){ alert(e.message); }
+        }
+
+        function sharePortal() {
+            const shareData = {
+                title: 'ICNV Projeção - Portal Remoto',
+                text: 'Acesse o portal para enviar músicas e arquivos para a projeção.',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).catch(err => console.log('Erro ao compartilhar:', err));
+            } else {
+                // Fallback: Copy to clipboard
+                const dummy = document.createElement('input');
+                document.body.appendChild(dummy);
+                dummy.value = window.location.href;
+                dummy.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummy);
+                showSuccess('Link copiado!');
+            }
         }
 
         init();
