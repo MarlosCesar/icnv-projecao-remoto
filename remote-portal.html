@@ -543,12 +543,12 @@
                 <div class="section-title"><i class="fas fa-pen-alt"></i> Adicionar Nova Música</div>
                 <div style="padding: 5px 15px 15px 15px;">
                     <div class="form-group">
-                        <label>Nome da Música</label>
-                        <input type="text" id="newSongName" placeholder="EX: NOME DA MÚSICA">
-                    </div>
-                    <div class="form-group">
                         <label>Letra da Música</label>
                         <textarea id="newSongLyrics" placeholder="Cole a letra completa aqui..." oninput="updateNameFromLyrics(this)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Nome da Música</label>
+                        <input type="text" id="newSongName" placeholder="EX: NOME DA MÚSICA">
                     </div>
                     <div id="newSongStatus" style="font-size: 13px; color: var(--text-muted); text-align: center; min-height: 20px; margin-bottom: 8px;"></div>
                     <button class="footer-action" id="btnSendNewSong" onclick="sendNewSongToCloud()">
