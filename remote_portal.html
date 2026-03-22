@@ -620,7 +620,7 @@
         </div>
         <div class="search-box">
             <i class="fas fa-search" style="color: var(--text-muted);"></i>
-            <input type="text" id="modalSearchInput" placeholder="Digite o nome da música...">
+            <input type="text" id="modalSearchInput" placeholder="Digite o nome da música..." oninput="renderBrowser(true)">
         </div>
         <div id="modalBreadcrumb" class="breadcrumb">
             <span onclick="goHome()">🏠 Início</span>
@@ -760,8 +760,11 @@
         }
 
         // --- Other functions (Browser, Selections, Upload, etc.) ---
-        function renderBrowser() {
+        function renderBrowser(resetScroll = false) {
             const container = document.getElementById('catalogBrowser');
+            if (!container) return;
+            
+            if (resetScroll) container.scrollTop = 0; // v3.6.4: Resetar scroll ao navegar
             container.innerHTML = '';
             const searchTerm = removeAcentos(document.getElementById('modalSearchInput').value.toLowerCase());
             if (searchTerm) {
@@ -815,10 +818,10 @@
             return found;
         }
 
-        function openFolder(f) { pathStack.push({ name: f.name, data: currentFolder }); currentFolder = f.children; updateBreadcrumb(); renderBrowser(); }
-        function goBack() { if (pathStack.length === 0) return; const last = pathStack.pop(); currentFolder = last.data; updateBreadcrumb(); renderBrowser(); }
-        function goHome() { pathStack = []; currentFolder = fullCatalog; updateBreadcrumb(); renderBrowser(); }
-        function jumpTo(idx) { const target = pathStack[idx]; currentFolder = target.data; pathStack = pathStack.slice(0, idx); updateBreadcrumb(); renderBrowser(); }
+        function openFolder(f) { pathStack.push({ name: f.name, data: currentFolder }); currentFolder = f.children; updateBreadcrumb(); renderBrowser(true); }
+        function goBack() { if (pathStack.length === 0) return; const last = pathStack.pop(); currentFolder = last.data; updateBreadcrumb(); renderBrowser(true); }
+        function goHome() { pathStack = []; currentFolder = fullCatalog; updateBreadcrumb(); renderBrowser(true); }
+        function jumpTo(idx) { const target = pathStack[idx]; currentFolder = target.data; pathStack = pathStack.slice(0, idx); updateBreadcrumb(); renderBrowser(true); }
         function updateBreadcrumb() {
             let html = '<span onclick="goHome()">🏠 Início</span>';
             pathStack.forEach((p, idx) => html += `<span onclick="jumpTo(${idx})">${p.name}</span>`);
@@ -828,7 +831,7 @@
         function toggleSong(item) {
             const title = getTitle(item), path = item.path || null, idx = selections.findIndex(s => s.name === title);
             if (idx === -1) selections.push({ name: title, path }); else selections.splice(idx, 1);
-            renderBrowser(); updateSelectedList();
+            renderBrowser(false); updateSelectedList();
         }
 
         function updateSelectedList() {
@@ -853,7 +856,7 @@
         }
 
         function removeSelected(idx) { selections.splice(idx, 1); updateSelectedList(); }
-        function openSelectionModal() { document.getElementById('selectionModal').classList.add('active'); renderBrowser(); }
+        function openSelectionModal() { document.getElementById('selectionModal').classList.add('active'); renderBrowser(true); }
         function closeSelectionModal() { document.getElementById('selectionModal').classList.remove('active'); }
 
         async function confirmSelection() {
