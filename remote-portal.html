@@ -1107,6 +1107,14 @@
             document.getElementById('newSongName').value = song.title;
             document.getElementById('newSongLyrics').value = song.lyrics;
             
+            // Remover do estado local e sincronizar (v3.6.3: Evita duplicatas ao editar)
+            const realIdx = savedSelections.findIndex(s => s.title === song.title && s.lyrics === song.lyrics);
+            if (realIdx !== -1) {
+                savedSelections.splice(realIdx, 1);
+                renderSentFiles();
+                syncNpoint(); 
+            }
+
             // Feedback visual e scroll para o topo do formulário
             const container = document.querySelector('#sectionNovo .list-section');
             if (container) {
