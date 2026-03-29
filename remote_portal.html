@@ -977,9 +977,10 @@
                             <i class="fas fa-pen-alt" style="color:#4ade80;"></i> 
                             <span style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${s.title}</span>
                         </div>
-                        <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="display:flex; align-items:center; gap:8px;">
                             <i class="fas fa-clock" style="color:#888; font-size: 11px;"></i>
-                            <i class="fas fa-times" style="color:#ff4d4d; padding: 5px; cursor:pointer;" onclick="removeHistoryItem(${idx}, 'song')"></i>
+                            <i class="fas fa-pen" style="color:#facc15; padding: 5px; cursor:pointer;" onclick="editSentSong(${idx})" title="Editar"></i>
+                            <i class="fas fa-times" style="color:#ff4d4d; padding: 5px; cursor:pointer;" onclick="removeHistoryItem(${idx}, 'song')" title="Remover"></i>
                         </div>
                     `;
                     listSong.appendChild(div);
@@ -1097,6 +1098,25 @@
         function toggleGroup(id, arrow) { const el = document.getElementById(id); const is = el.style.display === 'none'; el.style.display = is?'block':'none'; arrow.style.transform = is?'rotate(90deg)':'none'; }
         async function removeSavedGroup(c, d) { if(!confirm("Remover?")) return; savedSelections = savedSelections.filter(s => !(s.culto===c && s.data===d)); updateSavedPlansUI(); syncNpoint(); }
         async function syncNpoint() { try { const data = await cloudFetch(binId); data.selections = savedSelections; await cloudSave(binId, data); } catch(e){} }
+
+        function editSentSong(idx) {
+            const songs = savedSelections.filter(s => s.lyrics);
+            const song = songs[idx];
+            if (!song) return;
+            
+            document.getElementById('newSongName').value = song.title;
+            document.getElementById('newSongLyrics').value = song.lyrics;
+            
+            // Feedback visual e scroll para o topo do formulário
+            const container = document.querySelector('#sectionNovo .list-section');
+            if (container) {
+                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                container.style.boxShadow = '0 0 20px rgba(250, 204, 21, 0.3)';
+                setTimeout(() => container.style.boxShadow = '', 1500);
+            }
+            
+            if (window.navigator.vibrate) window.navigator.vibrate(50);
+        }
 
         // --- File Section ---
         function handleFileSelected(input) {
