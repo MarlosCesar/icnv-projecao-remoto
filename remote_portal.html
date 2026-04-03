@@ -291,7 +291,7 @@
         /* ── Modal (Catalog) ── */
         .modal {
             position: fixed; inset: 0; 
-            background: rgba(9, 9, 11, 0.85); /* v3.6.3: Semi-transparente para o blur */
+            background: rgba(9, 9, 11, 0.85); /* v3.6.4: Semi-transparente para o blur */
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             z-index: 2000;
@@ -652,7 +652,7 @@
 
         <!-- Versão no Rodapé do Portal (v3.6.2) -->
         <div style="text-align: center; margin-top: 50px; margin-bottom: 20px; font-size: 10px; color: var(--text-muted); opacity: 0.5; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">
-            ICNV PROJEÇÃO <span style="color: var(--accent);">V3.6.3</span>
+            ICNV PROJEÇÃO <span style="color: var(--accent);">V3.6.4</span>
         </div>
     </div>
 
@@ -1116,7 +1116,7 @@
             document.getElementById('newSongName').value = song.title;
             document.getElementById('newSongLyrics').value = song.lyrics;
             
-            // Remover do estado local e sincronizar (v3.6.3: Evita duplicatas ao editar)
+            // Remover do estado local e sincronizar (v3.6.4: Evita duplicatas ao editar)
             const realIdx = savedSelections.findIndex(s => s.title === song.title && s.lyrics === song.lyrics);
             if (realIdx !== -1) {
                 savedSelections.splice(realIdx, 1);
