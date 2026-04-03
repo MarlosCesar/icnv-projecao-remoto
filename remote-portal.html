@@ -450,6 +450,15 @@
                 <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
             </div>
 
+            <div class="home-card" onclick="openMusicianPortal()" style="border-color: rgba(226, 199, 146, 0.2);">
+                <div class="home-card-icon" style="background: rgba(226, 199, 146, 0.15); color: #e2c792;"><i class="fas fa-guitar"></i></div>
+                <div class="home-card-text">
+                    <h3 style="color: #e2c792;">PORTAL DO MÚSICO</h3>
+                    <p>Veja as cifras das músicas em projeção em tempo real</p>
+                </div>
+                <i class="fas fa-external-link-alt" style="color: var(--text-muted); margin-left: auto; font-size: 14px;"></i>
+            </div>
+
             <div class="home-card" onclick="openFullRemote()">
                 <div class="home-card-icon red"><i class="fas fa-video"></i></div>
                 <div class="home-card-text">
@@ -1242,6 +1251,14 @@
                 return;
             }
             window.open(localServerUrl, '_blank');
+        }
+
+        function openMusicianPortal() {
+            if (!localServerUrl) {
+                alert("IP do PC não configurado. Verifique se o sistema no computador está aberto.");
+                return;
+            }
+            window.open(localServerUrl + '/musician', '_blank');
         }
         async function sendNewSongToCloud() {
             const n = document.getElementById('newSongName').value.toUpperCase(), l = document.getElementById('newSongLyrics').value.toUpperCase();
