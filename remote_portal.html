@@ -45,6 +45,11 @@
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- FIREBASE SDK (v4.0.0) -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+    
     <style>
         :root {
             --bg: #09090b;
@@ -676,19 +681,30 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         
-        // AUX: Suporte a múltiplos provedores (v3.5.4)
-        async function cloudFetch(id) {
-            let url = `https://api.npoint.io/${id}`;
-            if (id && id.startsWith('js-')) url = `https://api.jsonstorage.net/v1/json/${id.replace('js-', '')}?apiKey=8969a471-87b7-4758-9f34-b090d396d9bb`;
-            const r = await fetch(url); if (!r.ok) throw new Error('Erro ao ler da nuvem');
-            return await r.json();
-        }
+        // --- Iniciando o Firebase ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAy9HXj9N2LBC7cga6-V7BWmQ_w1yoxOMQ",
+            authDomain: "icnv-projecao.firebaseapp.com",
+            databaseURL: "https://icnv-projecao-default-rtdb.firebaseio.com",
+            projectId: "icnv-projecao",
+            storageBucket: "icnv-projecao.firebasestorage.app",
+            messagingSenderId: "444479092624",
+            appId: "1:444479092624:web:f19e98467fe24a6ca1a515"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Funções de Escrita legadas mantidas para compatibilidade
         async function cloudSave(id, data) {
-            let url = `https://api.npoint.io/${id}`, method = 'POST';
-            if (id && id.startsWith('js-')) { url = `https://api.jsonstorage.net/v1/json/${id.replace('js-', '')}?apiKey=8969a471-87b7-4758-9f34-b090d396d9bb`; method = 'PUT'; }
-            const r = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
-            if (!r.ok) throw new Error('Erro ao salvar na nuvem');
-            return r;
+            await db.ref('igrejas/' + id).set(data);
+            return { ok: true };
+        }
+        
+        // cloudFetch é mantido caso haja uso síncrono pontual
+        async function cloudFetch(id) {
+            const snap = await db.ref('igrejas/' + id).once('value');
+            if(!snap.exists()) throw new Error('Dados não encontrados');
+            return snap.val();
         }
         const binId = urlParams.get('id');
         let fullCatalog = [], selections = [], currentFolder = [], pathStack = [], savedSelections = [];
@@ -716,8 +732,16 @@
                 document.getElementById('manualIdContainer').style.display = 'block';
                 return;
             }
-            try {
-                const data = await cloudFetch(binId);
+            // Inicia a escuta ESPECÍFICA em tempo real (Firebase WebSocket)
+            db.ref('igrejas/' + binId).on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    if (document.getElementById('loading').style.display !== 'none') {
+                        document.getElementById('loadingText').innerHTML = 'CATÁLOGO NÃO ENCONTRADO (Abra o PC)';
+                    }
+                    return;
+                }
+
                 fullCatalog = data.catalog || [];
                 savedSelections = data.selections || [];
                 localServerUrl = data.localServerUrl || null;
@@ -732,7 +756,10 @@
                 renderBrowser(); updateSavedPlansUI(); renderSentFiles();
                 document.getElementById('loading').style.opacity = '0';
                 setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
-            } catch (e) { alert('Erro na conexão. Verifique o ID.'); }
+            }, (error) => {
+                alert('Erro na conexão com Firebase: ' + error.message);
+                document.getElementById('loadingText').innerHTML = 'ERRO DE CONEXÃO';
+            });
         }
 
         function applyManualId() {
