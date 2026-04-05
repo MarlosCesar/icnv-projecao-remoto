@@ -296,7 +296,7 @@
         /* ── Modal (Catalog) ── */
         .modal {
             position: fixed; inset: 0; 
-            background: rgba(9, 9, 11, 0.85); /* v3.6.4: Semi-transparente para o blur */
+            background: rgba(9, 9, 11, 0.85); /* v3.6.5: Semi-transparente para o blur */
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             z-index: 2000;
@@ -835,7 +835,7 @@
             const container = document.getElementById('catalogBrowser');
             if (!container) return;
             
-            if (resetScroll) container.scrollTop = 0; // v3.6.4: Resetar scroll ao navegar
+            if (resetScroll) container.scrollTop = 0; // v3.6.5: Resetar scroll ao navegar
             container.innerHTML = '';
             const searchTerm = removeAcentos(document.getElementById('modalSearchInput').value.toLowerCase());
             if (searchTerm) {
@@ -1143,7 +1143,7 @@
             document.getElementById('newSongName').value = song.title;
             document.getElementById('newSongLyrics').value = song.lyrics;
             
-            // Remover do estado local e sincronizar (v3.6.4: Evita duplicatas ao editar)
+            // Remover do estado local e sincronizar (v3.6.5: Evita duplicatas ao editar)
             const realIdx = savedSelections.findIndex(s => s.title === song.title && s.lyrics === song.lyrics);
             if (realIdx !== -1) {
                 savedSelections.splice(realIdx, 1);
