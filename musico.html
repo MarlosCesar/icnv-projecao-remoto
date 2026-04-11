@@ -1973,28 +1973,41 @@
                 
                 let catalogData = await res.json();
                 if (!Array.isArray(catalogData)) {
-                    catalogData = [catalogData]; // Fix PowerShell ConvertTo-Json unwrapping single objects
+                    catalogData = [catalogData]; 
                 }
                 
+                // v3.7.0: Ordenar pastas alfabeticamente
+                catalogData.sort((a, b) => a.name.localeCompare(b.name));
+
                 let flatCifras = [];
                 let wGroups = [];
                 const baseUrl = "ICNV-Louvores_Cifras"; 
                 
                 for (let f of catalogData) {
                     let folder = f.key || f.name;
-                    let groupSongs = f.songs.map(s => s.split(/[\\\/]/).pop().replace(/\.[^/.]+$/, ''));
+                    // v3.7.0: Ordenar músicas alfabeticamente dentro da pasta
+                    const sortedSongs = [...f.songs].sort((a, b) => a.localeCompare(b.name));
+                    
+                    let groupSongs = sortedSongs.map(s => s.split(/[\\\/]/).pop().replace(/\.[^/.]+$/, ''));
                     wGroups.push({ key: 'cat_' + folder, name: f.name, songs: groupSongs });
                     
-                    for (let c of f.songs) {
+                    for (let c of sortedSongs) {
                         flatCifras.push({ name: c, url: (f.key === "Raiz" ? `${baseUrl}/${c}` : `${baseUrl}/${folder}/${c}`) });
                     }
                 }
                 
-                if (!allCifras || allCifras.length === 0) allCifras = flatCifras;
+                // Prioriza acervo offline se não houver conexão socket ativa
+                if (isOfflineMode || (!allCifras || allCifras.length === 0)) {
+                    allCifras = flatCifras;
+                }
                 catalogGroups = wGroups;
-                renderWorshipGroups();
+                
+                // Se o modal estiver aberto, atualiza
+                if (document.getElementById('browseModal').classList.contains('active')) {
+                    renderBrowseList();
+                }
             } catch(e) {
-                console.error("Info: catalog.json local inexistente. Ignorado online.", e);
+                console.error("Info: catalog.json local inexistente ou offline pendente.", e);
             }
         }
 
@@ -2965,7 +2978,7 @@
             });
         }
 
-        // â”€â”€ Browse Modal â”€â”€
+        // ── Browse Modal (v3.7.0) ──
         function openBrowseModal() {
             document.getElementById('browseModal').classList.add('active');
             document.getElementById('browseSearchInput').value = '';
@@ -2978,30 +2991,64 @@
 
         function renderBrowseList() {
             const container = document.getElementById('browseList');
+            if (!container) return;
             const query = normalizeTitle(document.getElementById('browseSearchInput').value);
 
-            let items = allCifras;
             if (query) {
-                items = items.filter(c => normalizeTitle(c.name).includes(query));
+                // MODO BUSCA: Lista plana
+                let items = allCifras.filter(c => normalizeTitle(c.name).includes(query));
+                if (items.length === 0) {
+                    container.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>Nenhuma cifra encontrada</h3></div>`;
+                    return;
+                }
+                container.innerHTML = items.map(c => {
+                    const name = c.name.replace(/\.[^/.]+$/, '');
+                    return `
+                        <div class="browse-file-item" onclick="selectBrowseItem('${name.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-file-image"></i>
+                            <span>${name}</span>
+                        </div>
+                    `;
+                }).join('');
+                return;
             }
 
-            if (items.length === 0) {
+            // MODO NAVEGAÇÃO: Sanfonado por Pastas (v3.7.0)
+            if (!catalogGroups || catalogGroups.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-folder-open"></i>
-                        <h3>Nenhuma cifra encontrada</h3>
-                        <p>Adicione cifras na pasta ICNV-Louvores_Cifras no computador</p>
+                        <h3>Acervo Vazio</h3>
+                        <p>Sincronize com o PC para ver as cifras aqui.</p>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = items.map(c => {
-                const name = c.name.replace(/\.[^/.]+$/, '');
+            container.innerHTML = catalogGroups.map(group => {
                 return `
-                    <div class="browse-file-item" onclick="selectBrowseItem('${name.replace(/'/g, "\\'")}')">
-                        <i class="fas fa-file-image"></i>
-                        <span>${name}</span>
+                    <div class="worship-group cat-group" id="grp_${group.key}">
+                        <div class="worship-header" onclick="toggleGroup('${group.key}')">
+                            <i class="fas fa-chevron-right worship-arrow" id="arrow_${group.key}"></i>
+                            <div class="worship-icon" style="background: rgba(226, 199, 146, 0.12); color: #e2c792;">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                            <div class="worship-info">
+                                <div class="worship-name">${group.name}</div>
+                                <div class="worship-details">${group.songs.length} músicas</div>
+                            </div>
+                        </div>
+                        <div class="worship-songs" id="${group.key}" style="display: none;">
+                            ${group.songs.map(song => `
+                                <div class="song-item" onclick="selectBrowseItem('${song.replace(/'/g, "\\'")}')">
+                                    <div class="song-info">
+                                        <i class="fas fa-file-image" style="color: var(--music-gold); opacity: 0.7;"></i>
+                                        <div class="song-name">${song}</div>
+                                    </div>
+                                    <i class="fas fa-chevron-right now-playing-arrow"></i>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                 `;
             }).join('');
