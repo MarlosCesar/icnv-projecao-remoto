@@ -1860,15 +1860,10 @@
         // â”€â€â‚¬â”€â€â‚¬ Init â”€â”€
         // ─── Init ──
         async function init() {
-            // Se o portal for acessado diretamente pelo IP local (Express)
-            if (window.location.protocol === 'http:') {
-                try {
-                    const isOnlineLocally = await isLocalServerOnline(window.location.origin);
-                    if (isOnlineLocally) {
-                        connectSocket(window.location.origin);
-                        return;
-                    }
-                } catch(e) {}
+            // v3.7.0: Se acessado localmente (Studio Control Aberto), prioriza conexão direta.
+            const isGitHub = window.location.hostname.includes('github.io');
+            if (!isGitHub) {
+                connectSocket(window.location.origin);
             }
 
             if (!binId) {
@@ -1999,6 +1994,17 @@
             // Receive playlists (cultos)
             socket.on('playlists-data', (data) => {
                 worshipGroups = data;
+                isOfflineMode = false;
+                
+                // Restaura o estilo visual Online
+                const titleEl = document.querySelector('.section-title');
+                if (titleEl) titleEl.innerHTML = '<i class="fas fa-church"></i> CIFRAS POR CULTO';
+                
+                const statusText = document.getElementById('statusText');
+                if (statusText && statusText.textContent === 'ACERVO') {
+                    updateStatus(true);
+                }
+
                 renderWorshipGroups();
                 // v3.6.8: Update nav buttons in chord viewer if open (new songs may have been added)
                 if (chordViewerOpen && viewerGroupKey) {
@@ -2752,13 +2758,9 @@
             const container = document.getElementById('worshipGroupsList');
             container.innerHTML = '';
 
+            // v3.7.0: Removida a listagem redundante do Acervo Geral aqui.
+            // Para encontrar cifras fora do culto, o usuário usa o botão de Pasta ou a Pesquisa.
             const allGroupsToRender = [...worshipGroups];
-            if (catalogGroups.length > 0) {
-                if (worshipGroups.length > 0) {
-                    allGroupsToRender.push({ type: 'divider', title: 'ACERVO GERAL (PASTAS)' });
-                }
-                allGroupsToRender.push(...catalogGroups);
-            }
 
             if (!allGroupsToRender || allGroupsToRender.length === 0) {
                 container.innerHTML = `
