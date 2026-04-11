@@ -1527,6 +1527,31 @@
             color: #000;
         }
         .confirm-btn:active { transform: scale(0.95); opacity: 0.8; }
+        .share-btn:active { transform: scale(0.95); }
+
+        .sync-active-banner {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(34, 197, 94, 0.95);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .sync-active-banner.show { transform: translateX(-50%) translateY(0); }
+        .sync-active-banner.syncing { background: rgba(0, 132, 255, 0.95); }
+        .sync-active-banner.error { background: rgba(239, 68, 68, 0.95); }
 
         @keyframes zoomIn {
             from { transform: scale(0.9); opacity: 0; }
@@ -1535,7 +1560,7 @@
 
 
 
-        /* â”€â€â‚¬â”€â€â‚¬ Responsive â”€â€â‚¬â”€â€â‚¬ */
+        /* â”€â€ â‚¬â”€â€ â‚¬ Responsive â”€â€ â‚¬â”€â€ â‚¬ */
         @media (min-width: 768px) {
             .container {
                 max-width: 600px;
@@ -1558,6 +1583,11 @@
 </head>
 
 <body>
+
+    <!-- Cloud Sync Banner (v3.7.0) -->
+    <div id="cloudSyncBanner" class="sync-active-banner">
+        <i class="fas fa-sync fa-spin"></i> <span id="syncStatusText">SINCRONIZANDO COM A NUVEM...</span>
+    </div>
 
     <!-- Header -->
     <div class="musician-header">
@@ -2085,6 +2115,26 @@
             socket.on('storage-migrated', (data) => {
                 console.log('[Músico] Armazenamento movido para: ' + data.newPath);
                 socket.emit('request-state-sync');
+            });
+
+            // v3.7.0: Cloud Sync Status Notification
+            socket.on('cloud-sync-status', (data) => {
+                const banner = document.getElementById('cloudSyncBanner');
+                const text = document.getElementById('syncStatusText');
+                if (!banner || !text) return;
+
+                if (data.status === 'syncing') {
+                    text.textContent = 'SINCRONIZANDO COM A NUVEM...';
+                    banner.className = 'sync-active-banner show syncing';
+                } else if (data.status === 'success') {
+                    text.textContent = 'NUVEM ATUALIZADA COM SUCESSO!';
+                    banner.className = 'sync-active-banner show';
+                    setTimeout(() => banner.classList.remove('show'), 5000);
+                } else if (data.status === 'error') {
+                    text.textContent = 'ERRO NA SINCRONIA CLOUD';
+                    banner.className = 'sync-active-banner show error';
+                    setTimeout(() => banner.classList.remove('show'), 5000);
+                }
             });
         }
 
