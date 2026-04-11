@@ -1280,11 +1280,20 @@
             window.open(localServerUrl, '_blank');
         }
 
-        function openMusicianPortal() {
-            // v3.7.0: Portal do Músico Offline! Agora o link redireciona para a mesma base atual do GitHub Pages.
-            // Para preservar a conexão com Firebase (binId), mantemos a variável da URL
+        async function openMusicianPortal() {
             const urlParams = new URLSearchParams(window.location.search);
             const bindIdQ = urlParams.get('id') ? `?id=${urlParams.get('id')}` : '';
+
+            if (typeof localServerUrl !== 'undefined' && localServerUrl) {
+                const isOnline = await isLocalServerOnline(localServerUrl);
+                if (isOnline) {
+                    window.open(localServerUrl + '/musico', '_blank');
+                    return;
+                }
+            }
+            // Fallback para versão Github Pages apenas quando o PC estiver desligado
+            window.open(`musico.html${bindIdQ}`, '_blank');
+        }` : '';
             window.location.href = `musico.html${bindIdQ}`;
         }
         async function sendNewSongToCloud() {
