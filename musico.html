@@ -158,6 +158,41 @@
             text-transform: uppercase;
         }
 
+        /* ── Alphabetical Grid in Browse Modal (v3.7.0) ── */
+        .alpha-group .worship-header {
+            padding: 10px 14px;
+            min-height: 48px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .alpha-group .worship-name {
+            font-size: 13px !important;
+            letter-spacing: 0.5px;
+            font-weight: 700 !important;
+            color: #fff !important;
+        }
+        .alpha-group .worship-icon {
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 14px !important;
+            border-radius: 6px !important;
+            flex-shrink: 0;
+        }
+        .alpha-group .worship-count {
+            font-size: 10px;
+            padding: 2px 8px;
+            min-width: unset;
+        }
+        .alpha-group .worship-songs {
+            padding: 0 4px 8px 4px;
+        }
+        .alpha-group .song-item {
+            padding: 10px 14px;
+        }
+        .alpha-group .song-name {
+            font-size: 12px;
+        }
+
         .btn-fullscreen {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -3057,21 +3092,21 @@
                 return `
                     <div class="worship-group alpha-group ${isOpen ? 'open' : ''}" id="grp-${key}">
                         <div class="worship-header" onclick="toggleGroup('${key}')">
-                            <i class="fas fa-chevron-right worship-arrow"></i>
-                            <div class="worship-icon" style="background: var(--music-gold); color: #000; font-weight: 900; width: 30px; height: 30px; border-radius: 8px;">
+                            <i class="fas fa-chevron-right worship-arrow" style="font-size: 8px;"></i>
+                            <div class="worship-icon" style="background: var(--music-gold); color: #000; font-weight: 900;">
                                 ${letter}
                             </div>
-                            <div class="worship-name">Letra ${letter}</div>
+                            <div class="worship-name">LETRA ${letter}</div>
                             <div class="worship-count">${alphabetGroups[letter].length}</div>
                         </div>
                         <div class="worship-songs">
                             ${alphabetGroups[letter].map(song => `
                                 <div class="song-item" onclick="selectBrowseItem('${song.replace(/'/g, "\\'")}')">
                                     <div class="song-info">
-                                        <i class="fas fa-file-image" style="color: var(--music-gold); opacity: 0.7; font-size: 14px;"></i>
+                                        <i class="fas fa-file-image" style="color: var(--music-gold); opacity: 0.6; font-size: 13px;"></i>
                                         <div class="song-name">${song}</div>
                                     </div>
-                                    <i class="fas fa-chevron-right now-playing-arrow"></i>
+                                    <i class="fas fa-chevron-right now-playing-arrow" style="font-size: 10px; opacity: 0.5;"></i>
                                 </div>
                             `).join('')}
                         </div>
