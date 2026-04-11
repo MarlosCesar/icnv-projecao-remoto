@@ -655,9 +655,9 @@
             </div>
         </div>
 
-        <!-- Versão no Rodapé (v3.6.9) -->
+        <!-- Versão no Rodapé (v3.7.0) -->
         <div style="text-align: center; margin-top: 50px; margin-bottom: 20px; font-size: 10px; color: var(--text-muted); opacity: 0.5; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">
-            ICNV PROJEÇÃO <span style="color: var(--accent);">V3.6.9</span>
+            ICNV PROJEÇÃO <span style="color: var(--accent);">V3.7.0</span>
         </div>
     </div>
 
@@ -1281,11 +1281,11 @@
         }
 
         function openMusicianPortal() {
-            if (!localServerUrl) {
-                alert("IP do PC não configurado. Verifique se o sistema no computador está aberto.");
-                return;
-            }
-            window.location.href = localServerUrl + '/musico';
+            // v3.7.0: Portal do Músico Offline! Agora o link redireciona para a mesma base atual do GitHub Pages.
+            // Para preservar a conexão com Firebase (binId), mantemos a variável da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const bindIdQ = urlParams.get('id') ? `?id=${urlParams.get('id')}` : '';
+            window.location.href = `musico.html${bindIdQ}`;
         }
         async function sendNewSongToCloud() {
             const n = document.getElementById('newSongName').value.toUpperCase(), l = document.getElementById('newSongLyrics').value.toUpperCase();
