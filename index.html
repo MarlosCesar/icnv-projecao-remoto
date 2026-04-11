@@ -803,14 +803,16 @@
         let lastStatusCheck = 0;
         async function updateSystemStatus() {
             if (!localServerUrl) return;
-            if (Date.now() - lastStatusCheck < 4000) return;
+            if (Date.now() - lastStatusCheck < 2000) return;
             lastStatusCheck = Date.now();
 
             const musBadge = document.getElementById('musicianStatus');
             const projBadge = document.getElementById('projectionStatus');
             const pcBadge = document.getElementById('pcStatusBadge');
 
+            console.log(`[Remote] Verificando conexão local: ${localServerUrl}...`);
             const online = await isLocalServerOnline(localServerUrl);
+            console.log(`[Remote] Status PC: ${online ? 'ONLINE' : 'OFFLINE'}`);
             isSystemOnline = online;
 
             if (online) {
@@ -846,11 +848,13 @@
                     resolve(true);
                 };
                 img.onerror = () => {
-                    clearTimeout(timeout);
-                    resolve(false);
+                    // Fallback para fetch no-cors
+                    fetch(url + "/ping", { mode: 'no-cors', cache: 'no-cache' })
+                        .then(() => { clearTimeout(timeout); resolve(true); })
+                        .catch(() => { clearTimeout(timeout); resolve(false); });
                 };
-                // Tenta carregar o ícone do servidor local (v3.7.0)
-                img.src = url + "/favicon.ico?t=" + Date.now();
+                // Tenta carregar imagem existente (v3.7.0)
+                img.src = url + "/assets/icons/app-icon.png?t=" + Date.now();
             });
         }
 

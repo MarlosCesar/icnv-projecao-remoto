@@ -1913,11 +1913,13 @@
                     resolve(true);
                 };
                 img.onerror = () => {
-                    clearTimeout(timeout);
-                    resolve(false);
+                    // Fallback para fetch no-cors
+                    fetch(url + "/ping", { mode: 'no-cors', cache: 'no-cache' })
+                        .then(() => { clearTimeout(timeout); resolve(true); })
+                        .catch(() => { clearTimeout(timeout); resolve(false); });
                 };
-                // Tenta carregar o ícone do servidor local (v3.7.0)
-                img.src = url + "/favicon.ico?t=" + Date.now();
+                // Tenta carregar imagem existente (v3.7.0)
+                img.src = url + "/assets/icons/app-icon.png?t=" + Date.now();
             });
         }
 
