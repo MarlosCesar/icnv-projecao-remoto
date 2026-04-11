@@ -2995,7 +2995,7 @@
             const query = normalizeTitle(document.getElementById('browseSearchInput').value);
 
             if (query) {
-                // MODO BUSCA: Lista plana
+                // MODO BUSCA: Lista plana filtrada
                 let items = allCifras.filter(c => normalizeTitle(c.name).includes(query));
                 if (items.length === 0) {
                     container.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>Nenhuma cifra encontrada</h3></div>`;
@@ -3013,36 +3013,51 @@
                 return;
             }
 
-            // MODO NAVEGAÇÃO: Sanfonado por Pastas (v3.7.0)
-            if (!catalogGroups || catalogGroups.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-folder-open"></i>
-                        <h3>Acervo Vazio</h3>
-                        <p>Sincronize com o PC para ver as cifras aqui.</p>
-                    </div>
-                `;
+            // MODO NAVEGAÇÃO: Sanfonado por Letras A-Z (v3.7.0)
+            if (!allCifras || allCifras.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-folder-open"></i><h3>Acervo Vazio</h3><p>Sincronize com o PC para ver as cifras aqui.</p></div>`;
                 return;
             }
 
-            container.innerHTML = catalogGroups.map(group => {
+            // Agrupa por letra inicial
+            const alphabetGroups = {};
+            const sortedCifras = [...allCifras].sort((a, b) => a.name.localeCompare(b.name));
+            
+            sortedCifras.forEach(c => {
+                const name = c.name.replace(/\.[^/.]+$/, '');
+                let firstChar = name.charAt(0).toUpperCase();
+                // Trata números ou símbolos se necessário, mas A-Z é o foco
+                if (!/[A-Z]/.test(firstChar)) firstChar = '#';
+
+                if (!alphabetGroups[firstChar]) alphabetGroups[firstChar] = [];
+                alphabetGroups[firstChar].push(name);
+            });
+
+            const sortedLetters = Object.keys(alphabetGroups).sort((a, b) => {
+                if (a === '#') return 1;
+                if (b === '#') return -1;
+                return a.localeCompare(b);
+            });
+
+            container.innerHTML = sortedLetters.map(letter => {
+                const key = 'alpha_' + letter;
                 return `
-                    <div class="worship-group cat-group" id="grp_${group.key}">
-                        <div class="worship-header" onclick="toggleGroup('${group.key}')">
-                            <i class="fas fa-chevron-right worship-arrow" id="arrow_${group.key}"></i>
-                            <div class="worship-icon" style="background: rgba(226, 199, 146, 0.12); color: #e2c792;">
-                                <i class="fas fa-folder"></i>
+                    <div class="worship-group alpha-group" id="grp_${key}">
+                        <div class="worship-header" onclick="toggleGroup('${key}')" style="background: rgba(255,255,255,0.03);">
+                            <i class="fas fa-chevron-right worship-arrow" id="arrow_${key}"></i>
+                            <div class="worship-icon" style="background: var(--music-gold); color: #000; font-weight: 900; width: 28px; height: 28px;">
+                                ${letter}
                             </div>
                             <div class="worship-info">
-                                <div class="worship-name">${group.name}</div>
-                                <div class="worship-details">${group.songs.length} músicas</div>
+                                <div class="worship-name">Letra ${letter}</div>
+                                <div class="worship-details">${alphabetGroups[letter].length} músicas</div>
                             </div>
                         </div>
-                        <div class="worship-songs" id="${group.key}" style="display: none;">
-                            ${group.songs.map(song => `
+                        <div class="worship-songs" id="${key}" style="display: none;">
+                            ${alphabetGroups[letter].map(song => `
                                 <div class="song-item" onclick="selectBrowseItem('${song.replace(/'/g, "\\'")}')">
                                     <div class="song-info">
-                                        <i class="fas fa-file-image" style="color: var(--music-gold); opacity: 0.7;"></i>
+                                        <i class="fas fa-file-image" style="color: var(--music-gold); opacity: 0.7; font-size: 14px;"></i>
                                         <div class="song-name">${song}</div>
                                     </div>
                                     <i class="fas fa-chevron-right now-playing-arrow"></i>
