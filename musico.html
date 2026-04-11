@@ -1887,44 +1887,48 @@
         let controlsTimeout = null;
         let controlsVisible = true;
 
-        // â”€â€â‚¬â”€â€â‚¬ Init â”€â”€
         // ─── Init ──
         async function init() {
-            // v3.7.0: Se acessado localmente (Studio Control Aberto), prioriza conexão direta.
             const isGitHub = window.location.hostname.includes('github.io');
+            
+            // 1. Se estamos rodando local, conectamos e encerramos o init (v3.7.0)
             if (!isGitHub) {
+                console.log("[Músico] Modo Local Detectado");
                 connectSocket(window.location.origin);
-            }
-
-            if (!binId && isGitHub) {
-                startOfflineMode();
+                fetchCatalogAndCombine();
                 return;
             }
 
+            // 2. Se estamos no GitHub sem ID de igreja, modo acervo direto
+            if (!binId && isGitHub) {
+                console.log("[Músico] Modo GitHub sem ID - Acervo Offline");
+                startOfflineMode();
+                fetchCatalogAndCombine();
+                return;
+            }
+
+            // 3. Se estamos no GitHub com ID, buscamos o PC (v3.7.0)
             try {
-                // Tenta achar o PC
                 const snap = await db.ref('igrejas/' + binId).once('value');
                 const data = snap.val();
                 
                 if (data && data.localServerUrl) {
                     localServerUrl = data.localServerUrl;
                     
-                    // Verifica se está na mesma rede
                     const isOnline = await isLocalServerOnline(localServerUrl);
                     if (isOnline) {
-                        if (isGitHub) {
-                            window.location.href = localServerUrl + '/musico' + (binId ? '?id=' + binId : '');
-                            return;
-                        }
-                        connectSocket(localServerUrl);
-                    } else {
-                        // Offline
-                        startOfflineMode();
+                        // Se o PC está online, redireciona para a versão "Live" (HTTP Local)
+                        console.log("[Músico] PC Online! Redirecionando para Direct Live...");
+                        window.location.href = localServerUrl + '/musico' + (binId ? '?id=' + binId : '');
+                        return;
                     }
-                } else {
-                    startOfflineMode();
                 }
+                
+                // Backup: Modo Offline no GitHub
+                console.log("[Músico] PC Offline ou inacessível - Iniciando Acervo Offline");
+                startOfflineMode();
             } catch(e) {
+                console.error("[Músico] Erro no roteamento híbrido:", e);
                 startOfflineMode();
             }
             fetchCatalogAndCombine();
@@ -2921,7 +2925,6 @@
             });
         }
 
-        const openGroups = new Set();
         function toggleGroup(key) {
             const group = document.getElementById(`grp-${key}`);
             if (!group) return;
