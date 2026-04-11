@@ -14,7 +14,7 @@
     <meta name="theme-color" content="#09090b">
 
     <link rel="icon" type="image/png" href="/assets/icons/app-icon.png">
-    <link rel="stylesheet" href="/assets/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap"
         rel="stylesheet">
     
@@ -1562,7 +1562,7 @@
     <!-- Header -->
     <div class="musician-header">
         <div class="header-left">
-            <img src="/assets/icons/full-logo.png" alt="ICNV" class="header-logo">
+            <img src="logo ICNV Projecao.png" onerror="this.src='https://raw.githubusercontent.com/MarlosCesar/icnv-projecao-remoto/main/logo%20ICNV%20Projecao.png'" alt="ICNV" class="header-logo">
             <div class="header-badge">
                 <i class="fas fa-guitar"></i>
                 PORTAL DO MÚSICO
@@ -1801,6 +1801,7 @@
         let currentChordIndex = 0;
         let allCifras = []; // All available cifra files
         let worshipGroups = []; // Groups with chord lists
+        let catalogGroups = []; // Offline/Static general list
         let chordViewerOpen = false;
         let notifTimeout = null;
         let currentUploadSong = '';
@@ -1859,6 +1860,17 @@
         // â”€â€â‚¬â”€â€â‚¬ Init â”€â”€
         // ─── Init ──
         async function init() {
+            // Se o portal for acessado diretamente pelo IP local (Express)
+            if (window.location.protocol === 'http:') {
+                try {
+                    const isOnlineLocally = await isLocalServerOnline(window.location.origin);
+                    if (isOnlineLocally) {
+                        connectSocket(window.location.origin);
+                        return;
+                    }
+                } catch(e) {}
+            }
+
             if (!binId) {
                 startOfflineMode();
                 return;
@@ -1886,6 +1898,7 @@
             } catch(e) {
                 startOfflineMode();
             }
+            fetchCatalogAndCombine();
         }
         
         async function isLocalServerOnline(url) {
@@ -1909,12 +1922,20 @@
             
             const titleEl = document.querySelector('.section-title');
             if (titleEl) titleEl.innerHTML = '<i class="fas fa-folder-open"></i> LISTAGEM GERAL DE CIFRAS (OFFLINE)';
+            
+            worshipGroups = [];
+            renderWorshipGroups();
+        }
 
+        async function fetchCatalogAndCombine() {
             try {
                 const res = await fetch('catalog.json');
                 if (!res.ok) throw new Error("Catálogo não encontrado");
                 
-                const catalogData = await res.json();
+                let catalogData = await res.json();
+                if (!Array.isArray(catalogData)) {
+                    catalogData = [catalogData]; // Fix PowerShell ConvertTo-Json unwrapping single objects
+                }
                 
                 let flatCifras = [];
                 let wGroups = [];
@@ -1923,22 +1944,18 @@
                 for (let f of catalogData) {
                     let folder = f.key || f.name;
                     let groupSongs = f.songs.map(s => s.split(/[\\\/]/).pop().replace(/\.[^/.]+$/, ''));
-                    wGroups.push({ key: folder, name: f.name, songs: groupSongs });
+                    wGroups.push({ key: 'cat_' + folder, name: f.name, songs: groupSongs });
                     
                     for (let c of f.songs) {
                         flatCifras.push({ name: c, url: (f.key === "Raiz" ? `${baseUrl}/${c}` : `${baseUrl}/${folder}/${c}`) });
                     }
                 }
                 
-                allCifras = flatCifras;
-                worshipGroups = wGroups;
+                if (!allCifras || allCifras.length === 0) allCifras = flatCifras;
+                catalogGroups = wGroups;
                 renderWorshipGroups();
             } catch(e) {
-                console.error("Erro offline:", e);
-                const container = document.getElementById('worshipGroupsList');
-                if (container) {
-                    container.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Acervo Indisponível</h3><p>O arquivo de cifras não foi encontrado. Execute Sincronizar Portal no PC para atualizar.</p></div>`;
-                }
+                console.error("Info: catalog.json local inexistente. Ignorado online.", e);
             }
         }
 
@@ -2735,7 +2752,15 @@
             const container = document.getElementById('worshipGroupsList');
             container.innerHTML = '';
 
-            if (!worshipGroups || worshipGroups.length === 0) {
+            const allGroupsToRender = [...worshipGroups];
+            if (catalogGroups.length > 0) {
+                if (worshipGroups.length > 0) {
+                    allGroupsToRender.push({ type: 'divider', title: 'ACERVO GERAL (PASTAS)' });
+                }
+                allGroupsToRender.push(...catalogGroups);
+            }
+
+            if (!allGroupsToRender || allGroupsToRender.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-church"></i>
@@ -2755,12 +2780,22 @@
                 'outros': { icon: 'fa-ellipsis-h', color: 'cyan' },
             };
 
-            worshipGroups.forEach((group, idx) => {
+            allGroupsToRender.forEach((group, idx) => {
+                if (group.type === 'divider') {
+                    const divi = document.createElement('div');
+                    divi.className = 'section-title';
+                    divi.style.marginTop = '40px';
+                    divi.innerHTML = `<i class="fas fa-archive"></i> ${group.title}`;
+                    container.appendChild(divi);
+                    return;
+                }
+
                 const songs = group.songs || [];
                 if (songs.length === 0) return; // Skip empty groups
 
                 const key = group.key || `group-${idx}`;
-                const iconData = icons[key] || { icon: 'fa-church', color: 'gold' };
+                // Fallback to internal folder icon if it's a catalog group
+                const iconData = icons[key] || { icon: key.startsWith('cat_') ? 'fa-folder' : 'fa-church', color: 'gold' };
                 const isOpen = openGroups.has(key);
 
                 const div = document.createElement('div');
