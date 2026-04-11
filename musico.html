@@ -2921,15 +2921,24 @@
             });
         }
 
-        function toggleWorshipGroup(key) {
-            const group = document.getElementById(`worship-${key}`);
+        const openGroups = new Set();
+        function toggleGroup(key) {
+            const group = document.getElementById(`grp-${key}`);
             if (!group) return;
 
             const isOpening = !group.classList.contains('open');
             group.classList.toggle('open');
 
-            // v3.6.8: Salvar estado no Set para persistir entre re-renders
             if (isOpening) openGroups.add(key);
+            else openGroups.delete(key);
+        }
+
+        function toggleWorshipGroup(key) {
+            // Compatibilidade com IDs antigos worship-XXX (v3.6.8)
+            const group = document.getElementById(`worship-${key}`) || document.getElementById(`grp-${key}`);
+            if (!group) return;
+            group.classList.toggle('open');
+            if (group.classList.contains('open')) openGroups.add(key);
             else openGroups.delete(key);
         }
 
@@ -3040,20 +3049,19 @@
             });
 
             container.innerHTML = sortedLetters.map(letter => {
-                const key = 'alpha_' + letter;
+                const key = 'alpha-' + letter;
+                const isOpen = openGroups.has(key);
                 return `
-                    <div class="worship-group alpha-group" id="grp_${key}">
-                        <div class="worship-header" onclick="toggleGroup('${key}')" style="background: rgba(255,255,255,0.03);">
-                            <i class="fas fa-chevron-right worship-arrow" id="arrow_${key}"></i>
-                            <div class="worship-icon" style="background: var(--music-gold); color: #000; font-weight: 900; width: 28px; height: 28px;">
+                    <div class="worship-group alpha-group ${isOpen ? 'open' : ''}" id="grp-${key}">
+                        <div class="worship-header" onclick="toggleGroup('${key}')">
+                            <i class="fas fa-chevron-right worship-arrow"></i>
+                            <div class="worship-icon" style="background: var(--music-gold); color: #000; font-weight: 900; width: 30px; height: 30px; border-radius: 8px;">
                                 ${letter}
                             </div>
-                            <div class="worship-info">
-                                <div class="worship-name">Letra ${letter}</div>
-                                <div class="worship-details">${alphabetGroups[letter].length} músicas</div>
-                            </div>
+                            <div class="worship-name">Letra ${letter}</div>
+                            <div class="worship-count">${alphabetGroups[letter].length}</div>
                         </div>
-                        <div class="worship-songs" id="${key}" style="display: none;">
+                        <div class="worship-songs">
                             ${alphabetGroups[letter].map(song => `
                                 <div class="song-item" onclick="selectBrowseItem('${song.replace(/'/g, "\\'")}')">
                                     <div class="song-info">
