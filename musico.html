@@ -160,22 +160,23 @@
 
         /* ── Alphabetical Grid in Browse Modal (v3.7.0) ── */
         .alpha-group .worship-header {
-            padding: 10px 14px;
-            min-height: 48px;
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 12px 16px;
+            min-height: 52px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 2px;
         }
         .alpha-group .worship-name {
-            font-size: 13px !important;
-            letter-spacing: 0.5px;
+            font-size: 14px !important;
+            letter-spacing: 0.8px;
             font-weight: 700 !important;
             color: #fff !important;
         }
         .alpha-group .worship-icon {
-            width: 28px !important;
-            height: 28px !important;
-            font-size: 14px !important;
-            border-radius: 6px !important;
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 15px !important;
+            border-radius: 8px !important;
             flex-shrink: 0;
         }
         .alpha-group .worship-count {
@@ -1291,9 +1292,8 @@
         .browse-list {
             flex: 1;
             overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+            display: block; /* Alterado de flex para block para permitir rolagem natural */
+            padding: 10px;
         }
 
         .browse-file-item {
