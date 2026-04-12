@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -3087,8 +3087,9 @@
             
             sortedCifras.forEach(c => {
                 const name = c.name.replace(/\.[^/.]+$/, '');
-                let firstChar = name.charAt(0).toUpperCase();
-                // Trata números ou símbolos se necessário, mas A-Z é o foco
+                // Normaliza para remover acentos na letra inicial (v3.7.2)
+                let firstChar = name.charAt(0).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+                
                 if (!/[A-Z]/.test(firstChar)) firstChar = '#';
 
                 if (!alphabetGroups[firstChar]) alphabetGroups[firstChar] = [];
