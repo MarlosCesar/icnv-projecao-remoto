@@ -189,9 +189,24 @@
         }
         .alpha-group .song-item {
             padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .alpha-group .song-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
         }
         .alpha-group .song-name {
-            font-size: 12px;
+            font-size: 13px;
+            color: #ccc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
         }
 
         .btn-fullscreen {
@@ -3103,10 +3118,9 @@
                             ${alphabetGroups[letter].map(song => `
                                 <div class="song-item" onclick="selectBrowseItem('${song.replace(/'/g, "\\'")}')">
                                     <div class="song-info">
-                                        <i class="fas fa-file-image" style="color: var(--music-gold); opacity: 0.6; font-size: 13px;"></i>
+                                        <i class="fas fa-file-image" style="color: var(--music-gold); opacity: 0.6; font-size: 14px;"></i>
                                         <div class="song-name">${song}</div>
                                     </div>
-                                    <i class="fas fa-chevron-right now-playing-arrow" style="font-size: 10px; opacity: 0.5;"></i>
                                 </div>
                             `).join('')}
                         </div>
