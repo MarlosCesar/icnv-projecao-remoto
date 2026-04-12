@@ -2952,7 +2952,7 @@
                             <div class="chord-item-icon"><i class="fas fa-guitar"></i></div>
                             <span class="chord-item-name">${songName}</span>
                             <div class="chord-item-actions">
-                                <span class="chord-item-status ${hasCifra ? 'available' : 'missing'}">${hasCifra ? 'CIFRA ✓SEM CIFRA'}</span>
+                                <span class="chord-item-status ${hasCifra ? 'available' : 'missing'}">${hasCifra ? 'CIFRA ✓' : 'SEM CIFRA'}</span>
                                 <button class="btn-upload-cifra" onclick="event.stopPropagation(); triggerUpload('${songName.replace(/'/g, "\\'")}')" title="Tirar foto da cifra">
                                     <i class="fas fa-camera"></i>
                                 </button>
