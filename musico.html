@@ -158,7 +158,7 @@
             text-transform: uppercase;
         }
 
-        /* â”€â”€ Alphabetical Grid in Browse Modal (v3.7.1) â”€â”€ */
+        /* ── Alphabetical Grid in Browse Modal (v3.7.1) ── */
         .alpha-group .worship-header {
             padding: 12px 16px;
             min-height: 52px;
@@ -1386,7 +1386,7 @@
             opacity: 1;
         }
 
-        /* â”€â”€ Quick Linker (v3.6.9) â”€â”€ */
+        /* ── Quick Linker (v3.6.9) ── */
         .btn-quick-link {
             background: var(--music-gold-glow);
             border: 1px solid rgba(226, 199, 146, 0.3);
@@ -1462,7 +1462,7 @@
         }
         .btn-photo-link:active { transform: scale(0.9); }
 
-        /* â”€â”€ Unlinked Groups (v3.6.9) â”€â”€ */
+        /* ── Unlinked Groups (v3.6.9) ── */
         .unlinked-group {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(226, 199, 146, 0.1);
@@ -1506,7 +1506,7 @@
         }
 
 
-        /* â”€â”€ Custom Confirm (v3.6.9) â”€â”€ */
+        /* ── Custom Confirm (v3.6.9) ── */
         .confirm-modal {
             position: fixed;
             inset: 0;
@@ -1871,7 +1871,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const binId = urlParams.get('id');
 
-        // â”€â”€â”€ State â”€â”€
+        // ─── State ──
         let socket = null;
         let connected = false;
         let isOfflineMode = false;
@@ -1937,7 +1937,7 @@
         let controlsTimeout = null;
         let controlsVisible = true;
 
-        // â”€â”€â”€ Init â”€â”€
+        // ─── Init ──
         async function init() {
             const isGitHub = window.location.hostname.includes('github.io');
             
@@ -2065,7 +2065,7 @@
             }
         }
 
-        // â”€â”€â”€ Socket.io Connection â”€â”€
+        // ─── Socket.io Connection ──
         function connectSocket(serverUrl) {
             socket = io(serverUrl, { reconnection: true, reconnectionDelay: 2000 });
 
@@ -2400,7 +2400,7 @@
             pzApply();
         }
 
-        // â”€â”€â”€ Group Navigation (v3.6.8 / 3.6.9 revised) â”€â”€â”€
+        // ─── Group Navigation (v3.6.8 / 3.6.9 revised) ───
 
         // Finds the group and song index for a given song title across ALL worship groups.
         // Returns { groupKey, songIdx } or null if not found.
@@ -2470,9 +2470,9 @@
             showControls(); // Show controls on navigation
         }
 
-        // Focal-Point Pinch-to-Zoom (v3.6.8)      â”€â”€â”€
-        // Same algorithm used by Google Maps,      â”€â”€â”€
-        // iOS Photos, and Android Gallery.          â”€â”€â”€
+        // Focal-Point Pinch-to-Zoom (v3.6.8)      ───
+        // Same algorithm used by Google Maps,      ───
+        // iOS Photos, and Android Gallery.          ───
         //
         // Core principle: when scaling from s_old to s_new,
         // the focal point (focalX, focalY) must stay fixed
@@ -2660,7 +2660,7 @@
                     setTimeout(() => { if (v) v.style.transition = ''; }, 300);
                 }
 
-                // v3.6.8/v3.6.8: Swipe navigation â”€â”€â”€ if at scale=1 and user swiped horizontally
+                // v3.6.8/v3.6.8: Swipe navigation ─── if at scale=1 and user swiped horizontally
                 if (pz.scale <= 1.05 && pz.hasMoved && viewerGroupKey) {
                     // Only if horizontal swipe is dominant and exceeds threshold
                     if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5) {
@@ -2676,7 +2676,7 @@
                 pzClamp();
                 pzApply();
             } else if (remaining.length === 1) {
-                // Transition from pinch â”€â”€â”€> drag seamlessly
+                // Transition from pinch ───> drag seamlessly
                 pz.isDragging = true;
                 pz.dragStartX = remaining[0].clientX;
                 pz.dragStartY = remaining[0].clientY;
@@ -2686,7 +2686,7 @@
             }
         }
 
-        // â”€â”€â”€ Controls visibility â”€â”€â”€
+        // ─── Controls visibility ───
         function showControls() {
             const viewer = document.getElementById('chordViewer');
             viewer.classList.remove('controls-hidden');
@@ -2710,7 +2710,7 @@
             else showControls();
         }
 
-        // â”€â”€â”€ Chord Viewer â”€â”€â”€
+        // ─── Chord Viewer ───
         // openChordViewer() is called with NO group context (e.g. from the now-playing banner).
         // It auto-resolves the context from currentSongTitle.
         function openChordViewer() {
@@ -2787,7 +2787,7 @@
             viewerSongIndex = -1;
         }
 
-        // â”€â”€ In-Viewer Song Change Banner (v3.6.8) â”€â”€
+        // ── In-Viewer Song Change Banner (v3.6.8) ──
         function showViewerBanner(title) {
             const banner = document.getElementById('viewerSongBanner');
             document.getElementById('viewerBannerTitle').textContent = title;
@@ -2826,7 +2826,7 @@
             updateGroupNavIndicator();
         }
 
-        // â”€â”€ Open chord from manual click (v3.6.8: with group context) â”€â”€
+        // ── Open chord from manual click (v3.6.8: with group context) ──
         function openChordManual(fileName, groupKey, songIdx) {
             // Store explicit group context for navigation
             viewerGroupKey = groupKey || null;
@@ -2847,7 +2847,7 @@
             openChordViewer();
         }
 
-        // â”€â”€ Notification (v3.6.9: Dynamic labels) â”€â”€
+        // ── Notification (v3.6.9: Dynamic labels) ──
         function showNotification(title, label = 'AVISO', hint = '') {
             const popup = document.getElementById('notifPopup');
             const labelEl = document.getElementById('notifLabel');
@@ -3040,7 +3040,7 @@
             });
         }
 
-        // â”€â”€ Browse Modal (v3.7.1) â”€â”€
+        // ── Browse Modal (v3.7.1) ──
         function openBrowseModal() {
             document.getElementById('browseModal').classList.add('active');
             document.getElementById('browseSearchInput').value = '';
@@ -3075,7 +3075,7 @@
                 return;
             }
 
-            // MODO NAVEGAÁ‡ÁƒO: Sanfonado por Letras A-Z (v3.7.1)
+            // MODO NAVEGAÇÃO: Sanfonado por Letras A-Z (v3.7.1)
             if (!allCifras || allCifras.length === 0) {
                 container.innerHTML = `<div class="empty-state"><i class="fas fa-folder-open"></i><h3>Acervo Vazio</h3><p>Sincronize com o PC para ver as cifras aqui.</p></div>`;
                 return;
@@ -3250,9 +3250,9 @@
             reader.readAsDataURL(file);
         }
 
-        // â”€â”€ Start â”€â”€
+        // ── Start ──
         init();
-        // â”€â”€ Quick Linker (v3.6.9) â”€â”€
+        // ── Quick Linker (v3.6.9) ──
         const openUnlinkedGroups = new Set();
         function openQuickLinker() {
             if (!connected) {
@@ -3347,7 +3347,7 @@
             }
         };
 
-        // â”€â”€ Custom Confirm UI Logic (v3.6.9) â”€â”€
+        // ── Custom Confirm UI Logic (v3.6.9) ──
         function showCustomConfirm(title, message, okText = "Sim", cancelText = "Cancelar") {
             return new Promise((resolve) => {
                 const modal = document.getElementById('confirmModal');

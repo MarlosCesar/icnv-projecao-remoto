@@ -90,7 +90,7 @@
         h1 span { color: var(--accent); }
         p.subtitle { color: var(--text-muted); font-size: 13px; margin-top: 5px; }
 
-        /* â”€â”€ Home Cards â”€â”€ */
+        /* ── Home Cards ── */
         .home-cards {
             display: flex;
             flex-direction: column;
@@ -141,7 +141,7 @@
         .status-badge.offline { background: rgba(161, 161, 170, 0.1); color: var(--text-muted); border: 1px solid rgba(161, 161, 170, 0.2); }
         .status-badge.checking { background: rgba(0, 132, 255, 0.1); color: var(--accent); }
 
-        /* â”€â”€ Section Header (Back btn) â”€â”€ */
+        /* ── Section Header (Back btn) ── */
         .section-back {
             display: flex;
             align-items: center;
@@ -176,7 +176,7 @@
             text-transform: uppercase;
         }
 
-        /* â”€â”€ Form Elements â”€â”€ */
+        /* ── Form Elements ── */
         .form-group {
             display: flex;
             flex-direction: column;
@@ -207,7 +207,7 @@
         }
         .form-group input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
 
-        /* â”€â”€ List Section â”€â”€ */
+        /* ── List Section ── */
         .list-section {
             background: var(--panel);
             backdrop-filter: blur(10px);
@@ -225,7 +225,7 @@
             letter-spacing: 1px;
         }
 
-        /* â”€â”€ Search â”€â”€ */
+        /* ── Search ── */
         .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
         .search-box {
             background: var(--panel);
@@ -250,7 +250,7 @@
             box-shadow: 0 5px 15px rgba(0, 132, 255, 0.3);
         }
 
-        /* â”€â”€ Song Item â”€â”€ */
+        /* ── Song Item ── */
         .song-item {
             display: flex; align-items: center; justify-content: space-between;
             padding: 12px 15px; border-bottom: 1px solid var(--border); transition: 0.2s;
@@ -265,7 +265,7 @@
             display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
 
-        /* â”€â”€ Action Button â”€â”€ */
+        /* ── Action Button ── */
         .footer-action {
             display: block; width: 100%; background: var(--accent); color: white;
             padding: 16px; border-radius: 12px; text-align: center;
@@ -276,7 +276,7 @@
         .footer-action:active { transform: scale(0.98); }
         .footer-action:disabled { background: #333; cursor: not-allowed; box-shadow: none; opacity: 0.7; }
 
-        /* â”€â”€ File Upload Card â”€â”€ */
+        /* ── File Upload Card ── */
         .file-drop-zone {
             border: 2px dashed var(--border);
             border-radius: 12px;
@@ -303,7 +303,7 @@
         #filePreview .btn-clear { background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 16px; }
         #fileUploadStatus { font-size: 13px; color: var(--text-muted); text-align: center; margin-top: 8px; min-height: 20px; }
 
-        /* â”€â”€ Modal (Catalog) â”€â”€ */
+        /* ── Modal (Catalog) ── */
         .modal {
             position: fixed; inset: 0; 
             background: rgba(9, 9, 11, 0.85); /* v3.6.5: Semi-transparente para o blur */
@@ -353,7 +353,7 @@
         .modal .search-box { padding: 10px 15px; margin-bottom: 12px; border-radius: 10px; box-shadow: none; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); flex: none; }
         .modal .search-box input { font-size: 14px; width: 100%; }
 
-        /* â”€â”€ Success Popup â”€â”€ */
+        /* ── Success Popup ── */
         .success-popup {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             background: #2e7d32; color: white; padding: 12px 25px; border-radius: 30px;
@@ -362,7 +362,7 @@
         }
         @keyframes slideDown { from { transform: translateX(-50%) translateY(-50px); } to { transform: translateX(-50%) translateY(0); } }
 
-        /* â”€â”€ Loading â”€â”€ */
+        /* ── Loading ── */
         .loading-overlay {
             position: fixed; inset: 0; background: var(--bg); display: flex;
             flex-direction: column; align-items: center; justify-content: center; z-index: 3000;
@@ -370,7 +370,7 @@
         .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s infinite linear; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* â”€â”€ Saved Plans Groups â”€â”€ */
+        /* ── Saved Plans Groups ── */
         @media (min-width: 768px) {
             body { padding: 40px; }
             .container { max-width: 540px; }
