@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICNV ProjeÃ§Ã£o - Portal Remoto</title>
+    <title>ICNV Projeção - Portal Remoto</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
@@ -18,8 +18,8 @@
             const baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             
             const manifest = {
-                name: "ICNV ProjeÃ§Ã£o",
-                short_name: "ICNV ProjeÃ§Ã£o",
+                name: "ICNV Projeção",
+                short_name: "ICNV Projeção",
                 description: "Portal de Escolha Remota - ICNV",
                 start_url: window.location.href,
                 display: "standalone",
@@ -154,7 +154,7 @@
         }
         .section-back:hover { opacity: 0.8; }
 
-        /* Estilo para cartÃµes desativados */
+        /* Estilo para cartões desativados */
         .home-card.disabled-card {
             opacity: 0.5;
             cursor: not-allowed;
@@ -426,11 +426,11 @@
         </div>
     </div>
 
-    <div id="successPopup" class="success-popup"><i class="fas fa-check-circle"></i> SeleÃ§Ã£o enviada!</div>
+    <div id="successPopup" class="success-popup"><i class="fas fa-check-circle"></i> Seleção enviada!</div>
 
     <div class="container">
         <header>
-            <img src="logo ICNV Projecao.png" alt="ICNV PROJEÃ‡ÃƒO" style="height: 50px; width: auto; margin-bottom: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+            <img src="logo ICNV Projecao.png" alt="ICNV PROJEÇÁO" style="height: 50px; width: auto; margin-bottom: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
             <p class="subtitle" id="lastUpdateText">Sincronizando biblioteca...</p>
         </header>
 
@@ -442,7 +442,7 @@
                 <div class="home-card-icon blue"><i class="fas fa-music"></i></div>
                 <div class="home-card-text">
                     <h3>LOUVOR</h3>
-                    <p>Planeje e envie a programaÃ§Ã£o do culto para a nuvem</p>
+                    <p>Planeje e envie a programação do culto para a nuvem</p>
                 </div>
                 <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
             </div>
@@ -460,7 +460,7 @@
                 <div class="home-card-icon green"><i class="fas fa-pen-alt"></i></div>
                 <div class="home-card-text">
                     <h3>NOVO</h3>
-                    <p>Cole a letra de uma mÃºsica nova para sincronizar</p>
+                    <p>Cole a letra de uma música nova para sincronizar</p>
                 </div>
                 <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
             </div>
@@ -468,8 +468,8 @@
             <div class="home-card" onclick="openMusicianPortal()" style="border-color: rgba(226, 199, 146, 0.2);">
                 <div class="home-card-icon" style="background: rgba(226, 199, 146, 0.15); color: #e2c792;"><i class="fas fa-guitar"></i></div>
                 <div class="home-card-text">
-                    <h3 style="color: #e2c792;">PORTAL DO MÃšSICO <span id="musicianStatus" class="status-badge checking">...</span></h3>
-                    <p>Veja as cifras das mÃºsicas em projeÃ§Ã£o em tempo real</p>
+                    <h3 style="color: #e2c792;">PORTAL DO MÚSICO <span id="musicianStatus" class="status-badge checking">...</span></h3>
+                    <p>Veja as cifras das músicas em projeção em tempo real</p>
                 </div>
                 <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto; font-size: 14px;"></i>
             </div>
@@ -477,7 +477,7 @@
             <div class="home-card" onclick="openFullRemote()">
                 <div class="home-card-icon red"><i class="fas fa-video"></i></div>
                 <div class="home-card-text">
-                    <h3>PROJEÃ‡ÃƒO <span id="projectionStatus" class="status-badge checking">...</span></h3>
+                    <h3>PROJEÇÁO <span id="projectionStatus" class="status-badge checking">...</span></h3>
                     <p>Controle direto da tela (Abrir Painel do PC)</p>
                 </div>
                 <i class="fas fa-external-link-alt" style="color: var(--text-muted); margin-left: auto; font-size: 14px;"></i>
@@ -485,7 +485,7 @@
         </div>
 
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-        <!-- SEÃ‡ÃƒO: LOUVOR                          -->
+        <!-- SEÁ‡ÁƒO: LOUVOR                          -->
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <div id="sectionLouvor" style="display:none;">
             <div class="section-back" onclick="showHome()">
@@ -493,15 +493,15 @@
             </div>
 
             <div class="list-section">
-                <div class="section-title"><i class="fas fa-calendar-alt"></i> ProgramaÃ§Ã£o do Culto</div>
+                <div class="section-title"><i class="fas fa-calendar-alt"></i> Programação do Culto</div>
                 <div style="padding: 0 15px 15px 15px;">
                     <div class="form-group">
                         <label>Tipo de Culto</label>
                         <select id="selectCulto">
-                            <option value="Domingo-ManhÃ£">Domingo-ManhÃ£</option>
+                            <option value="Domingo-Manhã">Domingo-Manhã</option>
                             <option value="Domingo-Noite">Domingo-Noite</option>
                             <option value="Quarta">Quarta</option>
-                            <option value="SÃ¡bado">SÃ¡bado</option>
+                            <option value="Sábado">Sábado</option>
                             <option value="Santa Ceia">Santa Ceia</option>
                             <option value="Outros">Outros</option>
                         </select>
@@ -512,7 +512,7 @@
                     </div>
                     <div class="form-group">
                         <label>Dirigente / Pregador</label>
-                        <input type="text" id="inputDirigente" placeholder="Nome do responsÃ¡vel">
+                        <input type="text" id="inputDirigente" placeholder="Nome do responsável">
                     </div>
                 </div>
             </div>
@@ -522,7 +522,7 @@
                     <i class="fas fa-search" style="color: var(--text-muted);"></i>
                     <input type="text" id="searchInput" placeholder="Clique aqui para escolher..." readonly onclick="openSelectionModal()">
                 </div>
-                <button class="btn-plus" onclick="openSelectionModal()" title="Adicionar mÃºsicas">
+                <button class="btn-plus" onclick="openSelectionModal()" title="Adicionar músicas">
                     <i class="fas fa-plus"></i>
                 </button>
             </div>
@@ -545,7 +545,7 @@
         </div>
 
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-        <!-- SEÃ‡ÃƒO: ARQUIVO                         -->
+        <!-- SEÁ‡ÁƒO: ARQUIVO                         -->
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <div id="sectionArquivo" style="display:none;">
             <div class="section-back" onclick="showHome()">
@@ -558,7 +558,7 @@
                     <div class="file-drop-zone" id="fileDropZone" onclick="document.getElementById('fileInput').click()">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <strong>Toque para selecionar um arquivo</strong>
-                        <p>PDF, PPT, PPTX, MP3, MP4, JPG, PNG, TXT<br>Tamanho mÃ¡ximo: <b>100 MB</b></p>
+                        <p>PDF, PPT, PPTX, MP3, MP4, JPG, PNG, TXT<br>Tamanho máximo: <b>100 MB</b></p>
                         <p style="font-size:10px; color:var(--text-muted); margin-top:10px; opacity:0.8;"><i class="fas fa-history"></i> Arquivos grandes (>2MB) ficam na nuvem por 24h.</p>
                     </div>
                     <input type="file" id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.mp3,.mp4,.wav,.m4a,.jpg,.jpeg,.png,.txt" style="display:none;" onchange="handleFileSelected(this)">
@@ -582,7 +582,7 @@
 
             <div class="list-section" id="sentFilesSection" style="display:none;">
                 <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span><i class="fas fa-clock"></i> Aguardando SincronizaÃ§Ã£o</span>
+                    <span><i class="fas fa-clock"></i> Aguardando Sincronização</span>
                     <span onclick="clearSentFiles()" style="font-size:11px; color:#ff4d4d; cursor:pointer; padding: 4px 8px;">Limpar</span>
                 </div>
                 <div id="sentFilesList"></div>
@@ -590,7 +590,7 @@
         </div>
 
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-        <!-- SEÃ‡ÃƒO: NOVO (Nova MÃºsica)              -->
+        <!-- SEÁ‡ÁƒO: NOVO (Nova Música)              -->
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <div id="sectionNovo" style="display:none;">
             <div class="section-back" onclick="showHome()">
@@ -598,15 +598,15 @@
             </div>
 
             <div class="list-section">
-                <div class="section-title"><i class="fas fa-pen-alt"></i> Adicionar Nova MÃºsica</div>
+                <div class="section-title"><i class="fas fa-pen-alt"></i> Adicionar Nova Música</div>
                 <div style="padding: 5px 15px 15px 15px;">
                     <div class="form-group">
-                        <label>Letra da MÃºsica</label>
+                        <label>Letra da Música</label>
                         <textarea id="newSongLyrics" placeholder="Cole a letra completa aqui..." oninput="updateNameFromLyrics(this)"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Nome da MÃºsica</label>
-                        <input type="text" id="newSongName" placeholder="EX: NOME DA MÃšSICA">
+                        <label>Nome da Música</label>
+                        <input type="text" id="newSongName" placeholder="EX: NOME DA MÁšSICA">
                     </div>
                     <div id="newSongStatus" style="font-size: 13px; color: var(--text-muted); text-align: center; min-height: 20px; margin-bottom: 8px;"></div>
                     <button class="footer-action" id="btnSendNewSong" onclick="sendNewSongToCloud()">
@@ -617,7 +617,7 @@
 
             <div class="list-section" id="sentSongsSection" style="display:none;">
                 <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span><i class="fas fa-clock"></i> Aguardando SincronizaÃ§Ã£o</span>
+                    <span><i class="fas fa-clock"></i> Aguardando Sincronização</span>
                     <span onclick="clearSentFiles()" style="font-size:11px; color:#ff4d4d; cursor:pointer; padding: 4px 8px;">Limpar</span>
                 </div>
                 <div id="sentSongsList"></div>
@@ -625,7 +625,7 @@
         </div>
 
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-        <!-- SEÃ‡ÃƒO: PROJEÃ‡ÃƒO (Direct Control)       -->
+        <!-- SEÁ‡ÁƒO: PROJEÇÁO (Direct Control)       -->
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <div id="sectionProjecao" style="display:none;">
             <div class="section-back" onclick="showHome()">
@@ -659,33 +659,33 @@
                     </div>
                     
                     <p style="font-size: 11px; color: var(--text-muted); margin-top: 25px; line-height: 1.5;">
-                        <i class="fas fa-info-circle"></i> O <b>Painel Completo</b> funciona apenas na mesma rede Wi-Fi e permite trocar as letras das mÃºsicas diretamente.
+                        <i class="fas fa-info-circle"></i> O <b>Painel Completo</b> funciona apenas na mesma rede Wi-Fi e permite trocar as letras das músicas diretamente.
                     </p>
                 </div>
             </div>
         </div>
 
-        <!-- VersÃ£o no RodapÃ© (v3.7.1) -->
+        <!-- Versão no Rodapé (v3.7.1) -->
         <div style="text-align: center; margin-top: 50px; margin-bottom: 20px; font-size: 10px; color: var(--text-muted); opacity: 0.5; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">
-            ICNV PROJEÃ‡ÃƒO <span style="color: var(--accent);">v3.7.1</span>
+            ICNV PROJEÇÁO <span style="color: var(--accent);">V3.7.1</span>
         </div>
     </div>
 
-    <!-- MODAL DE SELEÃ‡ÃƒO -->
+    <!-- MODAL DE SELEÁ‡ÁƒO -->
     <div id="selectionModal" class="modal">
         <div class="modal-header">
-            <h3 style="font-size: 18px; color: var(--accent);"><i class="fas fa-list-ul"></i> CatÃ¡logo</h3>
+            <h3 style="font-size: 18px; color: var(--accent);"><i class="fas fa-list-ul"></i> Catálogo</h3>
             <button onclick="closeSelectionModal()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
         </div>
         <div class="search-box">
             <i class="fas fa-search" style="color: var(--text-muted);"></i>
-            <input type="text" id="modalSearchInput" placeholder="Digite o nome da mÃºsica..." oninput="renderBrowser(true)">
+            <input type="text" id="modalSearchInput" placeholder="Digite o nome da música..." oninput="renderBrowser(true)">
         </div>
         <div id="modalBreadcrumb" class="breadcrumb">
-            <span onclick="goHome()">ðŸ  InÃ­cio</span>
+            <span onclick="goHome()">ðŸ  Início</span>
         </div>
         <div class="modal-body" id="catalogBrowser"></div>
-        <button id="btnConfirmSelectionModal" onclick="closeSelectionModal()">CONCLUÃDO</button>
+        <button id="btnConfirmSelectionModal" onclick="closeSelectionModal()">CONCLUÁDO</button>
     </div>
 
     <script>
@@ -704,22 +704,22 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // FunÃ§Ãµes de Escrita legadas mantidas para compatibilidade
+        // Funções de Escrita legadas mantidas para compatibilidade
         async function cloudSave(id, data) {
             await db.ref('igrejas/' + id).set(data);
             return { ok: true };
         }
         
-        // cloudFetch Ã© mantido caso haja uso sÃ­ncrono pontual
+        // cloudFetch é mantido caso haja uso síncrono pontual
         async function cloudFetch(id) {
             const snap = await db.ref('igrejas/' + id).once('value');
-            if(!snap.exists()) throw new Error('Dados nÃ£o encontrados');
+            if(!snap.exists()) throw new Error('Dados não encontrados');
             return snap.val();
         }
         const binId = urlParams.get('id');
         let fullCatalog = [], selections = [], currentFolder = [], pathStack = [], savedSelections = [];
         let editGroupContext = null, selectedFile = null, localServerUrl = null;
-        let editContext = null; // NOVO: Controle de ediÃ§Ã£o (v3.5.4)
+        let editContext = null; // NOVO: Controle de edição (v3.5.4)
 
         function showSection(name) {
             document.querySelectorAll('.container > div[id^="section"], #homeView').forEach(el => el.style.display = 'none');
@@ -738,16 +738,16 @@
         async function init() {
             document.getElementById('inputData').valueAsDate = new Date();
             if (!binId) {
-                document.getElementById('loadingText').innerHTML = 'ID NÃƒO ENCONTRADO';
+                document.getElementById('loadingText').innerHTML = 'ID NÁƒO ENCONTRADO';
                 document.getElementById('manualIdContainer').style.display = 'block';
                 return;
             }
-            // Inicia a escuta ESPECÃFICA em tempo real (Firebase WebSocket)
+            // Inicia a escuta ESPECÁFICA em tempo real (Firebase WebSocket)
             db.ref('igrejas/' + binId).on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (!data) {
                     if (document.getElementById('loading').style.display !== 'none') {
-                        document.getElementById('loadingText').innerHTML = 'CATÃLOGO NÃƒO ENCONTRADO (Abra o PC)';
+                        document.getElementById('loadingText').innerHTML = 'CATÁLOGO NÁƒO ENCONTRADO (Abra o PC)';
                     }
                     return;
                 }
@@ -772,11 +772,11 @@
                 document.getElementById('loading').style.opacity = '0';
                 setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
             }, (error) => {
-                alert('Erro na conexÃ£o com Firebase: ' + error.message);
-                document.getElementById('loadingText').innerHTML = 'ERRO DE CONEXÃƒO';
+                alert('Erro na conexão com Firebase: ' + error.message);
+                document.getElementById('loadingText').innerHTML = 'ERRO DE CONEXÁƒO';
             });
 
-            // Agendar monitoramento periÃ³dico (v3.7.1)
+            // Agendar monitoramento periódico (v3.7.1)
             setInterval(updateSystemStatus, 15000); 
         }
 
@@ -796,7 +796,7 @@
             const popup = document.getElementById('successPopup');
             if (msg) popup.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
             popup.style.display = 'block';
-            setTimeout(() => { popup.style.display = 'none'; popup.innerHTML = '<i class="fas fa-check-circle"></i> SeleÃ§Ã£o enviada!'; }, 3000);
+            setTimeout(() => { popup.style.display = 'none'; popup.innerHTML = '<i class="fas fa-check-circle"></i> Seleção enviada!'; }, 3000);
         }
 
         let isSystemOnline = false;
@@ -810,7 +810,7 @@
             const projBadge = document.getElementById('projectionStatus');
             const pcBadge = document.getElementById('pcStatusBadge');
 
-            console.log(`[Remote] Verificando conexÃ£o local: ${localServerUrl}...`);
+            console.log(`[Remote] Verificando conexão local: ${localServerUrl}...`);
             const online = await isLocalServerOnline(localServerUrl);
             console.log(`[Remote] Status PC: ${online ? 'ONLINE' : 'OFFLINE'}`);
             isSystemOnline = online;
@@ -859,7 +859,7 @@
         }
 
         async function sendProjecaoCommand(action) {
-            if (!localServerUrl) { alert("IP do PC nÃ£o configurado."); return; }
+            if (!localServerUrl) { alert("IP do PC não configurado."); return; }
             if (window.navigator.vibrate) window.navigator.vibrate(50);
             try {
                 const res = await fetch(`${localServerUrl}/remote-control?action=${action}`);
@@ -870,7 +870,7 @@
                     alert("Erro: " + data.error);
                 }
             } catch (e) {
-                alert("Falha na comunicaÃ§Ã£o com o computador. Verifique se estÃ£o na mesma rede Wi-Fi.");
+                alert("Falha na comunicação com o computador. Verifique se estão na mesma rede Wi-Fi.");
             }
         }
 
@@ -884,7 +884,7 @@
             const searchTerm = removeAcentos(document.getElementById('modalSearchInput').value.toLowerCase());
             if (searchTerm) {
                 const results = searchDeep(fullCatalog, searchTerm);
-                if (results.length === 0) { container.innerHTML = '<div style="padding: 40px; text-align: center; color: #888;">Nenhuma mÃºsica encontrada</div>'; return; }
+                if (results.length === 0) { container.innerHTML = '<div style="padding: 40px; text-align: center; color: #888;">Nenhuma música encontrada</div>'; return; }
                 results.sort((a,b) => getTitle(a).localeCompare(getTitle(b))).forEach(item => createFileItem(container, item));
             } else {
                 if (pathStack.length > 0) {
@@ -938,7 +938,7 @@
         function goHome() { pathStack = []; currentFolder = fullCatalog; updateBreadcrumb(); renderBrowser(true); }
         function jumpTo(idx) { const target = pathStack[idx]; currentFolder = target.data; pathStack = pathStack.slice(0, idx); updateBreadcrumb(); renderBrowser(true); }
         function updateBreadcrumb() {
-            let html = '<span onclick="goHome()">ðŸ  InÃ­cio</span>';
+            let html = '<span onclick="goHome()">ðŸ  Início</span>';
             pathStack.forEach((p, idx) => html += `<span onclick="jumpTo(${idx})">${p.name}</span>`);
             document.getElementById('modalBreadcrumb').innerHTML = html;
         }
@@ -978,14 +978,14 @@
             if (selections.length === 0) return;
             const btn = document.getElementById('btnConfirm');
             btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ENVIANDO...`; btn.disabled = true;
-            const culto = document.getElementById('selectCulto').value, dataStr = document.getElementById('inputData').value, dirigente = document.getElementById('inputDirigente').value || 'NÃ£o Informado';
+            const culto = document.getElementById('selectCulto').value, dataStr = document.getElementById('inputData').value, dirigente = document.getElementById('inputDirigente').value || 'Não Informado';
             try {
                 let data = await cloudFetch(binId);
                 if (!data.selections) data.selections = [];
                 
-                // --- LÃ“GICA DE SUBSTITUIÃ‡ÃƒO TOTAL (v3.5.4) ---
-                // O botÃ£o "Gerar Planejamento" agora sempre confirma as alteraÃ§Ãµes (feitas via lÃ¡pis ou do zero).
-                // Ele remove a versÃ£o antiga da nuvem para o mesmo CULTO e DATA e grava a nova lista atual.
+                // --- LÁ“GICA DE SUBSTITUIÁ‡ÁƒO TOTAL (v3.5.4) ---
+                // O botão "Gerar Planejamento" agora sempre confirma as alterações (feitas via lápis ou do zero).
+                // Ele remove a versão antiga da nuvem para o mesmo CULTO e DATA e grava a nova lista atual.
                 data.selections = data.selections.filter(s => {
                     return !(s.culto.trim() === culto.trim() && s.data.trim() === dataStr.trim());
                 });
@@ -1001,7 +1001,7 @@
         }
 
         async function removeHistoryItem(idx, type) {
-            if (!confirm("Remover este item da nuvem? Ele nÃ£o aparecerÃ¡ mais para sincronizaÃ§Ã£o no PC.")) return;
+            if (!confirm("Remover este item da nuvem? Ele não aparecerá mais para sincronização no PC.")) return;
             try {
                 const data = await cloudFetch(binId);
                 if (type === 'file') {
@@ -1070,14 +1070,14 @@
         }
 
         // --- UI para Planejamentos Salvos (Nuvem) ---
-        let expandedGroups = new Set(); // Guarda os IDs dos grupos que estÃ£o abertos
+        let expandedGroups = new Set(); // Guarda os IDs dos grupos que estão abertos
 
         function updateSavedPlansUI() {
             const list = document.getElementById('savedPlansList');
             const section = document.getElementById('savedPlansSection');
             list.innerHTML = '';
             
-            // v3.5.5: Considerar apenas planos (sem lyrics). Letras novas ficam no outro mÃ³dulo.
+            // v3.5.5: Considerar apenas planos (sem lyrics). Letras novas ficam no outro módulo.
             const plans = savedSelections.filter(s => !s.lyrics);
 
             if (plans.length === 0) {
@@ -1113,7 +1113,7 @@
                             <i class="fas fa-chevron-right chevron-icon" style="transition: 0.3s; font-size: 11px; color: #666; ${(isExpanded ? 'transform: rotate(90deg);' : '')}"></i>
                             <div>
                                 <div style="color: #0084ff; font-weight: bold; font-size: 14px;">${group.info.culto}</div>
-                                <div style="color: #888; font-size: 11px; margin-top: 2px;">${formatDate(group.info.data)} â€¢ ${group.info.dirigente || 'NÃ£o Informado'}</div>
+                                <div style="color: #888; font-size: 11px; margin-top: 2px;">${formatDate(group.info.data)} â€¢ ${group.info.dirigente || 'Não Informado'}</div>
                             </div>
                         </div>
                         <div style="display: flex; gap: 15px; align-items: center;">
@@ -1143,24 +1143,24 @@
             el.style.display = isOpening ? 'block' : 'none';
             arrow.style.transform = isOpening ? 'rotate(90deg)' : 'none';
             
-            // Salva na memÃ³ria se o grupo estÃ¡ aberto ou fechado
+            // Salva na memória se o grupo está aberto ou fechado
             if (isOpening) expandedGroups.add(id);
             else expandedGroups.delete(id);
         }
 
         async function removeSingleSavedItem(idx) {
-            // Removida a confirmaÃ§Ã£o (conforme pedido v3.5.4)
-            if (window.navigator.vibrate) window.navigator.vibrate(20); // Clique tÃ¡til
+            // Removida a confirmação (conforme pedido v3.5.4)
+            if (window.navigator.vibrate) window.navigator.vibrate(20); // Clique tátil
             savedSelections.splice(idx, 1);
             updateSavedPlansUI();
             await syncNpoint();
         }
 
         function editSavedGroup(culto, data) {
-            // Ativa o contexto de ediÃ§Ã£o para evitar duplicatas ao salvar
+            // Ativa o contexto de edição para evitar duplicatas ao salvar
             editContext = { culto, data };
             
-            // Filtra as mÃºsicas deste grupo e repopula a lista atual
+            // Filtra as músicas deste grupo e repopula a lista atual
             const toEdit = savedSelections.filter(s => s.culto === culto && s.data === data);
             selections = toEdit.map(s => ({ name: s.title, path: null }));
             
@@ -1171,7 +1171,7 @@
             showSection('louvor');
             updateSelectedList();
             
-            // Abre o modal de escolha automaticamente apÃ³s um pequeno delay
+            // Abre o modal de escolha automaticamente após um pequeno delay
             setTimeout(openSelectionModal, 400);
         }
 
@@ -1195,7 +1195,7 @@
                 syncNpoint(); 
             }
 
-            // Feedback visual e scroll para o topo do formulÃ¡rio
+            // Feedback visual e scroll para o topo do formulário
             const container = document.querySelector('#sectionNovo .list-section');
             if (container) {
                 container.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1241,7 +1241,7 @@
             try {
                 const online = await isLocalServerOnline(localServerUrl);
                 if(localServerUrl && online) {
-                    // Upload Direto (RÃ¡pido - Rede Wi-Fi)
+                    // Upload Direto (Rápido - Rede Wi-Fi)
                     await uploadDirect(selectedFile, localServerUrl, st);
                     showSuccess("Arquivo enviado via Wi-Fi!");
                     clearFile();
@@ -1272,7 +1272,7 @@
             });
             const data = await res.json();
             if (data.status === 'success') {
-                // Converte a URL de visualizaÃ§Ã£o para URL de download direto
+                // Converte a URL de visualização para URL de download direto
                 return data.data.url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
             }
             throw new Error("Falha no servidor de nuvem.");
@@ -1309,7 +1309,7 @@
             // Pega a primeira linha inteira
             const firstLine = lyrics.split('\n')[0].trim().toUpperCase();
 
-            // SÃ³ atualiza se o campo estiver vazio ou for o nome que geramos da Ãºltima vez
+            // Só atualiza se o campo estiver vazio ou for o nome que geramos da última vez
             if (nameInput.value === "" || nameInput.value === lastAutoName) {
                 nameInput.value = firstLine;
                 lastAutoName = firstLine;
@@ -1318,7 +1318,7 @@
 
         function openFullRemote() {
             if (!localServerUrl) {
-                alert("IP do PC nÃ£o configurado. Verifique se o sistema no computador estÃ¡ aberto.");
+                alert("IP do PC não configurado. Verifique se o sistema no computador está aberto.");
                 return;
             }
             window.open(localServerUrl, '_blank');
@@ -1335,7 +1335,7 @@
                     return;
                 }
             }
-            // Fallback para versÃ£o Github Pages apenas quando o PC estiver desligado
+            // Fallback para versão Github Pages apenas quando o PC estiver desligado
             window.open(`musico.html${bindIdQ}`, '_blank');
         }
         async function sendNewSongToCloud() {
@@ -1347,14 +1347,14 @@
                 await cloudSave(binId, d);
                 savedSelections = d.selections;
                 renderSentFiles();
-                showSuccess("MÃºsica enviada!"); document.getElementById('newSongName').value = ''; document.getElementById('newSongLyrics').value = '';
+                showSuccess("Música enviada!"); document.getElementById('newSongName').value = ''; document.getElementById('newSongLyrics').value = '';
             } catch(e){ alert(e.message); }
         }
 
         function sharePortal() {
             const shareData = {
-                title: 'ICNV ProjeÃ§Ã£o - Portal Remoto',
-                text: 'Acesse o portal para enviar mÃºsicas e arquivos para a projeÃ§Ã£o.',
+                title: 'ICNV Projeção - Portal Remoto',
+                text: 'Acesse o portal para enviar músicas e arquivos para a projeção.',
                 url: window.location.href
             };
 
