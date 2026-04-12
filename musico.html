@@ -13,10 +13,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#09090b">
 
-    <link rel="icon" type="image/png" href="icon-192.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <link rel="icon" type="image/png" href="/assets/icons/app-icon.png">
+    <link rel="stylesheet" href="/assets/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="/assets/fonts/outfit/index.css">
     
     <!-- FIREBASE SDK (v4.0.0) -->
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
@@ -1642,7 +1641,7 @@
     <!-- Header -->
     <div class="musician-header">
         <div class="header-left">
-            <img src="logo ICNV Projecao.png" alt="ICNV" class="header-logo">
+            <img src="/assets/icons/full-logo.png" alt="ICNV" class="header-logo">
             <div class="header-badge">
                 <i class="fas fa-guitar"></i>
                 PORTAL DO MÚSICO
@@ -1854,7 +1853,7 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script src="lib/socket.io.min.js"></script>
     <script>
         // --- Firebase Config ---
         const firebaseConfig = {
@@ -1866,8 +1865,14 @@
             messagingSenderId: "444479092624",
             appId: "1:444479092624:web:f19e98467fe24a6ca1a515"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        
+        let db = null;
+        if (typeof firebase !== 'undefined') {
+            try {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+            } catch(e) { console.warn("Firebase failed to init:", e); }
+        }
         const urlParams = new URLSearchParams(window.location.search);
         const binId = urlParams.get('id');
 
@@ -1886,6 +1891,7 @@
         let notifTimeout = null;
         let currentUploadSong = '';
         let openGroups = new Set(); // v3.6.8: Persistir estado dos cultos abertos
+        let lastCloudUpdate = null; // v3.7.3: Híbrido para Safari/iOS offline sync
 
         // v3.6.8: Group-based navigation
         let viewerGroupKey = null;    // Which worship group we're navigating
@@ -1958,10 +1964,20 @@
             }
 
             // 3. Se estamos no GitHub com ID, buscamos o PC (v3.7.1)
+            if (!db) {
+                console.log("[Músico] Firebase não carregado, iniciando modo offline");
+                startOfflineMode();
+                fetchCatalogAndCombine();
+                return;
+            }
             try {
                 const snap = await db.ref('igrejas/' + binId).once('value');
                 const data = snap.val();
                 
+                if (data && data.lastUpdate) {
+                    lastCloudUpdate = new Date(data.lastUpdate).getTime();
+                }
+
                 if (data && data.localServerUrl) {
                     localServerUrl = data.localServerUrl;
                     
@@ -1986,6 +2002,13 @@
         
         async function isLocalServerOnline(url) {
             if (!url) return false;
+
+            // v3.7.3: Híbrido - Se a última atualização na nuvem é MUITO recente (60s), 
+            // assumimos que o PC está online mesmo se o ping local falhar (Mixed Content Safari/iOS)
+            if (lastCloudUpdate && (Date.now() - lastCloudUpdate < 60000)) {
+                return true;
+            }
+
             return new Promise(resolve => {
                 const img = new Image();
                 const timeout = setTimeout(() => {
@@ -2067,12 +2090,21 @@
 
         // --- Socket.io Connection --
         function connectSocket(serverUrl) {
-            socket = io(serverUrl, { reconnection: true, reconnectionDelay: 2000 });
+            console.log("[Músico] Conectando ao socket em:", serverUrl);
+            // v3.7.3: Prioridade para WebSocket e logs de erro detalhados para iOS/Safari
+            socket = io(serverUrl, { 
+                transports: ['websocket', 'polling'], 
+                reconnection: true, 
+                reconnectionDelay: 2000 
+            });
 
             socket.on('connect', () => {
+                console.log("[Músico] Socket Conectado! ID:", socket.id);
+                const st = document.getElementById('statusText');
+                if (st) { st.textContent = 'ON'; st.style.color = '#4ade80'; }
+                
                 connected = true;
                 updateStatus(true);
-
                 // Identify as musician portal
                 const deviceId = getDeviceId();
                 socket.emit('device-identify', {
