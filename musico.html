@@ -2274,9 +2274,14 @@
         function loadChordForSong(songTitle) {
             if (!songTitle) return;
             const normalized = normalizeTitle(songTitle);
+            
+            // v3.7.4: Strict Matching Logic
+            // Only matches if the base name (WITHOUT page suffix) is identical to the song title
             const matches = allCifras.filter(c => {
-                const cifraName = normalizeTitle(c.name.replace(/\.[^/.]+$/, ''));
-                return cifraName === normalized || cifraName.includes(normalized) || normalized.includes(cifraName);
+                const cifraFullName = c.name.replace(/\.[^/.]+$/, ''); // Remove extension
+                // Detecção de página: remove sufixos como _P2, -P2, _P02 etc
+                const cifraBase = cifraFullName.replace(/[_-]P\d+$/i, '').trim();
+                return normalizeTitle(cifraBase) === normalized;
             });
             
             // v3.6.9: Ordenação inteligente para múltiplas páginas (_P2, _P3...)
@@ -2973,10 +2978,9 @@
                     // v3.6.8: Remover prefixo de pasta (ex: A\Musica.txt -> Musica)
                     const songName = songFileName.split(/[\\\/]/).pop().replace(/\.[^/.]+$/, '');
                     const hasCifra = allCifras.some(c => {
-                        const cifraBase = normalizeTitle(c.name.replace(/\.[^/.]+$/, ''));
-                        // v3.6.8: Busca bidirecional para não falhar com nomes longos (PIB TRINDADE etc)
-                        const normSong = normalizeTitle(songName);
-                        return cifraBase === normSong || cifraBase.includes(normSong) || normSong.includes(cifraBase);
+                        const cifraFullName = c.name.replace(/\.[^/.]+$/, '');
+                        const cifraBase = cifraFullName.replace(/[_-]P\d+$/i, '').trim();
+                        return normalizeTitle(cifraBase) === normalizeTitle(songName);
                     });
 
                     const songIndex = songs.indexOf(songFileName);
