@@ -63,7 +63,7 @@
             user-select: text !important;
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Header Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Header ─── */
         .musician-header {
             display: flex;
             align-items: center;
@@ -233,7 +233,7 @@
             transform: scale(0.9);
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Container Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Container ─── */
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -241,7 +241,7 @@
             padding-bottom: 100px;
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Now Playing Banner Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Now Playing Banner ─── */
         .now-playing-banner {
             background: linear-gradient(135deg, rgba(226, 199, 146, 0.08), rgba(0, 132, 255, 0.05));
             border: 1px solid rgba(226, 199, 146, 0.15);
@@ -372,7 +372,7 @@
             color: var(--text-muted);
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Section Title Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Section Title ─── */
         .section-title {
             font-size: 11px;
             font-weight: 800;
@@ -391,7 +391,7 @@
             font-size: 12px;
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Worship Groups (Cultos) Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Worship Groups (Cultos) ─── */
         .worship-group {
             background: var(--panel);
             backdrop-filter: blur(10px);
@@ -502,7 +502,7 @@
             display: block;
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Chord Item Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Chord Item ─── */
         .chord-item {
             display: flex;
             align-items: center;
@@ -562,7 +562,7 @@
             color: #ff4d4d;
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Actions & Upload Button Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Actions & Upload Button ─── */
         .chord-item-actions {
             display: flex;
             align-items: center;
@@ -594,7 +594,7 @@
             transform: scale(0.9);
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Manual Upload Area Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Manual Upload Area ─── */
         .manual-search {
             background: var(--panel);
             backdrop-filter: blur(10px);
@@ -647,7 +647,7 @@
             background: rgba(226, 199, 146, 0.25);
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Empty State Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Empty State ─── */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -673,7 +673,7 @@
             line-height: 1.5;
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Notification Popup Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Notification Popup ─── */
         .notification-popup {
             position: fixed;
             bottom: 24px;
@@ -790,7 +790,7 @@
             background: rgba(255, 77, 77, 0.1);
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Fullscreen Chord Viewer (v3.6.8) Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Fullscreen Chord Viewer (v3.6.8) ─── */
         .chord-viewer {
             position: fixed;
             inset: 0;
@@ -911,7 +911,7 @@
             transition: opacity 0.4s ease;
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Side Nav (Consolidated at Bottom) Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Side Nav (Consolidated at Bottom) ─── */
         .chord-side-nav {
             position: absolute;
             bottom: max(20px, env(safe-area-inset-bottom));
@@ -923,13 +923,13 @@
             gap: 15px;
             z-index: 20;
             pointer-events: none;
-            opacity: 0.6; /* v3.6.9: Fica visível permanentemente, mas sutil */
+            opacity: 0.6;
             transition: opacity 0.4s ease;
         }
 
         .chord-side-nav:active, 
         .chord-viewer:not(.controls-hidden) .chord-side-nav {
-            opacity: 1; /* Ganha destaque quando os controles estão ativos */
+            opacity: 1;
         }
 
         .chord-side-btn {
@@ -979,14 +979,14 @@
             justify-content: center;
         }
 
-        /* Á¢-?Á¢-? Auto-hide controls Á¢-?Á¢-? */
+        /* ─── Auto-hide controls ─── */
         .chord-viewer.controls-hidden .chord-viewer-header,
         .chord-viewer.controls-hidden .chord-viewer-footer {
             opacity: 0;
             pointer-events: none;
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ In-viewer song change banner (v3.6.8) Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── In-viewer song change banner (v3.6.8) ─── */
         .viewer-song-banner {
             position: absolute;
             top: 60px;
@@ -1111,7 +1111,7 @@
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Footer Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Footer ─── */
         .portal-footer {
             text-align: center;
             margin-top: 30px;
@@ -1127,7 +1127,7 @@
             color: var(--music-gold);
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Browse Modal (Cifras Manuais) Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Browse Modal (Cifras Manuais) ─── */
         .browse-modal {
             position: fixed;
             inset: 0;
@@ -1178,7 +1178,7 @@
             cursor: pointer;
         }
 
-        /* Á¢-â‚¬Á¢-â‚¬ Upload Modal Á¢-â‚¬Á¢-â‚¬ */
+        /* ─── Upload Modal ─── */
         .upload-modal {
             position: fixed;
             inset: 0;
@@ -1307,7 +1307,7 @@
         .browse-list {
             flex: 1;
             overflow-y: auto;
-            display: block; /* Alterado de flex para block para permitir rolagem natural */
+            display: block;
             padding: 10px;
         }
 
@@ -1341,7 +1341,7 @@
             text-transform: uppercase;
         }
 
-        /* Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬ Back Button (v3.6.8) Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬ */
+        /* ─── Back Button (v3.6.8) ─── */
         .section-back {
             display: flex;
             align-items: center;
@@ -1359,7 +1359,7 @@
             opacity: 0.8;
         }
 
-        /* Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬ Success Toast Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬ */
+        /* ─── Success Toast ─── */
         .toast {
             position: fixed;
             top: 20px;
@@ -1610,7 +1610,7 @@
 
 
 
-        /* Á¢-â‚¬Á¢â‚¬ Á¢-šÂ¬Á¢-â‚¬Á¢â‚¬ Á¢-šÂ¬ Responsive Á¢-â‚¬Á¢â‚¬ Á¢-šÂ¬Á¢-â‚¬Á¢â‚¬ Á¢-šÂ¬ */
+        /* ─── Responsive ─── */
         @media (min-width: 768px) {
             .container {
                 max-width: 600px;
@@ -1746,7 +1746,7 @@
             <button class="chord-viewer-btn" onclick="closeChordViewer()">
                 <i class="fas fa-times"></i>
             </button>
-            <div class="chord-viewer-title" id="chordViewerTitle">Á¢â‚¬-</div>
+            <div class="chord-viewer-title" id="chordViewerTitle">—</div>
             <button class="chord-viewer-btn" onclick="deleteCurrentCifra()" style="color: #ff5555;">
                 <i class="fas fa-trash-alt"></i>
             </button>
@@ -1758,7 +1758,7 @@
             <div class="viewer-song-banner-icon"><i class="fas fa-music"></i></div>
             <div class="viewer-song-banner-body">
                 <div class="viewer-song-banner-label">TOCANDO AGORA</div>
-                <div class="viewer-song-banner-title" id="viewerBannerTitle">Á¢â‚¬-</div>
+                <div class="viewer-song-banner-title" id="viewerBannerTitle">—</div>
                 <div class="viewer-song-banner-hint">Toque para ver a cifra</div>
             </div>
             <button class="viewer-song-banner-close" onclick="event.stopPropagation(); hideViewerBanner()">
@@ -1814,7 +1814,7 @@
             <button class="quick-linker-close" onclick="closeQuickLinker()">&times;</button>
         </div>
         <div style="padding: 15px; font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.2);">
-            Clique na cÁ¢mera ao lado da música para tirar uma foto da cifra e vinculá-la instantaneamente.
+            Clique na câmera ao lado da música para tirar uma foto da cifra e vinculá-la instantaneamente.
         </div>
         <div class="quick-linker-list" id="unlinkedSongsList">
             <!-- Rendered via JS -->
@@ -2177,7 +2177,7 @@
                         currentSongTitle = state.title;
                         updateNowPlaying(state.title);
 
-                        // v3.6.8: Somente tenta carregar cifra se for música ou não tiver contexto de bíÂ­blia
+                        // v3.6.8: Somente tenta carregar cifra se for música ou não tiver contexto de bíblia
                         if (state.contentType === 'song' || !state.title.includes(':')) {
                             loadChordForSong(state.title);
                         }
@@ -2193,7 +2193,7 @@
             // Cifra song changed (direct notification from server)
             socket.on('cifra-song-changed', (data) => {
                 if (data.title) {
-                    // v3.6.8: Same logic as state-update Á¢â‚¬- don't auto-switch if viewer is open
+                    // v3.6.8: Same logic as state-update — don't auto-switch if viewer is open
                     if (chordViewerOpen) {
                         pendingSongTitle = data.title;
                         showViewerBanner(data.title);
@@ -2238,7 +2238,7 @@
             });
         }
 
-        // Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬ Device ID Á¢-â‚¬Á¢-â‚¬
+        /* ─── Device ID ─── */
         function getDeviceId() {
             let id = localStorage.getItem('icnv_musician_device_id');
             if (!id) {
@@ -2248,7 +2248,7 @@
             return id;
         }
 
-        // Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬ Status Á¢-â‚¬Á¢-â‚¬
+        /* ─── Status ─── */
         function updateStatus(online) {
             const dot = document.getElementById('statusDot');
             const text = document.getElementById('statusText');
@@ -2257,7 +2257,7 @@
             text.style.color = online ? 'var(--success)' : 'var(--danger)';
         }
 
-        // Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬ Now Playing Á¢-â‚¬Á¢-â‚¬
+        /* ─── Now Playing ─── */
         function updateNowPlaying(title) {
             const banner = document.getElementById('nowPlayingBanner');
             const titleEl = document.getElementById('nowPlayingTitle');
@@ -2270,7 +2270,7 @@
             }
         }
 
-        // Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬ Load Chord Á¢-â‚¬Á¢-â‚¬
+        /* ─── Load Chord ─── */
         function loadChordForSong(songTitle) {
             if (!songTitle) return;
             const normalized = normalizeTitle(songTitle);
@@ -2320,7 +2320,7 @@
                 .toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
         }
 
-        // Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬Á¢-â‚¬Á¢â‚¬ÂÁ¢-šÂ¬ Render Chord Image Á¢-â‚¬Á¢-â‚¬
+        /* ─── Render Chord Image ─── */
         function renderChordImage() {
             const body = document.getElementById('chordViewerBody');
             const title = document.getElementById('chordViewerTitle');
@@ -2337,7 +2337,7 @@
                         </div>
                     </div>
                 `;
-                title.textContent = currentSongTitle || 'Á¢-â‚¬Á¢-šÂ¬Á¢â‚¬Å“';
+                title.textContent = currentSongTitle || '—';
                 updateGroupNavIndicator();
                 return;
             }
@@ -2391,7 +2391,7 @@
                 socket.emit('delete-cifra', { fileName: fileName });
 
                 // Feedback visual imediato
-                showNotification(`Cifra removida: ${fileName}`, 'EXCLUSÁƒO', 'O arquivo foi apagado da pasta.');
+                showNotification(`Cifra removida: ${fileName}`, 'EXCLUSÃO', 'O arquivo foi apagado da pasta.');
 
                 // Se houver mais de uma página, remove a atual da memória para não piscar imagem antiga
                 if (currentChordFiles.length > 1) {
@@ -2900,7 +2900,7 @@
             }
 
             // Change color if delete
-            if (label === 'EXCLUSÁƒO') {
+            if (label === 'EXCLUSÃO') {
                 popup.style.borderLeft = '4px solid #ff5555';
             } else {
                 popup.style.borderLeft = 'none';
@@ -2922,7 +2922,7 @@
             if (notifTimeout) clearTimeout(notifTimeout);
         }
 
-        // Á¢-â‚¬Á¢-â‚¬ Render Worship Groups Á¢-â‚¬Á¢-â‚¬
+        /* ─── Render Worship Groups ─── */
         function renderWorshipGroups() {
             const container = document.getElementById('worshipGroupsList');
             container.innerHTML = '';
@@ -3032,7 +3032,7 @@
             else openGroups.delete(key);
         }
 
-        // Á¢-â‚¬Á¢-â‚¬ Filter Cifras (Manual Search) Á¢-â‚¬Á¢-â‚¬
+        /* ─── Filter Cifras (Manual Search) ─── */
         function filterCifras() {
             const query = normalizeTitle(document.getElementById('searchCifra').value);
             if (!query) {
@@ -3174,7 +3174,7 @@
             openChordManual(name);
         }
 
-        // Á¢-â‚¬Á¢-â‚¬ Toast Á¢-â‚¬Á¢-â‚¬
+        /* ─── Toast ─── */
         let toastTimeout = null;
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -3188,7 +3188,7 @@
             }, 3000);
         }
 
-        // Á¢-â‚¬Á¢-â‚¬ Keyboard shortcuts Á¢-â‚¬Á¢-â‚¬
+        /* ─── Keyboard shortcuts ─── */
         document.addEventListener('keydown', (e) => {
             if (!chordViewerOpen) return;
             if (e.key === 'Escape') closeChordViewer();
@@ -3196,7 +3196,7 @@
             if (e.key === 'ArrowRight') navigateGroupSong(1);
         });
 
-        // Á¢-â‚¬Á¢-â‚¬ Upload Feature (v3.6.8) Á¢-â‚¬Á¢-â‚¬
+        /* ─── Upload Feature (v3.6.8) ─── */
         function triggerUpload(songName) {
             currentUploadSong = songName;
             document.getElementById('uploadSongName').textContent = songName;
