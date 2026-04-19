@@ -2391,7 +2391,7 @@
                 socket.emit('delete-cifra', { fileName: fileName });
 
                 // Feedback visual imediato
-                showNotification(`Cifra removida: ${fileName}`, 'EXCLUSÃO', 'O arquivo foi apagado da pasta.');
+                showNotification(`Cifra removida: ${fileName}`, 'EXCLUSÁO', 'O arquivo foi apagado da pasta.');
 
                 // Se houver mais de uma página, remove a atual da memória para não piscar imagem antiga
                 if (currentChordFiles.length > 1) {
@@ -2900,7 +2900,7 @@
             }
 
             // Change color if delete
-            if (label === 'EXCLUSÃO') {
+            if (label === 'EXCLUSÁO') {
                 popup.style.borderLeft = '4px solid #ff5555';
             } else {
                 popup.style.borderLeft = 'none';
@@ -3112,7 +3112,7 @@
                 return;
             }
 
-            // MODO NAVEGAÇÃO: Sanfonado por Letras A-Z (v3.7.1)
+            // MODO NAVEGAÇÁO: Sanfonado por Letras A-Z (v3.7.1)
             if (!allCifras || allCifras.length === 0) {
                 container.innerHTML = `<div class="empty-state"><i class="fas fa-folder-open"></i><h3>Acervo Vazio</h3><p>Sincronize com o PC para ver as cifras aqui.</p></div>`;
                 return;

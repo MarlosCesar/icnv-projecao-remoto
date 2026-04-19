@@ -485,7 +485,7 @@
         </div>
 
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-        <!-- SEÇÃO: LOUVOR                          -->
+        <!-- SEÇÁO: LOUVOR                          -->
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <div id="sectionLouvor" style="display:none;">
             <div class="section-back" onclick="showHome()">
@@ -545,7 +545,7 @@
         </div>
 
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-        <!-- SEÇÃO: ARQUIVO                         -->
+        <!-- SEÇÁO: ARQUIVO                         -->
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <div id="sectionArquivo" style="display:none;">
             <div class="section-back" onclick="showHome()">
@@ -590,7 +590,7 @@
         </div>
 
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-        <!-- SEÇÃO: NOVO (Nova Música)              -->
+        <!-- SEÇÁO: NOVO (Nova Música)              -->
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <div id="sectionNovo" style="display:none;">
             <div class="section-back" onclick="showHome()">
@@ -625,7 +625,7 @@
         </div>
 
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-        <!-- SEÇÃO: PROJEÇÃO (Direct Control)       -->
+        <!-- SEÇÁO: PROJEÇÃO (Direct Control)       -->
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <div id="sectionProjecao" style="display:none;">
             <div class="section-back" onclick="showHome()">
@@ -671,7 +671,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE SELEÁ‡ÁƒO -->
+    <!-- MODAL DE SELEÇÃO -->
     <div id="selectionModal" class="modal">
         <div class="modal-header">
             <h3 style="font-size: 18px; color: var(--accent);"><i class="fas fa-list-ul"></i> Catálogo</h3>
@@ -682,10 +682,10 @@
             <input type="text" id="modalSearchInput" placeholder="Digite o nome da música..." oninput="renderBrowser(true)">
         </div>
         <div id="modalBreadcrumb" class="breadcrumb">
-            <span onclick="goHome()">ðŸ  Início</span>
+            <span onclick="goHome()">🏠 Início</span>
         </div>
         <div class="modal-body" id="catalogBrowser"></div>
-        <button id="btnConfirmSelectionModal" onclick="closeSelectionModal()">CONCLUÁDO</button>
+        <button id="btnConfirmSelectionModal" onclick="closeSelectionModal()">CONCLUÍDO</button>
     </div>
 
     <script>
@@ -744,16 +744,16 @@
         async function init() {
             document.getElementById('inputData').valueAsDate = new Date();
             if (!binId) {
-                document.getElementById('loadingText').innerHTML = 'ID NÁƒO ENCONTRADO';
+                document.getElementById('loadingText').innerHTML = 'ID NÃO ENCONTRADO';
                 document.getElementById('manualIdContainer').style.display = 'block';
                 return;
             }
-            // Inicia a escuta ESPECÁFICA em tempo real (Firebase WebSocket)
+            // Inicia a escuta ESPECÍFICA em tempo real (Firebase WebSocket)
             db.ref('igrejas/' + binId).on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (!data) {
                     if (document.getElementById('loading').style.display !== 'none') {
-                        document.getElementById('loadingText').innerHTML = 'CATÁLOGO NÁƒO ENCONTRADO (Abra o PC)';
+                        document.getElementById('loadingText').innerHTML = 'CATÁLOGO NÃO ENCONTRADO (Abra o PC)';
                     }
                     return;
                 }
@@ -780,7 +780,7 @@
                 setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
             }, (error) => {
                 alert('Erro na conexão com Firebase: ' + error.message);
-                document.getElementById('loadingText').innerHTML = 'ERRO DE CONEXÁƒO';
+                document.getElementById('loadingText').innerHTML = 'ERRO DE CONEXÃO';
             });
 
             // Agendar monitoramento periódico (v3.7.1)
@@ -961,7 +961,7 @@
         function goHome() { pathStack = []; currentFolder = fullCatalog; updateBreadcrumb(); renderBrowser(true); }
         function jumpTo(idx) { const target = pathStack[idx]; currentFolder = target.data; pathStack = pathStack.slice(0, idx); updateBreadcrumb(); renderBrowser(true); }
         function updateBreadcrumb() {
-            let html = '<span onclick="goHome()">ðŸ  Início</span>';
+            let html = '<span onclick="goHome()">🏠 Início</span>';
             pathStack.forEach((p, idx) => html += `<span onclick="jumpTo(${idx})">${p.name}</span>`);
             document.getElementById('modalBreadcrumb').innerHTML = html;
         }
@@ -1006,7 +1006,7 @@
                 let data = await cloudFetch(binId);
                 if (!data.selections) data.selections = [];
                 
-                // --- LÁ“GICA DE SUBSTITUIÁ‡ÁƒO TOTAL (v3.5.4) ---
+                // --- LÓGICA DE SUBSTITUIÇÃO TOTAL (v3.5.4) ---
                 // O botão "Gerar Planejamento" agora sempre confirma as alterações (feitas via lápis ou do zero).
                 // Ele remove a versão antiga da nuvem para o mesmo CULTO e DATA e grava a nova lista atual.
                 data.selections = data.selections.filter(s => {
