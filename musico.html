@@ -659,6 +659,7 @@
             margin-bottom: 14px;
             opacity: 0.3;
             display: block;
+            text-align: center;
         }
 
         .empty-state h3 {
@@ -2484,11 +2485,11 @@
             document.getElementById('relinkSearchInput').value = '';
             renderRelinkList(linkableSongs);
             
-            document.getElementById('relinkModal').classList.add('active');
+            document.getElementById('relinkModal').style.display = 'flex';
         }
         
         function closeRelinkModal() {
-            document.getElementById('relinkModal').classList.remove('active');
+            document.getElementById('relinkModal').style.display = 'none';
         }
         
         function renderRelinkList(list) {
@@ -3544,17 +3545,17 @@
 
     </script>
 
-    <!-- Modal: Vincular Cifra a Outra Música -->
-    <div id="relinkModal" class="modal" style="z-index: 10001;">
-        <div class="viewer-header">
-            <button class="btn-back" onclick="closeRelinkModal()"><i class="fas fa-arrow-left"></i></button>
-            <h2 style="font-size: 18px; margin:0; flex-grow:1; text-align:center;">Vincular Cifra</h2>
+    <!-- Modal: Vincular Cifra a Outra Música (online-only, hidden by default) -->
+    <div id="relinkModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.97); backdrop-filter:blur(20px); z-index:16000; flex-direction:column;">
+        <div style="display:flex; align-items:center; padding:16px 20px; border-bottom:1px solid rgba(226,199,146,0.15);">
+            <button onclick="closeRelinkModal()" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer; width:48px; height:48px; display:flex; align-items:center; justify-content:center;"><i class="fas fa-arrow-left"></i></button>
+            <h2 style="font-size: 18px; margin:0; flex-grow:1; text-align:center; color:#fff;">Vincular Cifra</h2>
             <div style="width: 48px;"></div>
         </div>
         <div style="padding: 15px;">
-            <input type="text" id="relinkSearchInput" placeholder="Buscar música para vincular..." oninput="filterRelinkList()" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: rgba(0,0,0,0.5); color: white; font-size: 16px;">
+            <input type="text" id="relinkSearchInput" placeholder="Buscar música para vincular..." oninput="filterRelinkList()" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: rgba(0,0,0,0.5); color: white; font-size: 16px; font-family: 'Outfit', sans-serif;">
         </div>
-        <div class="browser-body" id="relinkList" style="padding-top: 0; height: calc(100% - 130px); overflow-y: auto;">
+        <div id="relinkList" style="padding: 0 15px; flex:1; overflow-y: auto;">
         </div>
     </div>
 </body>
