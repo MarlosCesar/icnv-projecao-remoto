@@ -407,6 +407,9 @@
         }
         #btnSharePortal:hover { transform: scale(1.1); filter: brightness(1.2); }
         #btnSharePortal:active { transform: scale(0.9); }
+        /* v3.7.4: Esconder botão de compartilhamento quando o modal de seleção está aberto */
+        .modal.active ~ #btnSharePortal,
+        body.modal-open #btnSharePortal { display: none !important; }
     </style>
 </head>
 <body>
@@ -994,8 +997,8 @@
         }
 
         function removeSelected(idx) { selections.splice(idx, 1); updateSelectedList(); }
-        function openSelectionModal() { document.getElementById('selectionModal').classList.add('active'); renderBrowser(true); }
-        function closeSelectionModal() { document.getElementById('selectionModal').classList.remove('active'); }
+        function openSelectionModal() { document.getElementById('selectionModal').classList.add('active'); document.getElementById('btnSharePortal').style.display = 'none'; renderBrowser(true); }
+        function closeSelectionModal() { document.getElementById('selectionModal').classList.remove('active'); document.getElementById('btnSharePortal').style.display = ''; }
 
         async function confirmSelection() {
             if (selections.length === 0) return;
