@@ -1629,7 +1629,39 @@
                 max-width: none;
             }
         }
-    </style>
+    
+        .chord-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 5px;
+            background: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 10000;
+            width: 250px;
+        }
+        .chord-dropdown .dropdown-item {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+        .chord-dropdown .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .chord-dropdown .dropdown-item i { width: 20px; text-align: center; }
+</style>
 </head>
 
 <body>
@@ -1747,9 +1779,19 @@
                 <i class="fas fa-times"></i>
             </button>
             <div class="chord-viewer-title" id="chordViewerTitle">—</div>
-            <button class="chord-viewer-btn" onclick="deleteCurrentCifra()" style="color: #ff5555;">
-                <i class="fas fa-trash-alt"></i>
-            </button>
+            <div class="chord-viewer-menu-wrapper" style="position: relative;">
+                <button class="chord-viewer-btn" onclick="toggleChordMenu(event)">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div id="chordViewerDropdown" class="chord-dropdown" style="display: none;">
+                    <button class="dropdown-item" onclick="openRelinkCifraModal()">
+                        <i class="fas fa-link"></i> Vincular a outra música
+                    </button>
+                    <button class="dropdown-item" onclick="deleteCurrentCifra()" style="color: #ff5555;">
+                        <i class="fas fa-trash-alt"></i> Excluir Cifra
+                    </button>
+                </div>
+            </div>
         </div>
         <!-- Page indicator dots -->
         <div class="chord-page-dots" id="chordPageDots"></div>
@@ -2405,6 +2447,96 @@
                 }
             }
         }
+
+        // --- CHORD VIEWER MENU LOGIC ---
+        function toggleChordMenu(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('chordViewerDropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('chordViewerDropdown');
+            if (dropdown && dropdown.style.display !== 'none' && !e.target.closest('.chord-viewer-menu-wrapper')) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        let linkableSongs = [];
+        
+        function openRelinkCifraModal() {
+            document.getElementById('chordViewerDropdown').style.display = 'none';
+            if (!currentChordFiles || currentChordFiles.length === 0) return;
+            
+            // Popula lista de músicas
+            linkableSongs = [];
+            if (typeof catalogGroups !== 'undefined') {
+                catalogGroups.forEach(g => {
+                    if (g.songs) {
+                        g.songs.forEach(s => {
+                            if (!linkableSongs.includes(s)) linkableSongs.push(s);
+                        });
+                    }
+                });
+                linkableSongs.sort((a, b) => a.localeCompare(b));
+            }
+            
+            document.getElementById('relinkSearchInput').value = '';
+            renderRelinkList(linkableSongs);
+            
+            document.getElementById('relinkModal').classList.add('active');
+        }
+        
+        function closeRelinkModal() {
+            document.getElementById('relinkModal').classList.remove('active');
+        }
+        
+        function renderRelinkList(list) {
+            const container = document.getElementById('relinkList');
+            container.innerHTML = '';
+            if (list.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#aaa;margin-top:20px;">Nenhuma música encontrada.</p>';
+                return;
+            }
+            list.forEach(song => {
+                const div = document.createElement('div');
+                div.className = 'browser-item';
+                div.innerHTML = `<i class="fas fa-music"></i> <span>${song}</span>`;
+                div.onclick = () => confirmRelinkCifra(song);
+                container.appendChild(div);
+            });
+        }
+        
+        function filterRelinkList() {
+            const q = document.getElementById('relinkSearchInput').value.toLowerCase();
+            const nQ = q.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const filtered = linkableSongs.filter(s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(nQ));
+            renderRelinkList(filtered);
+        }
+        
+        async function confirmRelinkCifra(targetSong) {
+            const file = currentChordFiles[currentChordIndex];
+            const fileName = file.name;
+            
+            const confirmed = await showCustomConfirm(
+                "Confirmar Vinculação",
+                `Deseja mover esta cifra para a música:<br><br><b>"${targetSong}"</b>?<br><br>Ela vai parar de aparecer na música atual.`
+            );
+            
+            if (confirmed) {
+                // Emite o evento do socket existente 'rename-chord'
+                if (socket && socket.connected) {
+                    socket.emit('rename-chord', { oldFile: fileName, targetSong: targetSong, mode: 'manual' });
+                    showNotification(`Cifra movida para ${targetSong}`, 'VINCULADO', 'A alteração refletirá em modo online.');
+                } else {
+                    showNotification(`Erro`, 'OFFLINE', 'Conecte à rede para relincar cifras.');
+                }
+                
+                closeRelinkModal();
+                closeChordViewer();
+            }
+        }
+
 
         function nextChordVersion() {
             if (currentChordFiles.length <= 1) return;
@@ -3411,5 +3543,19 @@
         }
 
     </script>
+
+    <!-- Modal: Vincular Cifra a Outra Música -->
+    <div id="relinkModal" class="modal" style="z-index: 10001;">
+        <div class="viewer-header">
+            <button class="btn-back" onclick="closeRelinkModal()"><i class="fas fa-arrow-left"></i></button>
+            <h2 style="font-size: 18px; margin:0; flex-grow:1; text-align:center;">Vincular Cifra</h2>
+            <div style="width: 48px;"></div>
+        </div>
+        <div style="padding: 15px;">
+            <input type="text" id="relinkSearchInput" placeholder="Buscar música para vincular..." oninput="filterRelinkList()" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: rgba(0,0,0,0.5); color: white; font-size: 16px;">
+        </div>
+        <div class="browser-body" id="relinkList" style="padding-top: 0; height: calc(100% - 130px); overflow-y: auto;">
+        </div>
+    </div>
 </body>
 </html>
