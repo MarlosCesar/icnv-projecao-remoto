@@ -2918,14 +2918,19 @@
             body._lastTapTime = 0;
             body._tapTimeout = null;
 
-            body._onTapUp = (e) => {
-                if (pz.hasMoved || pz.pointers.size > 0 || pz.isPinching) return;
+                        body._onTapUp = (e) => {
+                if (pz.isPinching) return;
+
+                // Permitir pequeno movimento (twitch) do dedo atÃ© 15px
+                const dx = e.clientX - pz.dragStartX;
+                const dy = e.clientY - pz.dragStartY;
+                if (dx * dx + dy * dy > 225) return; 
 
                 const now = Date.now();
                 const DOUBLE_TAP_DELAY = 300;
 
                 if (now - body._lastTapTime < DOUBLE_TAP_DELAY) {
-                    // Double Tap!
+                    // Toque duplo!
                     clearTimeout(body._tapTimeout);
                     body._lastTapTime = 0;
 
@@ -2933,12 +2938,12 @@
                     if (img) img.style.transition = 'transform 0.25s cubic-bezier(0.22, 1, 0.36, 1)';
 
                     if (pz.scale > 1.05) {
-                        // Reset zoom
+                        // Resetar zoom
                         pz.scale = 1;
                         pz.tx = 0;
                         pz.ty = 0;
                     } else {
-                        // Zoom in to 2.5x at tap location
+                        // Zoom in de 2.5x focado no toque
                         const rect = body.getBoundingClientRect();
                         const clientX = e.clientX;
                         const clientY = e.clientY;
@@ -2955,10 +2960,10 @@
                     if (typeof pzClamp === 'function') pzClamp();
                     if (typeof pzApply === 'function') pzApply();
 
-                    // Cleanup transition so panning remains immediate
+                    // Limpa transiÃ§Ã£o depois
                     setTimeout(() => { if (img) img.style.transition = ''; }, 250);
                 } else {
-                    // Single Tap
+                    // Toque Simples
                     body._lastTapTime = now;
                     body._tapTimeout = setTimeout(() => {
                         if (typeof toggleControls === 'function') toggleControls();
@@ -3605,5 +3610,6 @@
     </div>
 </body>
 </html>
+
 
 
