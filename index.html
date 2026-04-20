@@ -132,7 +132,7 @@
 
         .status-badge {
             font-size: 9px;
-            padding: 2px 6px;
+            padding: 2px 5px;
             border-radius: 4px;
             text-transform: uppercase;
             font-weight: 800;
@@ -826,7 +826,7 @@
             isSystemOnline = online;
 
             if (online) {
-                if (musBadge) { musBadge.textContent = 'AO VIVO'; musBadge.className = 'status-badge online'; }
+                if (musBadge) { musBadge.textContent = 'ON'; musBadge.className = 'status-badge online'; }
                 if (projBadge) { projBadge.textContent = 'CONECTADO'; projBadge.className = 'status-badge online'; }
                 if (pcBadge) {
                     pcBadge.innerHTML = '<i class="fas fa-check-circle"></i> PC CONECTADO';
@@ -837,7 +837,7 @@
                 // v3.7.3: Se temos lastCloudUpdate mas o ping falhou, mostramos alerta híbrido
                 const isHybrid = (lastCloudUpdate && (Date.now() - lastCloudUpdate < 120000));
                 if (musBadge) { 
-                    musBadge.textContent = isHybrid ? 'AO VIVO?' : 'ACERVO'; 
+                    musBadge.textContent = isHybrid ? 'AO VIVO?' : 'OFF'; 
                     musBadge.className = isHybrid ? 'status-badge online' : 'status-badge offline'; 
                     if (isHybrid) musBadge.style.background = '#facc15'; // Amarelo para indicar dúvida
                 }
