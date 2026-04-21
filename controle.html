@@ -1,0 +1,596 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ICNV - Controle Remoto</title>
+    <link rel="icon" type="image/png" href="/assets/icons/app-icon.png">
+    <link rel="stylesheet" href="/assets/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="remote.css">
+    <link rel="stylesheet" href="/assets/remote_notification.css">
+</head>
+
+<body>
+    <!-- Tela de Boas-vindas / Conexão (v3.0.0) -->
+    <div id="welcomeScreen"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:#111; z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px; box-sizing:border-box;">
+        <img src="logo ICNV Projecao.png" style="width:180px; margin-bottom:40px;">
+        <h2 style="color:white; margin-bottom:10px; font-family: 'Outfit', sans-serif;">Acesso Remoto</h2>
+        <p style="color:#888; margin-bottom:30px; font-size:14px;">Identifique seu aparelho para solicitar acesso ao
+            sistema.</p>
+
+        <div style="width:100%; max-width:300px; display:flex; flex-direction:column; gap:15px;">
+            <input type="text" id="inputDeviceName" placeholder="Seu Nome (Ex: Marlon iPhone)"
+                style="width:100%; padding:15px; border-radius:12px; border:1px solid #333; background:#1a1a1f; color:white; font-size:16px; outline:none; text-align:center;">
+
+            <button id="btnConnectRemote"
+                style="width:100%; padding:15px; border-radius:12px; border:none; background:var(--accent); color:white; font-weight:bold; font-size:16px; cursor:pointer;">
+                CONECTAR AGORA
+            </button>
+        </div>
+
+        <div style="margin-top:auto; font-size:10px; color:#444;">ICNV Projeção <span class="sysVersionDisplay"></span></div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <img src="logo ICNV Projecao.png" alt="ICNV Projeção" style="height: 32px;">
+        </div>
+
+        <!-- Botão de Nuvem (Centralizado v3.6.2) -->
+        <div class="header-center">
+            <button id="btnGlobalCloudRemote" class="icon-btn cloud-btn" title="Nuvem">
+                <i class="fas fa-cloud-download-alt"></i>
+            </button>
+        </div>
+
+        <div class="header-actions">
+            <button id="btnFullscreen" class="icon-btn" title="Tela Cheia"><i
+                    class="fas fa-expand-arrows-alt"></i></button>
+            <div id="connectionStatus" class="status offline">OFF</div>
+        </div>
+    </header>
+
+    <nav class="module-nav">
+        <div class="nav-item active" id="navLouvor" onclick="switchModule('louvor')">
+            <i class="fas fa-music"></i>
+            <span>LOUVOR</span>
+        </div>
+        <div class="nav-item" id="navHarpa" onclick="switchModule('harpa')">
+            <i class="fas fa-book-open"></i>
+            <span>HARPA</span>
+        </div>
+        <div class="nav-item" id="navBible" onclick="switchModule('bible')">
+            <i class="fas fa-book-bible"></i>
+            <span>BÍBLIA</span>
+        </div>
+        <div class="nav-item" id="navFiles" onclick="switchModule('files')">
+            <i class="fas fa-folder-open"></i>
+            <span>ARQUIVOS</span>
+        </div>
+        <div class="nav-item" id="navNovo" onclick="switchModule('novo')">
+            <i class="fas fa-plus-circle"></i>
+            <span>NOVO</span>
+        </div>
+        <div class="nav-item" id="navUtilities" onclick="switchModule('utilities')">
+            <i class="fas fa-tools"></i>
+            <span>UTILITÁRIOS</span>
+        </div>
+        <div class="nav-item" id="navSettings" onclick="switchModule('settings')">
+            <i class="fas fa-cog"></i>
+            <span>CONFIG</span>
+        </div>
+    </nav>
+
+    <main id="app">
+        <!-- Remote Tools Grid -->
+        <section class="remote-tools-grid">
+            <button id="btnToggleProjector" class="tool-card">
+                <i class="fas fa-video"></i>
+                <span>Ver</span>
+            </button>
+            <button id="btnClockCorner" class="tool-card">
+                <i class="fas fa-clock"></i>
+                <span>Canto</span>
+            </button>
+            <button id="btnClockCenter" class="tool-card">
+                <i class="fas fa-stopwatch-20"></i>
+                <span>Centro</span>
+            </button>
+            <div class="tool-card-wrapper">
+                <button id="btnLogos" class="tool-card">
+                    <i class="fas fa-star"></i>
+                    <span>Logos</span>
+                </button>
+                <div id="bgMenu" class="bg-menu hidden">
+                    <button class="bg-menu-item" onclick="selectLogoBackground('direito')">
+                        <i class="fas fa-align-right"></i> ICNV Direita
+                    </button>
+                    <button class="bg-menu-item" onclick="selectLogoBackground('centralizado')">
+                        <i class="fas fa-expand"></i> ICNV Central
+                    </button>
+                    <hr class="menu-divider">
+                    <button class="bg-menu-item" onclick="selectLogoBackground('ga-direito')">
+                        <i class="fas fa-align-right" style="color:#ffd200;"></i> G. Ação Direita
+                    </button>
+                    <button class="bg-menu-item" onclick="selectLogoBackground('ga-centralizado')">
+                        <i class="fas fa-expand" style="color:#ffd200;"></i> G. Ação Central
+                    </button>
+                    <hr class="menu-divider">
+                    <button class="bg-menu-item" onclick="selectLogoBackground('dd-direito')">
+                        <i class="fas fa-align-right" style="color:#ff69b4;"></i> D. Débora Direita
+                    </button>
+                    <button class="bg-menu-item" onclick="selectLogoBackground('dd-centralizado')">
+                        <i class="fas fa-expand" style="color:#ff69b4;"></i> D. Débora Central
+                    </button>
+                    <hr class="menu-divider">
+                    <button class="bg-menu-item" onclick="selectLogoBackground('none')">
+                        <i class="fas fa-ban"></i> Sem Logo
+                    </button>
+                    <hr class="menu-divider">
+                    <button class="bg-menu-item" onclick="switchModule('backgrounds')">
+                        <i class="fas fa-images" style="color: var(--accent);"></i> Galeria de Fundos
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Current View Section -->
+        <div id="moduleContent">
+            <!-- Louvor View -->
+            <div id="louvorView" class="view-module active">
+                <div class="view-header" style="height: 0; padding: 0; margin: 0; border: none;">
+                </div>
+                <div id="playlistsList" class="playlists-accordion">
+                    <!-- Playlists rendered here -->
+                </div>
+            </div>
+
+            <!-- Harpa View -->
+            <div id="harpaView" class="view-module" style="display: none;">
+                <div class="view-header">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="harpaSearch" placeholder="Número ou nome do hino...">
+                    </div>
+                </div>
+                <div id="harpaList" class="item-list">
+                    <!-- Hymns rendered here -->
+                </div>
+            </div>
+
+            <!-- Bible View -->
+            <div id="bibleView" class="view-module" style="display: none;">
+                <div class="view-header bible-selectors">
+                    <select id="bibleBookSelect">
+                        <option value="">Livro...</option>
+                    </select>
+                    <select id="bibleChapterSelect">
+                        <option value="">Cap...</option>
+                    </select>
+                </div>
+                <div id="bibleVersesList" class="item-list">
+                    <!-- Verses rendered here -->
+                </div>
+            </div>
+
+            <div id="filesView" class="view-module" style="display: none;">
+                <div class="view-header" style="flex-direction: column; gap:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                        <h3 style="margin:0;">Arquivos Recentes</h3>
+                        <button id="btnOpenRemoteFile" class="btn-action-primary"
+                            style="background:var(--accent); color:white; border:none; padding:8px 12px; border-radius:8px; display:flex; gap:8px; align-items:center; font-size:12px; font-weight:bold;">
+                            <i class="fas fa-file-upload"></i> ABRIR ARQUIVO
+                        </button>
+                    </div>
+                </div>
+                <div id="filesList" class="item-list">
+                    <!-- Files rendered here -->
+                </div>
+                <input type="file" id="inputFileRemote" style="display:none;"
+                    accept=".txt,.ppt,.pptx,.pdf,.mp4,.mkv,.avi,.mp3,.wav,.png,.jpg,.jpeg,.gif">
+            </div>
+
+            <!-- Novo View (Redesenhado v3.6.0: Padrão PC/Portal) -->
+            <div id="novoView" class="view-module" style="display: none; padding-bottom: 120px;">
+                <div style="padding: 15px;">
+                    <!-- Card Superior: Letra -->
+                    <div style="background: #16161d; border: 1px solid #2d2d39; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <div style="font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Letra da Música <span style="opacity: 0.5; font-weight: 400; margin-left: 5px;">— edite conforme necessário</span>
+                            </div>
+                            <button id="btnRemoteLyricsClear" style="background: #2d2d3a; border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-trash-alt"></i> LIMPAR
+                            </button>
+                        </div>
+                        
+                        <textarea id="remoteNovoLyricsArea" placeholder="COLE OU DIGITE A LETRA DA MÚSICA AQUI..." 
+                            style="width: 100%; height: calc(100vh - 480px); min-height: 250px; padding: 12px; background: #000; border: 1px solid #222; color: white; border-radius: 10px; font-size: 15px; text-transform: uppercase; line-height: 1.6; outline: none; white-space: pre-wrap; font-family: 'Outfit', sans-serif; resize: none;"></textarea>
+                    </div>
+
+                    <!-- Card Inferior: Nome e Salvar -->
+                    <div style="background: #16161d; border: 1px solid #2d2d39; border-radius: 15px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                        <div style="font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">Nome do Arquivo</div>
+                        
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                            <div style="flex: 1; position: relative;">
+                                <input type="text" id="remoteNovoSongName" placeholder="NOME DA MÚSICA (SEM .TXT)" 
+                                    style="width: 100%; padding: 14px; background: #0c0c0f; border: 1px solid #333; color: white; border-radius: 10px; font-weight: bold; text-transform: uppercase; outline: none; font-size: 13px;">
+                                <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: #444; font-weight: 700;">.txt</span>
+                            </div>
+                            
+                            <button class="footer-action" style="background: #22c55e; margin: 0; padding: 14px 20px; height: 45px; border-radius: 10px; min-width: 120px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 900; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);" onclick="saveRemoteNovoLyrics()">
+                                <i class="fas fa-save"></i> SALVAR
+                            </button>
+                        </div>
+                        
+                        <div style="font-size: 10px; color: #555; display: flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-info-circle"></i> Será salvo na pasta <strong>ICNV-Louvores</strong>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Utilities View -->
+            <div id="utilitiesView" class="view-module" style="display: none;">
+                <div class="util-tabs">
+                    <button class="util-tab-btn active" onclick="switchUtilSection('search')">Busca</button>
+                    <button class="util-tab-btn" onclick="switchUtilSection('history')">Histórico</button>
+                    <button class="util-tab-btn" onclick="switchUtilSection('avisos')">Avisos</button>
+                    <button class="util-tab-btn" onclick="switchUtilSection('cloud-sync')">Portal Remoto</button>
+                    <button class="util-tab-btn" onclick="switchUtilSection('remote')">Acesso Remoto</button>
+                    <button class="util-tab-btn" onclick="switchUtilSection('chord-mapper')">Mapeador de Cifras</button>
+                </div>
+
+                <!-- Search Section -->
+                <div id="utilSearchSection" class="util-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="utilSearchInput" placeholder="Pesquisar músicas...">
+                    </div>
+                    <div id="utilSearchResults" class="search-results-list">
+                        <!-- Results here -->
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div id="utilHistorySection" class="util-section" style="display: none;">
+                    <div class="history-controls">
+                        <input type="date" id="historyDateInput">
+                        <button id="btnFetchHistory" class="refresh-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div id="utilHistoryList" class="item-list">
+                        <!-- History here -->
+                    </div>
+                </div>
+
+                <div id="utilAvisosSection" class="util-section" style="display: none;">
+                    <div id="avisosList" class="avisos-grid-list">
+                        <!-- Avisos rendered here -->
+                    </div>
+                </div>
+
+                <!-- Seção: Portal Remoto (Cloud Sync) -->
+                <div id="utilCloudSyncSection" class="util-section" style="display: none; padding: 15px;">
+                    <div style="background: var(--bg-panel); border: 1px solid var(--border); border-radius: 15px; padding: 20px; text-align: center;">
+                        <i class="fas fa-cloud" style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;"></i>
+                        <h3 style="margin: 0; color: #fff;">Portal do Músico</h3>
+                        <p style="font-size: 13px; color: #888; margin: 10px 0 20px;">Sincronize sua biblioteca com a nuvem para acesso externo.</p>
+                        
+                        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                            <span style="font-size: 10px; color: #666; font-weight: 800; text-transform: uppercase;">ID Atual:</span>
+                            <span id="remoteBinIdDisplay" style="font-family: monospace; color: var(--accent); font-weight: 900; font-size: 14px;">...</span>
+                        </div>
+
+                        <button onclick="socket.emit('remote-command', { type: 'cloud-action', action: 'export' })" 
+                            style="width: 100%; padding: 16px; background: var(--accent); border: none; border-radius: 12px; color: white; font-weight: 900; margin-bottom: 12px; font-size: 13px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);">
+                            <i class="fas fa-sync-alt"></i> SINCRONIZAR AGORA (PC)
+                        </button>
+
+                        <button onclick="window.open('musico.html', '_blank')" 
+                            style="width: 100%; padding: 16px; background: #1a1a1f; border: 1px solid #333; border-radius: 12px; color: #ccc; font-weight: 700; font-size: 13px;">
+                            <i class="fas fa-external-link-alt"></i> ABRIR PORTAL (NESTE CELULAR)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Seção: Acesso Remoto (Gerenciamento) -->
+                <div id="utilRemoteSection" class="util-section" style="display: none; padding: 15px;">
+                    <div style="background: var(--bg-panel); border: 1px solid var(--border); border-radius: 15px; padding: 20px;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <i class="fas fa-mobile-alt" style="font-size: 3rem; color: #64748b; margin-bottom: 15px;"></i>
+                            <h3 style="margin: 0; color: #fff;">Acesso Remoto</h3>
+                            <p style="font-size: 13px; color: #888; margin-top: 10px;">Gerencie aparelhos conectados e autorizações.</p>
+                        </div>
+
+                        <div id="remoteDeviceManagementList" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                            <div style="text-align: center; padding: 20px; color: #444; font-size: 12px;">Carregando aparelhos...</div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <button onclick="socket.emit('get-remote-management')" 
+                                style="padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff; font-size: 11px; font-weight: bold;">
+                                <i class="fas fa-sync"></i> ATUALIZAR
+                            </button>
+                            <button id="btnExitRemote"
+                                style="padding: 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; color: #ef4444; font-weight: 900; font-size: 11px;">
+                                <i class="fas fa-sign-out-alt"></i> SAIR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção: Mapeador de Cifras -->
+                <div id="utilChordMapperSection" class="util-section" style="display: none; padding: 15px;">
+                    <div style="background: var(--bg-panel); border: 1px solid var(--border); border-radius: 15px; padding: 20px;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <i class="fas fa-file-invoice" style="font-size: 3rem; color: #64748b; margin-bottom: 15px;"></i>
+                            <h3 style="margin: 0; color: #fff;">Mapeador de Cifras</h3>
+                            <p style="font-size: 13px; color: #888; margin-top: 10px;">Corrija nomes de arquivos de acordes para vinculação automática.</p>
+                        </div>
+
+                        <button onclick="socket.emit('remote-command', { type: 'switch-util-section', section: 'chord-mapper' })" 
+                            style="width: 100%; padding: 16px; background: #333; border: none; border-radius: 12px; color: white; font-weight: 900; margin-bottom: 20px; font-size: 13px;">
+                            <i class="fas fa-desktop"></i> ABRIR MAPEADOR NO PC
+                        </button>
+
+                        <div id="chordMapperRemoteList" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; max-height: 400px; overflow-y: auto;">
+                            <!-- Mapeamento aqui -->
+                            <div style="text-align: center; padding: 20px; color: #444; font-size: 12px;">Nenhum arquivo pendente.</div>
+                        </div>
+
+                        <button onclick="socket.emit('get-mapper-data')" 
+                            style="width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff; font-size: 12px; font-weight: bold;">
+                            <i class="fas fa-sync"></i> RE-ESCANEAR ARQUIVOS
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View (Unchanged) -->
+            <div id="settingsView" class="view-module" style="display: none;">
+                <div class="settings-container">
+                    <div class="setting-item">
+                        <label>Tamanho da Fonte (Projetor)</label>
+                        <input type="range" id="settingFontSize" min="2" max="10" step="0.1" value="4.5">
+                        <span id="valFontSize">4.5</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>Tamanho do Relógio (Canto)</label>
+                        <input type="range" id="settingClockCorner" min="1" max="10" step="0.1" value="2.5">
+                        <span id="valClockCorner">2.5</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>Tamanho do Relógio (Centro)</label>
+                        <input type="range" id="settingClockCenter" min="10" max="60" step="1" value="30">
+                        <span id="valClockCenter">30</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>Tamanho Logo (Direito)</label>
+                        <input type="range" id="settingLogoRight" min="5" max="40" step="0.5" value="16">
+                        <span id="valLogoRight">16</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>Tamanho Logo (Centro)</label>
+                        <input type="range" id="settingLogoCenter" min="20" max="150" step="1" value="100">
+                        <span id="valLogoCenter">100</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>Transição</label>
+                        <select id="settingTransition">
+                            <option value="normal">Normal</option>
+                            <option value="fast">Rápida</option>
+                            <option value="slow">Lenta</option>
+                            <option value="none">Sem</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>Modelo de Transição</label>
+                        <select id="settingTransitionEffect">
+                            <option value="fade">Fade Simples</option>
+                            <option value="slide-up">Deslizar p/ Cima</option>
+                            <option value="slide-down">Deslizar p/ Baixo</option>
+                            <option value="slide-left">Deslizar p/ Esquerda</option>
+                            <option value="slide-right">Deslizar p/ Direita</option>
+                            <option value="zoom">Zoom Suave</option>
+                            <option value="rotate">Rotação</option>
+                            <option value="flip">Giro 3D</option>
+                            <option value="blur">Desfoque (Blur)</option>
+                        </select>
+                    </div>
+                    <!-- Fontes -->
+                    <div class="setting-item">
+                        <label><i class="fas fa-font" style="margin-right:6px;"></i>Fonte da Projeção</label>
+                        <div id="fontGrid" class="font-grid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stanzas View (Lyrics) -->
+            <div id="stanzasView" class="view-module" style="display: none;">
+                <div class="card current-card">
+                    <div class="current-header">
+                        <button id="btnBackToLibrary" class="back-btn-remote">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div class="current-info">
+                            <h2 id="currentTitle">Nenhuma m&uacute;sica selecionada</h2>
+                            <p id="currentRef"></p>
+                        </div>
+                    </div>
+                    <!-- Barra de Progresso de Carregamento (v3.0.6) -->
+                    <div id="pptLoadingContainer" class="ppt-loading-container hidden">
+                        <div class="ppt-status-text" id="pptStatusText">Convertendo PPT...</div>
+                        <div class="ppt-progress-bar">
+                            <div id="pptProgressBarFill" class="ppt-progress-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <section id="stanzasContainer" class="stanzas-grid">
+                    <!-- Stanzas rendered here -->
+                </section>
+            </div>
+
+            <!-- Backgrounds View -->
+            <div id="backgroundsView" class="view-module" style="display: none;">
+                <div class="view-header">
+                    <h3>Planos de Fundo</h3>
+                </div>
+                <div id="backgroundsList" class="backgrounds-grid-list">
+                    <!-- Backgrounds rendered here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para Seleção na Biblioteca (Mobile) -->
+    <div id="modalLibrary" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Biblioteca de Músicas</h3>
+                <button class="close-modal-btn" onclick="closeLibraryModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="librarySearchInput" placeholder="Pesquisar por título...">
+            </div>
+            <div id="libraryResults" class="item-list" style="max-height: 400px; overflow-y: auto; padding:0;">
+                <!-- Content here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição de Música (v3.6.9: UI Robustez) -->
+    <div id="modalEditSong" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 90%; height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 id="editSongModalTitle" style="flex: 1; margin-right: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Editar Música</h3>
+                <button class="close-modal-btn" onclick="closeEditModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                <textarea id="editLyricsArea" class="edit-lyrics-textarea" placeholder="Letra da música..." style="flex: 1; margin-bottom: 15px;"></textarea>
+                <div class="modal-footer" style="padding-bottom: 5px;">
+                    <button class="close-modal-btn" style="width: auto; height: auto; border-radius: 8px; padding: 12px 20px;" onclick="closeEditModal()">CANCELAR</button>
+                    <button id="btnSaveRemoteEdit" class="btn-modal-save">SALVAR ALTERAÇÕES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Opções de Abertura de Arquivo (Mobile) -->
+    <div id="modalOpenFile" class="modal-overlay hidden">
+        <div class="modal-content" style="max-height: 450px;">
+            <div class="modal-header">
+                <h3>Onde abrir o arquivo?</h3>
+                <button class="close-modal-btn"
+                    onclick="document.getElementById('modalOpenFile').classList.add('hidden')"><i
+                        class="fas fa-times"></i></button>
+            </div>
+            <div style="padding: 20px; display:flex; flex-direction:column; gap:15px;">
+                <button id="btnOpenFromSystem" class="modal-action-btn"
+                    style="background:#1a1a1f; color:#eee; border:1px solid #333; padding:20px; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:10px;">
+                    <i class="fas fa-desktop" style="font-size:24px; color:var(--accent);"></i>
+                    <span>ESCOLHER NO COMPUTADOR</span>
+                    <small style="color:#666; font-size:10px;">Abre a janela de busca no PC</small>
+                </button>
+                <button id="btnOpenFromDevice" class="modal-action-btn"
+                    style="background:#1a1a1f; color:#eee; border:1px solid #333; padding:20px; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:10px;">
+                    <i class="fas fa-mobile-alt" style="font-size:24px; color:#4caf50;"></i>
+                    <span>ESCOLHER NESTE CELULAR</span>
+                    <small style="color:#666; font-size:10px;">Envia o arquivo do seu celular para o PC</small>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Actions Footer -->
+    <footer class="global-actions">
+        <button id="btnBlackout" class="footer-btn btn-blackout">
+            <i class="fas fa-lightbulb"></i>
+            <span>APAGAR TELA</span>
+        </button>
+        <button id="btnHideTextRemote" class="footer-btn btn-hide">
+            <i class="fas fa-eye-slash"></i>
+            <span>ESCONDER TEXTO</span>
+        </button>
+        <button id="btnClearRemote" class="footer-btn btn-clear">
+            <i class="fas fa-eraser"></i>
+            <span>LIMPAR TELA</span>
+        </button>
+        
+        <!-- v3.6.9: Rodapé de versão removido para ganhar espaço na tela mobile -->
+    </footer>
+
+    <!-- Modal de Confirmação de Salvamento (v3.6.0) -->
+    <div id="modalSaveLyricsConfirm" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 380px; padding: 25px; border: 1px solid rgba(34, 197, 94, 0.3);">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 60px; height: 60px; background: rgba(34, 197, 94, 0.15); color: #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 28px;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 style="margin: 0; color: #fff; font-size: 1.2rem;">Salvar Música</h3>
+                <p style="font-size: 11px; color: #777; margin-top: 5px;">Configure os detalhes antes de finalizar no PC.</p>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 10px; font-weight: 800; color: #888; text-transform: uppercase; margin-bottom: 8px; display: block;">Pasta do Arquivo (PC):</label>
+                <div style="position: relative;">
+                    <select id="saveConfirmFolder" style="width: 100%; background: #0c0c0f; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; outline: none; appearance: none; cursor: pointer;">
+                        <option value="">Carregando...</option>
+                    </select>
+                    <i class="fas fa-folder" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #444; pointer-events: none;"></i>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 10px; font-weight: 800; color: #888; text-transform: uppercase; margin-bottom: 8px; display: block;">Vincular ao Culto:</label>
+                <select id="saveConfirmCategory" style="width: 100%; background: #0c0c0f; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; outline: none; appearance: none; cursor: pointer;">
+                    <option value="domingo-manha">DOMINGO-MANHÁ</option>
+                    <option value="domingo-noite">DOMINGO-NOITE</option>
+                    <option value="quarta">QUARTA</option>
+                    <option value="sabado">SÁBADO</option>
+                    <option value="santa-ceia">SANTA CEIA</option>
+                    <option value="outros">OUTROS</option>
+                </select>
+            </div>
+
+            <div style="margin-top: 10px;"></div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px;">
+                <button onclick="document.getElementById('modalSaveLyricsConfirm').classList.add('hidden')" style="background: rgba(255,255,255,0.05); border: 1px solid #333; color: #888; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 11px; text-transform: uppercase;">Cancelar</button>
+                <button onclick="confirmSaveRemoteLyrics()" style="background: linear-gradient(135deg, #22c55e, #16a34a); border: none; color: #fff; padding: 12px; border-radius: 10px; font-weight: 900; font-size: 11px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);">Confirmar e Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Escolhas na Nuvem (v3.6.2) -->
+    <div id="modalCloudSelections" class="modal-overlay hidden">
+        <div class="modal-content" style="max-height: 80vh;">
+            <div class="modal-header">
+                <h3 id="cloudSelectionsTitle"><i class="fas fa-cloud"></i> Escolhas na Nuvem</h3>
+                <button class="close-modal-btn" onclick="document.getElementById('modalCloudSelections').classList.add('hidden')"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="cloudSelectionsList" class="item-list" style="max-height: calc(80vh - 70px); overflow-y: auto; padding: 0;">
+                <div style="padding: 20px; text-align: center; color: #888;">Carregando...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de Carregamento (Upload) -->
+    <div id="uploadLoadingOverlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="loader-spinner"></div>
+            <h3>Enviando Arquivo...</h3>
+            <p>Por favor, aguarde a conclusão do envio.</p>
+        </div>
+    </div>
+
+    <script src="lib/socket.io.min.js"></script>
+    <script src="remote.js?v=3.6.9"></script>
+</body>
+
+</html>
