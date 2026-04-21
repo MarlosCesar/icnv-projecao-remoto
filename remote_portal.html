@@ -474,7 +474,7 @@
                     <h3 style="color: #e2c792;">PORTAL DO MÚSICO <span id="musicianStatus" class="status-badge checking">...</span></h3>
                     <p>Veja as cifras das músicas em projeção em tempo real</p>
                 </div>
-                <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto; font-size: 14px;"></i>
+                <i class="fas fa-external-link-alt" style="color: var(--text-muted); margin-left: auto; font-size: 14px;"></i>
             </div>
 
             <div class="home-card" onclick="openFullRemote()">
@@ -1350,18 +1350,17 @@
             window.open(localServerUrl, '_blank');
         }
 
-        async function openMusicianPortal() {
+        function openMusicianPortal() {
             const urlParams = new URLSearchParams(window.location.search);
             const bindIdQ = urlParams.get('id') ? `?id=${urlParams.get('id')}` : '';
 
-            if (typeof localServerUrl !== 'undefined' && localServerUrl) {
-                const isOnline = await isLocalServerOnline(localServerUrl);
-                if (isOnline) {
-                    window.open(localServerUrl + '/musico' + bindIdQ, '_blank');
-                    return;
-                }
+            // Se o sistema estiver online via Wi-Fi, abre direto do servidor local (mais rápido)
+            if (typeof localServerUrl !== 'undefined' && localServerUrl && isSystemOnline) {
+                window.open(localServerUrl + '/musico' + bindIdQ, '_blank');
+                return;
             }
-            // Fallback para versão Github Pages apenas quando o PC estiver desligado
+            
+            // Fallback para versão Github Pages
             window.open(`musico.html${bindIdQ}`, '_blank');
         }
         async function sendNewSongToCloud() {
