@@ -1758,11 +1758,17 @@
         }
 
         function deleteMobileAviso(id) {
-            const aviso = remoteAvisosList.find(a => a.id === id);
+            const aviso = remoteAvisosList.find(a => String(a.id) === String(id));
             if (!aviso) return;
-            if (confirm(`Deseja realmente apagar o aviso "${aviso.title}"?`)) {
-                remoteAvisosList = remoteAvisosList.filter(a => a.id !== id);
+            if (confirm(`Deseja realmente apagar o aviso "${aviso.title || 'Imagem'}"?`)) {
+                remoteAvisosList = remoteAvisosList.filter(a => String(a.id) !== String(id));
                 if (mobileEditingAvisoId === id) resetMobileAvisoForm();
+                renderMobileAvisosList();
+
+                if (typeof socket !== 'undefined' && socket.emit) {
+                    socket.emit('remove-aviso', id);
+                }
+
                 if (binId && db) {
                     db.ref('igrejas/' + binId + '/avisos').set(remoteAvisosList);
                 }
