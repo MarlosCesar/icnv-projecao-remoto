@@ -1774,6 +1774,10 @@
             if (!aviso) return;
             const isImageOnly = aviso.theme === 'theme-imageonly';
 
+            if (typeof socket !== 'undefined' && socket.emit) {
+                socket.emit('project-aviso', aviso);
+            }
+
             if (binId && db) {
                 db.ref('igrejas/' + binId + '/currentProjection').set({
                     isAviso: true,
