@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -461,6 +461,15 @@
 
             <div class="home-card" onclick="showSection('novo')">
                 <div class="home-card-icon green"><i class="fas fa-pen-alt"></i></div>
+
+            <div class="home-card" onclick="showSection('avisos')">
+                <div class="home-card-icon" style="background: rgba(168, 85, 247, 0.15); color: #a855f7;"><i class="fas fa-bullhorn"></i></div>
+                <div class="home-card-text">
+                    <h3 style="color: #a855f7;">AVISOS <span id="avisosMobileCountBadge" class="status-badge" style="background: rgba(168, 85, 247, 0.2); color: #a855f7;">0</span></h3>
+                    <p>Crie e gerencie os avisos para projeção no PC</p>
+                </div>
+                <i class="fas fa-chevron-right" style="color: var(--text-muted); margin-left: auto;"></i>
+            </div>
                 <div class="home-card-text">
                     <h3>NOVO</h3>
                     <p>Cole a letra de uma música nova para sincronizar</p>
@@ -630,6 +639,114 @@
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <!-- SEÇÁO: PROJEÇÃO (Direct Control)       -->
         <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        <!-- ========================================== -->
+        <!-- SEÇÃO: AVISOS (Mobile v4.2)               -->
+        <!-- ========================================== -->
+        <div id="sectionAvisos" style="display:none;">
+            <div class="section-back" onclick="showHome()">
+                <i class="fas fa-arrow-left"></i> Voltar ao Menu
+            </div>
+
+            <!-- Card de Criar / Editar Aviso -->
+            <div class="list-section">
+                <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span><i class="fas fa-magic"></i> <span id="mobileAvisoFormTitle">Criar Novo Aviso</span></span>
+                    <span id="mobileAvisoBadge" style="font-size: 10px; background: rgba(168,85,247,0.2); color: #a855f7; padding: 2px 8px; border-radius: 10px; font-weight: 600;">NOVO</span>
+                </div>
+                <div style="padding: 15px; display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Seletor Rápido de Tipo de Aviso (v4.4) -->
+                    <div style="display: flex; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 3px; gap: 4px;">
+                        <button type="button" id="tabAvisoText" onclick="selectMobileAvisoMode('text')" style="flex: 1; padding: 10px 6px; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; transition: all 0.2s; background: #0084ff; color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <i class="fas fa-font"></i> Aviso com Texto
+                        </button>
+                        <button type="button" id="tabAvisoImage" onclick="selectMobileAvisoMode('image')" style="flex: 1; padding: 10px 6px; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; transition: all 0.2s; background: transparent; color: #aaa; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <i class="fas fa-image"></i> 📸 Apenas Imagem
+                        </button>
+                    </div>
+                    <div id="mobileAvisoTitleGroup">
+                        <label style="font-size: 11px; font-weight: bold; color: #aaa; margin-bottom: 4px; display: block;">Título do Aviso *</label>
+                        <input type="text" id="mobileAvisoTitle" placeholder="Ex: Culto de Jovens, Reunião de Oração..." style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 13px; outline: none;">
+                    </div>
+                    <div id="mobileAvisoDescGroup">
+                        <label style="font-size: 11px; font-weight: bold; color: #aaa; margin-bottom: 4px; display: block;">Subtítulo / Detalhes (Opcional)</label>
+                        <textarea id="mobileAvisoDesc" placeholder="Digite os detalhes, horários ou informações..." style="width: 100%; height: 70px; padding: 10px; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 13px; resize: vertical; outline: none;"></textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <label style="font-size: 11px; font-weight: bold; color: #aaa; margin-bottom: 4px; display: block;">Categoria</label>
+                            <select id="mobileAvisoCategory" style="width: 100%; padding: 8px; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 12px; outline: none;">
+                                <option value="Cultos">Cultos & Programação</option>
+                                <option value="Eventos">Eventos Especiais</option>
+                                <option value="Jovens">Jovens & Ministérios</option>
+                                <option value="Escola Dominical">Escola Dominical</option>
+                                <option value="Geral" selected>Geral</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; font-weight: bold; color: #aaa; margin-bottom: 4px; display: block;">Cor / Tema Visual</label>
+                            <select id="mobileAvisoTheme" onchange="onMobileThemeChange()" style="width: 100%; padding: 8px; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 12px; outline: none;">
+                                <option value="theme-dark" selected>ICNV Dark</option>
+                                <option value="theme-blue">Azul Oração</option>
+                                <option value="theme-red">Vermelho Alerta</option>
+                                <option value="theme-green">Verde Esperança</option>
+                                <option value="theme-purple">Roxo Jovem</option>
+                                <option value="theme-image">Banner Flyer + Texto</option>
+                                <option value="theme-imageonly">📸 Apenas Imagem</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- v4.3: Upload de Imagem para Avisos Mobile -->
+                    <div id="mobileAvisoImageGroup" style="display: none;">
+                        <label style="font-size: 11px; font-weight: bold; color: #aaa; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
+                            <span><i class="fas fa-image"></i> Imagem do Dispositivo</span>
+                            <span id="mobileAvisoImageRequired" style="font-size: 10px; color: #ef4444;">* Obrigatório</span>
+                        </label>
+                        <div id="mobileAvisoImageArea" style="background: rgba(0,132,255,0.06); border: 2px dashed #0084ff; border-radius: 10px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s;" onclick="document.getElementById('mobileAvisoImageInput').click()">
+                            <div id="mobileAvisoImageDefault">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 26px; color: #0084ff; margin-bottom: 6px;"></i>
+                                <div style="font-size: 13px; color: #fff; font-weight: bold;">Escolher Imagem do Dispositivo</div>
+                                <div style="font-size: 10px; color: #aaa; margin-top: 2px;">Toque aqui para selecionar o cartaz/flyer da galeria</div>
+                            </div>
+                            <div id="mobileAvisoImagePreview" style="display: none; align-items: center; gap: 10px;">
+                                <img id="mobileAvisoImageThumb" src="" style="width: 65px; height: 65px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);">
+                                <div style="flex: 1; text-align: left;">
+                                    <div id="mobileAvisoImageName" style="font-size: 12px; color: #eee; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></div>
+                                    <button onclick="event.stopPropagation(); clearMobileAvisoImage()" style="padding: 4px 10px; font-size: 11px; background: rgba(255,62,62,0.2); color: #ff6b6b; border: 1px solid rgba(255,62,62,0.3); border-radius: 4px; cursor: pointer; margin-top: 6px;"><i class="fas fa-trash"></i> Remover Imagem</button>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" id="mobileAvisoImageInput" accept="image/*" style="display: none;" onchange="handleMobileAvisoImage(this)">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center;">
+                        <div>
+                            <label style="font-size: 11px; font-weight: bold; color: #aaa; margin-bottom: 4px; display: block;">Tempo Loop (s)</label>
+                            <input type="number" id="mobileAvisoTime" value="7" min="3" max="60" style="width: 100%; padding: 8px; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 12px;">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 18px;">
+                            <input type="checkbox" id="mobileAvisoActive" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            <label for="mobileAvisoActive" style="font-size: 12px; color: #fff; font-weight: 600; cursor: pointer;">Aviso Ativo</label>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-top: 5px;">
+                        <button id="btnSaveMobileAviso" onclick="saveMobileAviso()" style="flex: 2; padding: 12px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; color: #fff; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <i class="fas fa-save"></i> SALVAR AVISO
+                        </button>
+                        <button id="btnCancelMobileAviso" onclick="resetMobileAvisoForm()" style="flex: 1; padding: 12px; background: #222; border: 1px solid #444; border-radius: 8px; color: #ccc; font-weight: 600; font-size: 12px; cursor: pointer;">
+                            LIMPAR
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Avisos Cadastrados -->
+            <div class="list-section" style="margin-top: 15px;">
+                <div class="section-title"><i class="fas fa-bullhorn"></i> Avisos Cadastrados</div>
+                <div id="mobileAvisosList" style="padding: 10px 15px;">
+                    <div style="color: #666; text-align: center; padding: 20px; font-style: italic; font-size: 12px;">Carregando avisos...</div>
+                </div>
+            </div>
+        </div>
+
         <div id="sectionProjecao" style="display:none;">
             <div class="section-back" onclick="showHome()">
                 <i class="fas fa-arrow-left"></i> Voltar ao Menu
@@ -670,7 +787,7 @@
 
         <!-- Versão no Rodapé (v3.7.1) -->
         <div style="text-align: center; margin-top: 50px; margin-bottom: 20px; font-size: 10px; color: var(--text-muted); opacity: 0.5; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">
-            ICNV PROJEÇÃO <span style="color: var(--accent);">v3.7.7</span>
+            ICNV PROJEÇÃO <span style="color: var(--accent);">v3.7.8</span>
         </div>
     </div>
 
@@ -728,7 +845,8 @@
         let fullCatalog = [], selections = [], currentFolder = [], pathStack = [], savedSelections = [];
         let editGroupContext = null, selectedFile = null, localServerUrl = null;
         let editContext = null; // NOVO: Controle de edição (v3.5.4)
-        let lastCloudUpdate = null; // v3.7.3: Tracking do último sync cloud para status híbrido
+        let lastCloudUpdate = null;
+        let remoteAvisosList = [], mobileEditingAvisoId = null; // v3.7.3: Tracking do último sync cloud para status híbrido
 
         function showSection(name) {
             document.querySelectorAll('.container > div[id^="section"], #homeView').forEach(el => el.style.display = 'none');
@@ -765,6 +883,7 @@
                 savedSelections = data.selections || [];
                 localServerUrl = data.localServerUrl || null;
                 sentFilesList = data.sentHistory || [];
+                remoteAvisosList = data.avisos || [];
 
                 // v3.7.1: Se o URL do servidor local mudou ou chegou, inicia o monitoramento de rede
                 if (localServerUrl) {
@@ -778,7 +897,7 @@
                 }
 
                 currentFolder = fullCatalog;
-                renderBrowser(); updateSavedPlansUI(); renderSentFiles();
+                renderBrowser(); updateSavedPlansUI(); renderSentFiles(); renderMobileAvisosList();
                 document.getElementById('loading').style.opacity = '0';
                 setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
             }, (error) => {
@@ -1398,6 +1517,277 @@
         }
 
         init();
-    </script>
+    
+        // ==========================================
+        // MÓDULO AVISOS MOBILE (v4.2)
+        // ==========================================
+        function renderMobileAvisosList() {
+            const container = document.getElementById('mobileAvisosList');
+            const countBadge = document.getElementById('avisosMobileCountBadge');
+            if (!container) return;
+
+            if (countBadge) countBadge.textContent = remoteAvisosList.length;
+
+            if (remoteAvisosList.length === 0) {
+                container.innerHTML = `<div style="color: #666; text-align: center; padding: 20px; font-style: italic; font-size: 12px;"><i class="fas fa-bullhorn" style="font-size: 24px; opacity: 0.3; margin-bottom: 8px; display: block;"></i>Nenhum aviso cadastrado.</div>`;
+                return;
+            }
+
+            let html = '';
+            remoteAvisosList.forEach(aviso => {
+                const isSelected = aviso.id === mobileEditingAvisoId;
+                let themeBorder = '#e2c792';
+                if (aviso.theme === 'theme-red') themeBorder = '#ef4444';
+                else if (aviso.theme === 'theme-green') themeBorder = '#22c55e';
+                else if (aviso.theme === 'theme-purple') themeBorder = '#a855f7';
+                else if (aviso.theme === 'theme-blue') themeBorder = '#3b82f6';
+
+                html += `
+                    <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px; margin-bottom: 10px; border-left: 4px solid ${themeBorder}; ${!aviso.active ? 'opacity: 0.6;' : ''} ${isSelected ? 'border: 1px solid var(--accent);' : ''}">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                            <div style="font-weight: bold; font-size: 14px; color: #fff;">${aviso.title || 'Sem Título'}</div>
+                            <div style="display: flex; gap: 4px; align-items: center;">
+                                <span style="font-size: 9px; background: rgba(255,255,255,0.1); color: #ccc; padding: 2px 6px; border-radius: 4px;">${aviso.category || 'Geral'}</span>
+                                <span style="font-size: 9px; background: rgba(0,132,255,0.2); color: #64b5f6; padding: 2px 6px; border-radius: 4px;"><i class="fas fa-stopwatch"></i> ${aviso.time || 7}s</span>
+                            </div>
+                        </div>
+                        ${aviso.desc ? `<div style="font-size: 12px; color: #aaa; margin-bottom: 8px; white-space: pre-line;">${aviso.desc}</div>` : ''}
+                        <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <button onclick="projectMobileAviso('${aviso.id}')" style="padding: 6px 12px; font-size: 11px; font-weight: bold; background: linear-gradient(135deg, #0084ff, #0055ff); color: #fff; border: none; border-radius: 6px; cursor: pointer;">
+                                <i class="fas fa-play"></i> PROJETAR
+                            </button>
+                            <button onclick="editMobileAviso('${aviso.id}')" style="padding: 6px 10px; font-size: 11px; background: #222; border: 1px solid #444; color: #ccc; border-radius: 6px; cursor: pointer;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="toggleMobileAvisoActive('${aviso.id}')" style="padding: 6px 10px; font-size: 11px; background: ${aviso.active ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)'}; border: 1px solid ${aviso.active ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}; color: ${aviso.active ? '#10b981' : '#ef4444'}; border-radius: 6px; cursor: pointer;">
+                                <i class="fas ${aviso.active ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                            </button>
+                            <button onclick="deleteMobileAviso('${aviso.id}')" style="padding: 6px 10px; font-size: 11px; background: rgba(255,62,62,0.15); color: #ff6b6b; border: 1px solid rgba(255,62,62,0.3); border-radius: 6px; cursor: pointer;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function resetMobileAvisoForm() {
+            mobileEditingAvisoId = null;
+            document.getElementById('mobileAvisoTitle').value = '';
+            document.getElementById('mobileAvisoDesc').value = '';
+            document.getElementById('mobileAvisoCategory').value = 'Geral';
+            document.getElementById('mobileAvisoTheme').value = 'theme-dark';
+            document.getElementById('mobileAvisoTime').value = 7;
+            document.getElementById('mobileAvisoActive').checked = true;
+            document.getElementById('mobileAvisoFormTitle').textContent = 'Criar Novo Aviso';
+            clearMobileAvisoImage();
+            onMobileThemeChange();
+            const badge = document.getElementById('mobileAvisoBadge');
+            if (badge) {
+                badge.textContent = 'NOVO';
+                badge.style.background = 'rgba(168,85,247,0.2)';
+                badge.style.color = '#a855f7';
+            }
+            renderMobileAvisosList();
+        }
+
+        function editMobileAviso(id) {
+            const aviso = remoteAvisosList.find(a => a.id === id);
+            if (!aviso) return;
+
+            mobileEditingAvisoId = aviso.id;
+            document.getElementById('mobileAvisoTitle').value = aviso.title || '';
+            document.getElementById('mobileAvisoDesc').value = aviso.desc || '';
+            document.getElementById('mobileAvisoCategory').value = aviso.category || 'Geral';
+            document.getElementById('mobileAvisoTheme').value = aviso.theme || 'theme-dark';
+            document.getElementById('mobileAvisoTime').value = aviso.time || 7;
+            document.getElementById('mobileAvisoActive').checked = aviso.active !== false;
+            document.getElementById('mobileAvisoFormTitle').textContent = 'Editar Aviso';
+
+            // v4.3: Carregar imagem existente
+            if (aviso.imageUrl) {
+                mobileAvisoImageBase64 = aviso.imageUrl;
+                document.getElementById('mobileAvisoImageThumb').src = aviso.imageUrl;
+                document.getElementById('mobileAvisoImageName').textContent = 'Imagem carregada';
+                document.getElementById('mobileAvisoImageDefault').style.display = 'none';
+                document.getElementById('mobileAvisoImagePreview').style.display = 'flex';
+            } else {
+                clearMobileAvisoImage();
+            }
+            onMobileThemeChange();
+
+            const badge = document.getElementById('mobileAvisoBadge');
+            if (badge) {
+                badge.textContent = 'EDITANDO';
+                badge.style.background = 'rgba(245,158,11,0.2)';
+                badge.style.color = '#f59e0b';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderMobileAvisosList();
+        }
+
+        let mobileAvisoImageBase64 = '';
+
+        function selectMobileAvisoMode(mode) {
+            const btnText = document.getElementById('tabAvisoText');
+            const btnImage = document.getElementById('tabAvisoImage');
+            const themeSel = document.getElementById('mobileAvisoTheme');
+
+            if (mode === 'image') {
+                if (btnText) { btnText.style.background = 'transparent'; btnText.style.color = '#aaa'; }
+                if (btnImage) { btnImage.style.background = 'linear-gradient(135deg, #a855f7, #7e22ce)'; btnImage.style.color = '#fff'; }
+                if (themeSel) themeSel.value = 'theme-imageonly';
+            } else {
+                if (btnText) { btnText.style.background = '#0084ff'; btnText.style.color = '#fff'; }
+                if (btnImage) { btnImage.style.background = 'transparent'; btnImage.style.color = '#aaa'; }
+                if (themeSel && themeSel.value === 'theme-imageonly') {
+                    themeSel.value = 'theme-dark';
+                }
+            }
+            onMobileThemeChange();
+        }
+
+        function onMobileThemeChange() {
+            const theme = document.getElementById('mobileAvisoTheme').value;
+            const isImageOnly = theme === 'theme-imageonly';
+            const isImageBanner = theme === 'theme-image';
+            const titleGroup = document.getElementById('mobileAvisoTitleGroup');
+            const descGroup = document.getElementById('mobileAvisoDescGroup');
+            const imageGroup = document.getElementById('mobileAvisoImageGroup');
+            const reqBadge = document.getElementById('mobileAvisoImageRequired');
+            const btnText = document.getElementById('tabAvisoText');
+            const btnImage = document.getElementById('tabAvisoImage');
+
+            if (isImageOnly) {
+                if (btnText) { btnText.style.background = 'transparent'; btnText.style.color = '#aaa'; }
+                if (btnImage) { btnImage.style.background = 'linear-gradient(135deg, #a855f7, #7e22ce)'; btnImage.style.color = '#fff'; }
+            } else {
+                if (btnText) { btnText.style.background = '#0084ff'; btnText.style.color = '#fff'; }
+                if (btnImage) { btnImage.style.background = 'transparent'; btnImage.style.color = '#aaa'; }
+            }
+
+            if (titleGroup) titleGroup.style.display = isImageOnly ? 'none' : 'block';
+            if (descGroup) descGroup.style.display = isImageOnly ? 'none' : 'block';
+            if (imageGroup) imageGroup.style.display = (isImageOnly || isImageBanner) ? 'block' : 'none';
+            if (reqBadge) {
+                if (isImageOnly) {
+                    reqBadge.textContent = '* Obrigatório';
+                    reqBadge.style.color = '#ef4444';
+                    reqBadge.style.display = 'inline';
+                } else if (isImageBanner) {
+                    reqBadge.textContent = '(Opcional - Flyer)';
+                    reqBadge.style.color = '#3b82f6';
+                    reqBadge.style.display = 'inline';
+                } else {
+                    reqBadge.style.display = 'none';
+                }
+            }
+        }
+
+        function handleMobileAvisoImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Imagem muito grande! Máximo: 5MB');
+                input.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                mobileAvisoImageBase64 = e.target.result;
+                document.getElementById('mobileAvisoImageThumb').src = mobileAvisoImageBase64;
+                document.getElementById('mobileAvisoImageName').textContent = file.name;
+                document.getElementById('mobileAvisoImageDefault').style.display = 'none';
+                document.getElementById('mobileAvisoImagePreview').style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearMobileAvisoImage() {
+            mobileAvisoImageBase64 = '';
+            document.getElementById('mobileAvisoImageInput').value = '';
+            document.getElementById('mobileAvisoImageDefault').style.display = 'block';
+            document.getElementById('mobileAvisoImagePreview').style.display = 'none';
+        }
+
+        function saveMobileAviso() {
+            const title = document.getElementById('mobileAvisoTitle').value.trim();
+            const theme = document.getElementById('mobileAvisoTheme').value;
+
+            // v4.3: No modo 'Apenas Imagem', exige imagem ao invés de título
+            if (theme === 'theme-imageonly') {
+                if (!mobileAvisoImageBase64) return alert('No modo "Apenas Imagem", é obrigatório selecionar uma imagem.');
+            } else {
+                if (!title) return alert('Por favor, informe o título do aviso.');
+            }
+
+            const avisoObj = {
+                id: mobileEditingAvisoId || ('aviso-' + Date.now()),
+                title: title || (theme === 'theme-imageonly' ? 'Aviso (Imagem)' : ''),
+                desc: document.getElementById('mobileAvisoDesc').value.trim(),
+                category: document.getElementById('mobileAvisoCategory').value,
+                theme: theme,
+                time: parseInt(document.getElementById('mobileAvisoTime').value) || 7,
+                active: document.getElementById('mobileAvisoActive').checked,
+                imageUrl: mobileAvisoImageBase64 || '',
+                expiresAt: ''
+            };
+
+            const idx = remoteAvisosList.findIndex(a => a.id === avisoObj.id);
+            if (idx >= 0) {
+                remoteAvisosList[idx] = avisoObj;
+            } else {
+                remoteAvisosList.unshift(avisoObj);
+            }
+
+            if (binId && db) {
+                db.ref('igrejas/' + binId + '/avisos').set(remoteAvisosList).then(() => {
+                    showSuccess('Aviso salvo com sucesso!');
+                    resetMobileAvisoForm();
+                }).catch(err => alert('Erro ao salvar no Firebase: ' + err.message));
+            }
+        }
+
+        function toggleMobileAvisoActive(id) {
+            const aviso = remoteAvisosList.find(a => a.id === id);
+            if (aviso && binId && db) {
+                aviso.active = !aviso.active;
+                db.ref('igrejas/' + binId + '/avisos').set(remoteAvisosList);
+            }
+        }
+
+        function deleteMobileAviso(id) {
+            const aviso = remoteAvisosList.find(a => a.id === id);
+            if (!aviso) return;
+            if (confirm(`Deseja realmente apagar o aviso "${aviso.title}"?`)) {
+                remoteAvisosList = remoteAvisosList.filter(a => a.id !== id);
+                if (mobileEditingAvisoId === id) resetMobileAvisoForm();
+                if (binId && db) {
+                    db.ref('igrejas/' + binId + '/avisos').set(remoteAvisosList);
+                }
+            }
+        }
+
+        function projectMobileAviso(id) {
+            const aviso = remoteAvisosList.find(a => a.id === id);
+            if (!aviso) return;
+            const isImageOnly = aviso.theme === 'theme-imageonly';
+
+            if (binId && db) {
+                db.ref('igrejas/' + binId + '/currentProjection').set({
+                    isAviso: true,
+                    title: isImageOnly ? '' : aviso.title,
+                    subtitle: isImageOnly ? '' : aviso.desc,
+                    theme: aviso.theme,
+                    imageUrl: aviso.imageUrl || '',
+                    imageOnly: isImageOnly,
+                    timestamp: Date.now()
+                });
+            }
+            showSuccess(`Aviso "${aviso.title || 'Imagem'}" projetado!`);
+        }
+
+</script>
 </body>
 </html>

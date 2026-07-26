@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = 'icnv-portal-v3.7.7';
+const CACHE_NAME = 'icnv-portal-v3.7.8';
 const ASSETS = [
     'index.html',
     'remote_portal.html',
