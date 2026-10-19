@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -787,7 +787,7 @@
 
         <!-- Versão no Rodapé (v3.8.0) -->
         <div style="text-align: center; margin-top: 50px; margin-bottom: 20px; font-size: 10px; color: var(--text-muted); opacity: 0.5; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">
-            ICNV PROJEÇÃO <span style="color: var(--accent);">v3.8.1</span>
+            ICNV PROJEÇÃO <span style="color: var(--accent);">v3.8.3</span>
         </div>
     </div>
 
@@ -1798,6 +1798,16 @@
             showSuccess(`Aviso "${aviso.title || 'Imagem'}" projetado!`);
         }
 
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js?v=3.8.3').then((reg) => {
+            reg.update();
+        }).catch(() => {});
+    });
+}
 </script>
 </body>
 </html>
