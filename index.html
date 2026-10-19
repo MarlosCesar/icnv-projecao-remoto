@@ -1,9 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICNV Projeção - Portal Remoto</title>
+    <title>ICNV PROJEÇÃO - Portal Remoto</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
@@ -18,8 +21,8 @@
             const baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             
             const manifest = {
-                name: "ICNV Projeção",
-                short_name: "ICNV Projeção",
+                name: "ICNV PROJEÇÃO
+                short_name: "ICNV PROJEÇÃO
                 description: "Portal de Escolha Remota - ICNV",
                 start_url: window.location.href,
                 display: "standalone",
@@ -433,7 +436,7 @@
 
     <div class="container">
         <header>
-            <img src="logo ICNV Projecao.png" alt="ICNV PROJEÇÃO" style="height: 50px; width: auto; margin-bottom: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+            <img src="logo ICNV PROJEÇÃO alt="ICNV PROJEÇÃO style="height: 50px; width: auto; margin-bottom: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
             <p class="subtitle" id="lastUpdateText">Sincronizando biblioteca...</p>
         </header>
 
@@ -787,7 +790,7 @@
 
         <!-- Versão no Rodapé (v3.8.0) -->
         <div style="text-align: center; margin-top: 50px; margin-bottom: 20px; font-size: 10px; color: var(--text-muted); opacity: 0.5; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">
-            ICNV PROJEÃ‡ÃƒO <span style="color: var(--accent);">v3.8.3</span>
+            ICNV PROJEÇÃO <span style="color: var(--accent);">v3.8.3</span>
         </div>
     </div>
 
@@ -1497,7 +1500,7 @@
 
         function sharePortal() {
             const shareData = {
-                title: 'ICNV Projeção - Portal Remoto',
+                title: 'ICNV PROJEÇÃO - Portal Remoto',
                 text: 'Acesse o portal para enviar músicas e arquivos para a projeção.',
                 url: window.location.href
             };
@@ -1801,11 +1804,29 @@
 </script>
 
 <script>
+// Limpeza proativa de qualquer cache antigo (ex: v3.7.8) diretamente na inicializacao
+if ('caches' in window) {
+    caches.keys().then((keys) => {
+        keys.forEach((key) => {
+            if (key !== 'icnv-portal-v3.8.3') {
+                caches.delete(key);
+            }
+        });
+    });
+}
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js?v=3.8.3').then((reg) => {
             reg.update();
         }).catch(() => {});
+    });
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!sessionStorage.getItem('sw_refreshed_v383')) {
+            sessionStorage.setItem('sw_refreshed_v383', '1');
+            window.location.reload();
+        }
     });
 }
 </script>
